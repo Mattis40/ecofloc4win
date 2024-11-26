@@ -1,35 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="output.css">
-    <title>Ecofloc</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@300;400;700&family=Roboto:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Monitoring Dashboard</title>
 </head>
 
-<body class="flex flex-col min-h-screen divide-y-8 divide-emerald-400">
-    <header
-    class="h-full flex flex-row justify-center align-center gap-12 bg-zinc-800 text-white roboto-regular text-xl">
-        <a href="index.html"><h2 class=" rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">Accueil</h2></a>
-        <a href="#"><h2 class="text-emerald-600 rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:text-emerald-600 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">Monitoring</h2></a>
-        <a href="composants.html"><h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:text-emerald-600 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">Mes composants</h2></a>
+<body class="flex flex-col min-h-screen divide-y-4 divide-emerald-400">
+    <!-- Header -->
+    <header class="h-full flex flex-row justify-center align-center bg-zinc-800 text-white text-xl roboto-regular">
+        <div class="w-full px-[26%] flex flex-row justify-between content-center">
+            <a href="./">
+                <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+                    Accueil
+                </h2>
+            </a>
+            <a href="#">
+                <h2 class="text-emerald-600 rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+                    Monitoring
+                </h2>
+            </a>
+            <a href="composants.html">
+                <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:text-emerald-600 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+                    Mes composants
+                </h2>
+            </a>
+        </div>
     </header>
 
-    <main
-        class="h-full flex-1 flex flex-col items-center bg-gradient-to-b from-zinc-900 from-25% via-zinc-800  to-zinc-900">
-        
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-row bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 text-white">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-[10%] bg-zinc-800 flex flex-col p-4 transition-all duration-300">
+            <button id="toggleSidebar" class="self-end mb-4  text-white">
+                <img src="./assets/arrow-left.svg" alt="back" class="size-[60%]">
+            </button>
+            <h3 class="text-lg font-semibold mb-4">Filtres</h3>
+            <div class="space-y-2">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>CPU</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>RAM</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>SD</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>NIC</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>GPU</span>
+                </label>
+            </div>
+            <div class="mt-4">
+                <label class="block mb-2">Intervalle (ms)</label>
+                <input type="number" value="1000" class="w-full bg-zinc-700 text-white p-2 rounded-md">
+            </div>
+            <div class="flex items-center justify-around mt-4">
+                <button class="p-2  rounded-full">
+                    <img src="./assets/play.svg" alt="play" class="size-20">
+                </button>
+                <button class="p-2  rounded-full">
+                    <img src="./assets/stop.svg" alt="stop" class="size-20">
+                </button>
+            </div>
+        </aside>
+
+        <!-- Graphs and Table -->
+        <section id="main" class="flex-1 flex flex-col space-y-6 p-6 transition-all duration-300">
+            <!-- Graphs -->
+            <div class="grid grid-cols-3 gap-4 h-3/4">
+                <div class="bg-zinc-800 p-4 rounded-md">
+                    <h3 class="text-center font-semibold">CPU (nom processeur)</h3>
+                    <div class="h-32 bg-red-400 rounded-md"></div>
+                </div>
+                <div class="bg-zinc-800 p-4 rounded-md">
+                    <h3 class="text-center font-semibold">GPU (nom carte graphique)</h3>
+                    <div class="h-32 bg-green-400 rounded-md"></div>
+                </div>
+                <div class="bg-zinc-800 p-4 rounded-md">
+                    <h3 class="text-center font-semibold">RAM (nom RAM)</h3>
+                    <div class="h-32 bg-teal-400 rounded-md"></div>
+                </div>
+                <div class="bg-zinc-800 p-4 rounded-md">
+                    <h3 class="text-center font-semibold">NIC (Carte réseaux)</h3>
+                    <div class="h-32 bg-blue-400 rounded-md"></div>
+                </div>
+                <div class="bg-zinc-800 p-4 rounded-md">
+                    <h3 class="text-center font-semibold">SD (Disque dur)</h3>
+                    <div class="h-32 bg-indigo-400 rounded-md"></div>
+                </div>
+                <div class="bg-zinc-800 p-4 rounded-md">
+                    <h3 class="text-center font-semibold">Total Consommation</h3>
+                    <div class="h-32 bg-purple-400 rounded-md"></div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-zinc-800 p-4 rounded-md h-1/4">
+                <table class="table-auto w-full text-left">
+                    <thead>
+                        <tr class="bg-zinc-700">
+                            <th class="px-4 py-2">Process Name</th>
+                            <th class="px-4 py-2">PID</th>
+                            <th class="px-4 py-2">Groupe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="px-4 py-2">FireFox.exe</td>
+                            <td class="px-4 py-2">128</td>
+                            <td class="px-4 py-2">
+                                <input type="checkbox" checked class="accent-emerald-500">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">ApexClient.exe</td>
+                            <td class="px-4 py-2">129</td>
+                            <td class="px-4 py-2">
+                                <input type="checkbox" checked class="accent-emerald-500">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
+
+    <!-- Script -->
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const toggleBtn = document.getElementById('toggleSidebar');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('w-1/5');
+            sidebar.classList.toggle('w-16');
+            main.classList.toggle('flex-1');
+            main.classList.toggle('w-full');
+        });
+    </script>
 </body>
 
 </html>
