@@ -10,6 +10,9 @@
   },
   "devDependencies": {
     "tailwindcss": "^3.4.15",
-    "vite": "^5.4.10"
+    "vite": "^5.4.10",
+    "child_process":"^1.0.2",
+    "express":"^4.21.1",
+    "cors":"^2.8.5"
   }
 }
