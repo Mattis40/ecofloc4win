@@ -89,7 +89,7 @@
         </div>
     </main>
     <script>
-        // Fonction pour charger et insÈrer les donnÈes d'un fichier JSON
+        // Fonction pour charger et insÔøΩrer les donnÔøΩes d'un fichier JSON
         function loadJson(filePath, callback) {
             fetch(filePath)
                 .then(response => {
@@ -102,7 +102,7 @@
                 .catch(error => console.error('Erreur:', error));
         }
 
-        // Charger et insÈrer les donnÈes pour la carte SD
+        // Charger et insÔøΩrer les donnÔøΩes pour la carte SD
         loadJson('sd.json', data => {
             document.getElementById('write-power').textContent = `${data.write_power} W`;
             document.getElementById('max-write-rate').textContent = `Vitesse max: ${data.max_write_rate} MB/s`;
@@ -110,19 +110,29 @@
             document.getElementById('max-read-rate').textContent = `Vitesse max: ${data.max_read_rate} MB/s`;
         });
 
-        // Charger et insÈrer les donnÈes pour le CPU
+        // Charger et insÔøΩrer les donnÔøΩes pour le CPU
         loadJson('cpu.json', data => {
             document.getElementById('cpu-tdp').textContent = `${data.tdp} W`;
             document.getElementById('cpu-clock-speed').textContent = `${data.clockSpeed} MHz`;
             document.getElementById('cpu-voltage').textContent = `${data.voltage} V`;
         });
 
-        // Charger et insÈrer les donnÈes pour la carte rÈseau (NIC)
+        // Charger et insÔøΩrer les donnÔøΩes pour la carte rÔøΩseau (NIC)
         loadJson('nic.json', data => {
             document.getElementById('nic-upload-rate').textContent = `${data.upload_rate} Mbps`;
             document.getElementById('nic-max-upload-rate').textContent = `Max: ${data.max_upload_rate} Mbps`;
             document.getElementById('nic-download-rate').textContent = `${data.download_rate} Mbps`;
             document.getElementById('nic-max-download-rate').textContent = `Max: ${data.max_download_rate} Mbps`;
+        });
+
+        document.querySelector('button').addEventListener('click', () => {
+            const confirmation = confirm("Voulez-vous ex√©cuter l'application ?");
+            if (confirmation) {
+                // Remplacer "myapp://action" par ton protocole personnalis√©
+                window.location.href = "ecofloc://";
+            } else {
+                alert("Action annul√©e.");
+            }
         });
     </script>
 
