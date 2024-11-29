@@ -10,7 +10,15 @@ using namespace std;
 #include <windows.h>
 #include <tchar.h>
 #include <psapi.h>
+#include <locale>
+#include <codecvt>
 #include "process.h"
+
+string wstring_to_string(const wstring& wide_string)
+{
+    wstring_convert<codecvt_utf8<wchar_t>> converter;
+    return converter.to_bytes(wide_string);
+}
 
 /*ypedef enum
 {
@@ -24,11 +32,11 @@ void startCPU(int, int, int);
 
 void readCommand(string);
 
-/*void addProc(int);
+void addProc(int);
 void addProc(string);
 
 void removeProc(int);
-void removeProc(string);*/
+void removeProc(string);
 
 void enable(string);
 void disable(string);
@@ -167,6 +175,8 @@ void addProc(int pid)
 
     if (processName != L"<unknown>" /*&& check list*/)
     {
+        processes.push_back(process(to_string(pid), wstring_to_string(processName)));
+        
         //add to list
 
         //wcout << L"Process Name: " << processName << endl;
