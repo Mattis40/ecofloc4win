@@ -7,6 +7,10 @@ using namespace std;
 #include <string>
 #include <sstream>
 #include <list>
+#include <windows.h>
+#include <tchar.h>
+#include <psapi.h>
+#include "process.h"
 
 /*ypedef enum
 {
@@ -20,17 +24,59 @@ void startCPU(int, int, int);
 
 void readCommand(string);
 
-void addProc(int);
+/*void addProc(int);
 void addProc(string);
 
 void removeProc(int);
-void removeProc(string);
+void removeProc(string);*/
 
 void enable(string);
 void disable(string);
 
+/*class Processus
+{
+    private:
+        string pid;
+        string name;
+        bool state;
+
+    public:
+        Processus(string, string);
+        string getPid();
+        string getName();
+        bool getState();
+        void setPid(string);
+        void setName(string);
+        void setState(bool);
+        void addProcPid();
+        void addProcName();
+        void removeProcPid();
+        void removeProcName();
+};*/
+
+wstring GetProcessNameByPID(DWORD processID) {
+    TCHAR processName[MAX_PATH] = TEXT("<unknown>");
+
+    // Get a handle to the process
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
+
+    // Check if we successfully got a handle to the process
+    if (hProcess) {
+        // Get the process name
+        if (GetModuleBaseName(hProcess, nullptr, processName, sizeof(processName) / sizeof(TCHAR))) {
+            CloseHandle(hProcess); // Close handle when done
+            return processName;
+        }
+        CloseHandle(hProcess); // Close handle even if we fail
+    }
+
+    return L"<unknown>";
+}
+
 vector<int> pids = { 195, 215, 45103 };//see to put pids in string
 vector<string> names = { "Firefox", "Valorant", "Ecofloc"};
+
+vector<process> processes = { process("195", "Firefox"), process("215", "Valorant"), process("45103", "Ecofloc") };
 
 int main()
 {
@@ -117,7 +163,20 @@ void readCommand(string commandHandle)
 
 void addProc(int pid)
 {
-    auto it = find(pids.begin(), pids.end(), pid);
+    wstring processName = GetProcessNameByPID(pid);
+
+    if (processName != L"<unknown>" /*&& check list*/)
+    {
+        //add to list
+
+        //wcout << L"Process Name: " << processName << endl;
+    }
+    else
+    {
+        wcout << L"Failed to retrieve process name or process does not exist." << endl;
+    }
+    
+    /*auto it = find_if(pids.begin(), pids.end(), pid);
 
     if (it != pids.end())
     {
@@ -126,7 +185,7 @@ void addProc(int pid)
     else
     {
         cout << "Invalid pid";
-    }
+    }*/
     //to do add via pid
 }
 
@@ -137,6 +196,7 @@ void addProc(string name)
     if (it != names.end())
     {
         cout << "Addition of the process via the name: " << name << endl;
+
     }
     else
     {
