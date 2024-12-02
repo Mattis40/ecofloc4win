@@ -81,33 +81,34 @@
         <!-- Graphs and Table -->
         <section id="main" class="flex-1 flex flex-col space-y-6 p-6 transition-all duration-300">
             <!-- Graphs -->
-            <div class="grid grid-cols-3 gap-4 h-3/4">
-                
-                <div class="bg-zinc-800 p-4 rounded-md">
+            <div class="grid grid-cols-3 grid-rows-2 gap-4 max-h-[60vh] h-full">
+                <div class="bg-zinc-800 p-4 rounded-md flex flex-col">
                     <h3 class="text-center font-semibold">CPU (nom processeur)</h3>
-                    <div id="graphCPU"></div>
+                    <div id="graphCPU" class="responsive-graph flex-grow"></div>
                 </div>
-                <div class="bg-zinc-800 p-4 rounded-md">
+                <div class="bg-zinc-800 p-4 rounded-md flex flex-col">
                     <h3 class="text-center font-semibold">GPU (nom carte graphique)</h3>
-                    <div id="graphGPU"></div>
+                    <div id="graphGPU" class="responsive-graph flex-grow"></div>
                 </div>
-                <div class="bg-zinc-800 p-4 rounded-md">
+                <div class="bg-zinc-800 p-4 rounded-md flex flex-col">
                     <h3 class="text-center font-semibold">RAM (nom RAM)</h3>
-                    <div id="graphRAM"></div>
+                    <div id="graphRAM" class="responsive-graph flex-grow"></div>
                 </div>
-                <div class="bg-zinc-800 p-4 rounded-md">
+                <div class="bg-zinc-800 p-4 rounded-md flex flex-col">
                     <h3 class="text-center font-semibold">NIC (Carte réseaux)</h3>
-                    <div id="graphNIC"></div>
+                    <div id="graphNIC" class="responsive-graph flex-grow"></div>
                 </div>
-                <div class="bg-zinc-800 p-4 rounded-md">
+                <div class="bg-zinc-800 p-4 rounded-md flex flex-col">
                     <h3 class="text-center font-semibold">SD (Disque dur)</h3>
-                    <div id="graphSD"></div>
+                    <div id="graphSD" class="responsive-graph flex-grow"></div>
                 </div>
-                <div class="bg-zinc-800 p-4 rounded-md">
+                <div class="bg-zinc-800 p-4 rounded-md flex flex-col">
                     <h3 class="text-center font-semibold">Total Consommation</h3>
-                    <div id="graphTOTAL"></div>
+                    <div id="graphTOTAL" class="responsive-graph flex-grow"></div>
                 </div>
             </div>
+            
+            
         </section>
     </main>
 

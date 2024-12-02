@@ -166,3 +166,9 @@
   font-weight: 900;
   font-style: italic;
 }
+
+
+.responsive-graph {
+  width: 100%;
+  height: 100%;
+}

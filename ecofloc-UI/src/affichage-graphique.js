@@ -57,6 +57,7 @@ function updatePlot(data) {
           break;
         default:
           console.log(`Sorry, we are out of ${c['type']}.`);
+          break;
       }
     }
     graphTOTAL.updatePlot(totalW);

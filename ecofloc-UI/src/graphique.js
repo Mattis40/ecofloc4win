@@ -2,7 +2,6 @@ class DynamicGraph {
     constructor(nomGraphique, color) {
         // Define the layout for the plot
         var layout = {
-            height: 270,
             xaxis: {
                 rangemode: 'tozero', 
                 gridcolor: 'rgba(255,255,255,0.2)',
@@ -38,10 +37,7 @@ class DynamicGraph {
         this.nomGraphique = nomGraphique;
 
         // Create the initial plot
-        Plotly.newPlot(this.nomGraphique, this.data, layout, [{    fill: 'tozeroy',
-        type: 'scatter',
-        mode: 'lines',
-        line: {color: 'green'}}]);
+        Plotly.newPlot(this.nomGraphique, this.data, layout, { responsive: true });
     }
 
     // Method to update the plot by pushing new values to 'y'
