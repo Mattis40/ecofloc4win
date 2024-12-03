@@ -1,7 +1,7 @@
 class DynamicGraph {
     constructor(nomGraphique, color) {
         // Define the layout for the plot
-        var layout = {
+        this.layout = {
             xaxis: {
                 rangemode: 'tozero', 
                 gridcolor: 'rgba(255,255,255,0.2)',
@@ -17,15 +17,15 @@ class DynamicGraph {
                 }
             },
             margin: {
-                l: 10,  // Marge gauche
-                r: 10,  // Marge droite
+                l: 30,  // Marge gauche
+                r: 30,  // Marge droite
                 t: 10,  // Marge en haut
                 b: 20   // Marge en bas
             },
             paper_bgcolor: 'rgba(0,0,0,0)',  // Fond extérieur transparent
             plot_bgcolor: 'rgba(0,0,0,0)',   // Fond du graphique transparent
+            dragmode: false
         };
-
         // Define the initial data with an empty array for 'y'
         this.data = [{
             y: [], // Starting values
@@ -35,9 +35,9 @@ class DynamicGraph {
 
         // Set the graph name
         this.nomGraphique = nomGraphique;
-
+        this.showGraph = true
         // Create the initial plot
-        Plotly.newPlot(this.nomGraphique, this.data, layout, { responsive: true });
+        Plotly.newPlot(this.nomGraphique, this.data, this.layout, { responsive: true, displayModeBar: false });
     }
 
     // Method to update the plot by pushing new values to 'y'
@@ -55,10 +55,19 @@ class DynamicGraph {
     }
     show(value) {
         const element = document.getElementById(this.nomGraphique);
+        this.showGraph = value;
         if (value) {
             element.parentElement.style.display = "block"; // Show the element
         } else {
             element.parentElement.style.display = "none"; // Hide the element
         }
+    }
+
+    mettreAJourElement() {
+        const currentElement = document.getElementById(this.nomGraphique);
+        const graphData = this.data;
+        const layout = this.layout;
+        Plotly.newPlot(this.nomGraphique, graphData, layout, { responsive: true, displayModeBar: false });
+        this.show(this.showGraph);
     }
 }
