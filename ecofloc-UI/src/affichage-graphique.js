@@ -8,6 +8,7 @@ let graphGPU = new DynamicGraph("graphGPU", "rgb(74 222 128 / var(--tw-bg-opacit
 let graphRAM = new DynamicGraph("graphRAM", "rgb(45 212 191 / var(--tw-bg-opacity, 1))");
 let graphTOTAL = new DynamicGraph("graphTOTAL",  "rgb(192 132 252 / var(--tw-bg-opacity, 1))");
 
+
 function readFile() {
     fetch('./system_monitoring.json')
     .then(response => {
@@ -63,4 +64,20 @@ function updatePlot(data) {
     graphTOTAL.updatePlot(totalW);
 }
 setInterval(readFile, 500);
+
+document.getElementById("checkboxCPU").addEventListener("click", (event) => {
+  graphCPU.show(event.target.checked);
+});
+document.getElementById("checkboxGPU").addEventListener("click", (event) => {
+  graphGPU.show(event.target.checked);
+});
+document.getElementById("checkboxNIC").addEventListener("click", (event) => {
+  graphNIC.show(event.target.checked);
+});
+document.getElementById("checkboxRAM").addEventListener("click", (event) => {
+  graphRAM.show(event.target.checked);
+});
+document.getElementById("checkboxSD").addEventListener("click", (event) => {
+  graphSD.show(event.target.checked);
+});
 

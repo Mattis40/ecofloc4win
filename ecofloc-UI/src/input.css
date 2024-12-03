@@ -57,6 +57,12 @@
 }
 
 
+.responsive-graph {
+  width: 100%;
+  height: 100%;
+}
+
+
 
 
 .inria-sans-light {
@@ -165,10 +171,4 @@
   font-family: "Roboto", sans-serif;
   font-weight: 900;
   font-style: italic;
-}
-
-
-.responsive-graph {
-  width: 100%;
-  height: 100%;
 }

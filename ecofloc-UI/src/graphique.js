@@ -53,4 +53,12 @@ class DynamicGraph {
             y: [currentY]
         });
     }
+    show(value) {
+        const element = document.getElementById(this.nomGraphique);
+        if (value) {
+            element.parentElement.style.display = "block"; // Show the element
+        } else {
+            element.parentElement.style.display = "none"; // Hide the element
+        }
+    }
 }
