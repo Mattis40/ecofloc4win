@@ -1,17 +1,6 @@
-/*export var exec = require('node:child_process').exec;
-
-exec('echo hello',
-    function (error, stdout, stderr) {
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
-        if (error !== null) {
-             console.log('exec error: ' + error);
-        }
-    });*/
-
 const express = require('express');
 const { exec } = require('child_process');
-const cors = require('cors'); // For cross-origin requests from the front-end
+const cors = require('cors'); // Pour les requêtes cross-origin depuis un front-end
 
 const app = express();
 const port = 3000;
@@ -20,27 +9,27 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-// API Endpoint to Execute Shell Command
+// API Endpoint pour exécuter un fichier .exe
 app.post('/execute', (req, res) => {
-    const { command } = req.body;
+    const exePath = 'testjson.exe'; // Remplacez par le chemin absolu de votre fichier .exe
 
-    if (!command) {
-    return res.status(400).send({ error: 'No command provided' });
-    }
+    exec(`"${exePath}"`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Erreur d'exécution: ${error.message}`);
+            return res.status(500).send({ error: error.message });
+        }
 
-    exec(command, (error, stdout, stderr) => {
-    if (error) {
-        return res.status(500).send({ error: error.message });
-    }
-    if (stderr) {
-        return res.status(400).send({ stderr });
-    }
-    res.send({ stdout });
+        if (stderr) {
+            console.warn(`Stderr: ${stderr}`);
+            return res.status(400).send({ stderr });
+        }
+
+        console.log(`Stdout: ${stdout}`);
+        res.send({ stdout });
     });
 });
 
-// Start Server
+// Démarrer le serveur
 app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
+    console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
 });
-

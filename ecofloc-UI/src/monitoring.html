@@ -36,7 +36,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="h-full flex-1 flex flex-row bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 text-white">
+    <main class=" flex-1 flex flex-row bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 text-white">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar-transition">
             <!-- Wrap button -->
@@ -69,11 +69,11 @@
             <!-- Ipt-TimeStamp -->
             <div id="input_ts" class="mt-4 sidebar-transition">
                 <label class="block mb-2">Intervalle (ms)</label>
-                <input type="number" value="1000" class="w-full bg-zinc-700 text-white p-2 rounded-md">
+                <input type="number" min="500" value="1000" max="300000" step="250" class="w-full bg-zinc-700 text-white p-2 rounded-md">
             </div>
             <!-- Play/Stop buttons -->
             <div id="list-buttons" class="sidebar-transition">
-                <button class="p-2">
+                <button onclick="monitoring(); return false;" class="p-2">
                     <img src="./assets/play.svg" alt="play" class="size-[50px]">
                 </button>
                 <button class="p-2">
@@ -119,7 +119,7 @@
                         <div class="col-1">Process name</div>
                         <div class="col-2">PID</div>
                     </div>
-                    <div class="custom-tbody">
+                    <div class="custom-tbody ">
                         <div class="line">
                             <div class="col-1 cell">Firefox.exe</div>
                             <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
@@ -160,20 +160,20 @@
                     </div>
                 </div>
                 <div id="group-tab" class="custom-table w-1/4">
-                    <div class="custom-thead">
+                    <div class="custom-thead col-3">
                         <div>Group Application</div>
                     </div>
                     <div class="custom-tbody">
-                        <div class="line">
+                        <div class="line col-3">
                             <div>Bureautique</div>
                             <input type="checkbox" id="">
                         </div>
-                        <div class="line">
+                        <div class="line col-3">
                             <div>Navigateur</div>
                             <input type="checkbox" id="">
                         </div>
-                        <div class="line">
-                            <span>...</span>
+                        <div class="line col-3">
+                            <div>...</div>
                             <input type="checkbox" id="">
                         </div>
                     </div>
