@@ -570,6 +570,10 @@ video {
   margin-top: 1rem;
 }
 
+.mt-\[15\%\] {
+  margin-top: 15%;
+}
+
 .mt-auto {
   margin-top: auto;
 }
@@ -596,6 +600,14 @@ video {
   height: 50px;
 }
 
+.h-1\/4 {
+  height: 25%;
+}
+
+.h-3\/4 {
+  height: 75%;
+}
+
 .h-5 {
   height: 1.25rem;
 }
@@ -614,6 +626,14 @@ video {
 
 .min-h-screen {
   min-height: 100vh;
+}
+
+.w-1\/4 {
+  width: 25%;
+}
+
+.w-3\/4 {
+  width: 75%;
 }
 
 .w-5 {
@@ -688,8 +708,16 @@ video {
   gap: 3rem;
 }
 
+.gap-2 {
+  gap: 0.5rem;
+}
+
 .gap-4 {
   gap: 1rem;
+}
+
+.gap-5 {
+  gap: 1.25rem;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -702,12 +730,6 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
-}
-
-.space-y-6 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
 
 .divide-y-4 > :not([hidden]) ~ :not([hidden]) {
@@ -746,9 +768,39 @@ video {
   border-top-right-radius: 0.25rem;
 }
 
+.bg-blue-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1));
+}
+
 .bg-emerald-600 {
   --tw-bg-opacity: 1;
   background-color: rgb(5 150 105 / var(--tw-bg-opacity, 1));
+}
+
+.bg-green-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(74 222 128 / var(--tw-bg-opacity, 1));
+}
+
+.bg-purple-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(192 132 252 / var(--tw-bg-opacity, 1));
+}
+
+.bg-purple-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(147 51 234 / var(--tw-bg-opacity, 1));
+}
+
+.bg-red-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1));
+}
+
+.bg-teal-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(45 212 191 / var(--tw-bg-opacity, 1));
 }
 
 .bg-zinc-700 {
@@ -796,8 +848,9 @@ video {
   padding: 1rem;
 }
 
-.p-6 {
-  padding: 1.5rem;
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .px-28 {
@@ -828,6 +881,10 @@ video {
 .py-6 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem;
 }
 
 .text-center {
@@ -861,6 +918,10 @@ video {
 
 .font-bold {
   font-weight: 700;
+}
+
+.font-medium {
+  font-weight: 500;
 }
 
 .font-semibold {
@@ -915,12 +976,6 @@ video {
   transition-duration: 150ms;
 }
 
-.transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
 .duration-300 {
   transition-duration: 300ms;
 }
@@ -933,9 +988,13 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.sidebar-transition{
+  transition: .4s cubic-bezier(0,0,1,1);
+  transition-timing-function: ease-in-out;
+}
+
 .hidde {
   display: none;
-  transition: 1s cubic-bezier(.36, -0.01, 0, .77);
 }
 
 #close-sidebar{
@@ -943,14 +1002,12 @@ video {
   top: 12%;
   left: 11.5%;
   color: white;
-  transition: 1s cubic-bezier(.36, -0.01, 0, .77);
 }
 
 #open-sidebar{
   position: absolute;
   top: 11.8%;
   left: 1.8%;
-  transition: 1s cubic-bezier(.36, -0.01, 0, .77);
 }
 
 #sidebar{
@@ -959,7 +1016,6 @@ video {
   flex-direction: column;
   background-color: #27272a;
   padding : 1rem;
-  transition: 1s cubic-bezier(.36, -0.01, 0, .77);
 }
 
 #sidebar.close{
@@ -988,9 +1044,76 @@ video {
   align-items: center;
 }
 
+.list-graph{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .responsive-graph {
   width: 100%;
   height: 100%;
+}
+
+.graphique{
+  width: 32%;
+  height: 48%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: .5rem;
+  padding-bottom: .5rem;
+  border-radius: 0.375rem;
+  background-color: #27272a;
+  gap: .5rem;
+}
+
+.render{
+  height: 100%;
+  border-radius: 0.375rem;
+}
+
+.custom-table{
+  margin: .5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.custom-thead{
+  display: flex;
+  flex-direction: row;
+  gap: .5rem;
+  font-weight: bold;
+  font-size: large;
+}
+
+.custom-tbody{
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  overflow-y: scroll;
+}
+
+.line{
+  display: flex;
+  flex-direction: row;
+  font-weight: lighter;
+}
+
+.cell{
+  padding-left: .5rem;
+}
+
+.col-1{
+  width: 75%;
+}
+
+.col-2{
+  width: 25%;
 }
 
 .inria-sans-light {

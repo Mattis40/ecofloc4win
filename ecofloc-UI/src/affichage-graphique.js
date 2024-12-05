@@ -1,4 +1,4 @@
-
+/*
 let precedentTimeStamp = 0;
 let totalW = 0;
 let mainIdGraph = "";
@@ -78,7 +78,7 @@ function mettreAJourTousLesElement(){
 
 
 function renderInitialView() {
-  document.getElementById("main").innerHTML = initialGraph();
+  document.getElementById("flex-graphique").innerHTML = initialGraph();
 }
 
 function showDetailView(id) {
@@ -87,7 +87,7 @@ function showDetailView(id) {
     this.mainIdGraph = "";
   }
   else {
-    document.getElementById("main").innerHTML = detailedMarkup(id);
+    document.getElementById("flex-graphique").innerHTML = detailedMarkup(id);
     this.mainIdGraph = id;
   }
   mettreAJourTousLesElement();
@@ -165,4 +165,4 @@ const dictionnaireGraphComposants = {
   "TOTAL":graphTOTAL
 };
 setListener();
-setInterval(readFile, 500);
+setInterval(readFile, 500);*/
