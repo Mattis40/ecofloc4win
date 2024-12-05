@@ -24,7 +24,7 @@
   transition-timing-function: ease-in-out;
 }
 
-.hidde {
+.hide {
   display: none;
 }
 
@@ -81,6 +81,10 @@
   gap: 1rem;
 }
 
+.responsive-graph {
+  width: 100%;
+  height: 100%;
+}
 .graphique{
   width: 32%;
   height: 48%;
@@ -196,6 +200,27 @@
   flex: 1;
   text-align: center;
 }
+
+
+
+.h-full > div > .graphique{
+  width: 100%;
+  height: 100%;
+} 
+
+
+.h-full.flex.flex-col.gap-1{
+} 
+
+
+.h-full.flex.flex-col.gap-1 > .graphique{
+  width: 100%;
+  height: 100%;
+  padding: 0;
+} 
+
+
+
 
 
 

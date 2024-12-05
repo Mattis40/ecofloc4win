@@ -13,7 +13,7 @@
     <title>Monitoring Dashboard</title>
 </head>
 
-<body class="flex flex-col divide-y-4 divide-emerald-400 inria-sans-regular overflow-hidden">
+<body class="flex flex-col divide-y-4 divide-emerald-400 inria-sans-regular">
     <!-- Header -->
     <header class="flex flex-row justify-center align-center bg-zinc-800 text-white text-xl">
         <div class="w-full px-[26%] flex flex-row justify-between content-center">
@@ -112,8 +112,8 @@
                 </div>
             </div>
 
-            <!-- Tables -->
-             <div id="list-tab" class="w-full h-1/4 flex flex-row justify-between bg-zinc-800 rounded-md p-2 px-2 gap-5">
+            <!-- Table -->
+             <div class="w-full h-1/4 flex flex-row justify-between bg-zinc-800 rounded-md p-2 px-2 gap-5">
                 <div id="process-tab" class="custom-table w-3/4">
                     <div class="custom-thead">
                         <div class="col-1">Process name</div>
@@ -205,15 +205,15 @@
 
             if (wrap_sidebar.id == "open-sidebar") {
                 sidebar.classList.remove('close');
-                checkbox_list.classList.remove('hide');
+                checkbox_list.classList.remove('hidde');
                 list_buttons.classList.remove('fixed');
-                input_ts.classList.remove('hide');
+                input_ts.classList.remove('hidde');
                 wrap_sidebar.innerHTML = "<img src='./assets/arrow-left.svg' alt='back' class='size-[35px] sidebar-transition'>";
                 wrap_sidebar.id = "close-sidebar";
             }else{
                 sidebar.classList.add('close');
-                checkbox_list.classList.add('hide');
-                input_ts.classList.add('hide');
+                checkbox_list.classList.add('hidde');
+                input_ts.classList.add('hidde');
                 list_buttons.classList.add('fixed');
                 wrap_sidebar.innerHTML = "<img src='./assets/arrow-right.svg' alt='back' class='size-[35px] sidebar-transition'>";
                 wrap_sidebar.id = "open-sidebar";
@@ -223,8 +223,6 @@
         });
 
     </script>
-    <script src="graphique.js"></script>
-    <script src="affichage-graphique.js"></script>
 </body>
 
 </html>

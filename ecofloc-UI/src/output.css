@@ -644,6 +644,10 @@ video {
   flex: 1 1 0%;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
+
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -686,6 +690,10 @@ video {
 
 .justify-between {
   justify-content: space-between;
+}
+
+.gap-12 {
+  gap: 3rem;
 }
 
 .gap-2 {
@@ -988,7 +996,7 @@ video {
   transition-timing-function: ease-in-out;
 }
 
-.hidde {
+.hide {
   display: none;
 }
 
@@ -1044,6 +1052,11 @@ video {
   align-items: center;
   justify-content: center;
   gap: 1rem;
+}
+
+.responsive-graph {
+  width: 100%;
+  height: 100%;
 }
 
 .graphique{
@@ -1170,6 +1183,20 @@ video {
 .group-tab .line div {
   flex: 1;
   text-align: center;
+}
+
+.h-full > div > .graphique{
+  width: 100%;
+  height: 100%;
+}
+
+.h-full.flex.flex-col.gap-1{
+}
+
+.h-full.flex.flex-col.gap-1 > .graphique{
+  width: 100%;
+  height: 100%;
+  padding: 0;
 }
 
 .inria-sans-light {
