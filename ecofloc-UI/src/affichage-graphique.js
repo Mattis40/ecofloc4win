@@ -1,7 +1,8 @@
-/*
 let precedentTimeStamp = 0;
 let totalW = 0;
 let mainIdGraph = "";
+const list_tab = document.getElementById("list-tab");
+const flex_graphique = document.getElementById("flex-graphique");
 
 const dictionnaireComposants = {
   "CPU":"CPU",
@@ -14,39 +15,34 @@ const dictionnaireComposants = {
 
 const unGraph = (id, value) => {
   return `
-  <div id="box${id}" class="bg-zinc-800 p-4 rounded-md h-full">
+  <div id="box${id}" class="graphique">
     <h3 class="text-center font-semibold">${value}</h3>
     <div id="graph${id}" class="responsive-graph flex-grow"></div>
   </div>`
 }
 
 const initialGraph = () => {
-  let content = `<div id="containerBox" class="grid grid-cols-3 grid-rows-2 gap-4 max-h-[60vh] h-full">`;
+  let content = "";
   for (let cle in dictionnaireComposants) {
     content += unGraph(cle, dictionnaireComposants[cle]);
   } 
-  content += `</div>`;
   return content;
 }
 
 const detailedMarkup = (id) => {
   let content = `
-  <div id="containerBox" class="max-h-[60vh] h-full flex">
     <div class="h-full" style="width: 80%; margin-right: 30px;">` +
       unGraph(id, dictionnaireComposants[id])
     + `</div>
-    <div class="h-full" style="flex-grow: 1;">
+    <div class="h-full flex flex-col gap-1" style="flex-grow: 1;">
   ` 
   for (let cle in dictionnaireComposants) {
     if(id != cle) {
-      content += `<div style="height: 20%;">`;
       content +=  unGraph(cle, dictionnaireComposants[cle]);
-      content += `</div>`;
     } 
   }
     content += `
         </div>
-      </div>
     `
     return content;
 };
@@ -78,16 +74,24 @@ function mettreAJourTousLesElement(){
 
 
 function renderInitialView() {
-  document.getElementById("flex-graphique").innerHTML = initialGraph();
+  flex_graphique.innerHTML = initialGraph();
 }
 
 function showDetailView(id) {
   if(this.mainIdGraph == id) {
+    list_tab.classList.add('flex');
+    list_tab.classList.remove('hide');
+    flex_graphique.classList.add('h-3/4');
+    flex_graphique.classList.remove('h-full');
     renderInitialView();
     this.mainIdGraph = "";
   }
   else {
-    document.getElementById("flex-graphique").innerHTML = detailedMarkup(id);
+    list_tab.classList.remove('flex');
+    list_tab.classList.add('hide');
+    flex_graphique.classList.add('h-full');
+    flex_graphique.classList.remove('h-3/4');
+    flex_graphique.innerHTML = detailedMarkup(id);
     this.mainIdGraph = id;
   }
   mettreAJourTousLesElement();
@@ -165,4 +169,4 @@ const dictionnaireGraphComposants = {
   "TOTAL":graphTOTAL
 };
 setListener();
-setInterval(readFile, 500);*/
+setInterval(readFile, 500);

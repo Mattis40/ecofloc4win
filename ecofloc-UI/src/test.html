@@ -1,11 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="output.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@300;400;700&family=Roboto:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <title>Monitoring Dashboard</title>
 </head>
-<body style="height: 100vh; background-color: red; padding: 0; margin: 0;">
+
+<body class="flex flex-col divide-y-4 divide-emerald-400 inria-sans-regular">
+    <!-- Header -->
+    <header class="flex flex-row justify-center align-center bg-zinc-800 text-white text-xl">
+        <div class="w-full px-[26%] flex flex-row justify-between content-center">
+            <a href="./">
+                <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+                    Accueil
+                </h2>
+            </a>
+            <a href="#">
+                <h2 class="text-emerald-600 rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+                    Monitoring
+                </h2>
+            </a>
+            <a href="composants.html">
+                <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:text-emerald-600 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+                    Composants
+                </h2>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class=" flex-1 flex flex-row bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 text-white">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition">
+            <!-- Wrap button -->
+            <button id="close-sidebar" class="sidebar-transition">
+                <img src="./assets/arrow-left.svg" alt="back" class="size-[35px] sidebar-transition">
+            </button>
+            <!-- CheckBox list -->
+            <div id="checkbox-list" class="space-y-2 sidebar-transition mt-[15%]">
+                <label class="flex items-center space-x-2">
+                    <input id="checkboxCPU" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>CPU</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input id="checkboxGPU" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>GPU</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input id="checkboxRAM" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>RAM</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input id="checkboxNIC" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>NIC</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input id="checkboxSD" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
+                    <span>SD</span>
+                </label>
+            </div>
+            <!-- Ipt-TimeStamp -->
+            <div id="input_ts" class="mt-4 sidebar-transition">
+                <label class="block mb-2">Intervalle (ms)</label>
+                <input type="number" min="500" value="1000" max="300000" step="250" class="w-full bg-zinc-700 text-white p-2 rounded-md">
+            </div>
+            <!-- Play/Stop buttons -->
+            <div id="list-buttons" class="sidebar-transition">
+                <button onclick="monitoring(); return false;" class="p-2">
+                    <img src="./assets/play.svg" alt="play" class="size-[50px]">
+                </button>
+                <button class="p-2">
+                    <img src="./assets/stop.svg" alt="stop" class="size-[50px]">
+                </button>
+            </div>
+        </aside>        
+
+        <!-- Graphs and Table -->
+        <section id="main" class="flex-1 flex flex-col p-4 pb-2 gap-2">
+            <!-- Graphs -->
+            <div id="flex-graphique" class="list-graph h-3/4">
+                <div class="graphique">
+                    <h3 class="text-center font-medium">CPU (nom processeur)</h3>
+                    <div class="render bg-red-400"></div>
+                </div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">GPU (nom carte graphique)</h3>
+                    <div class="render bg-green-400"></div>
+                </div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">RAM (nom RAM)</h3>
+                    <div class="render bg-teal-400"></div>
+                </div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">NIC (Carte réseaux)</h3>
+                    <div class="render bg-blue-400"></div>
+                </div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">SD (Disque dur)</h3>
+                    <div class="render bg-purple-600"></div>
+                </div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">Total Consommation</h3>
+                    <div class="render bg-purple-400"></div>
+                </div>
+            </div>
+
+            <!-- Table -->
+             <div class="w-full h-1/4 flex flex-row justify-between bg-zinc-800 rounded-md p-2 px-2 gap-5">
+                <div id="process-tab" class="custom-table w-3/4">
+                    <div class="custom-thead">
+                        <div class="col-1">Process name</div>
+                        <div class="col-2">PID</div>
+                    </div>
+                    <div class="custom-tbody ">
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+                        <div class="line">
+                            <div class="col-1 cell">Firefox.exe</div>
+                            <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="group-tab" class="custom-table w-1/4">
+                    <div class="custom-thead col-3">
+                        <div>Group Application</div>
+                    </div>
+                    <div class="custom-tbody">
+                        <div class="line col-3">
+                            <div>Bureautique</div>
+                            <input type="checkbox" id="">
+                        </div>
+                        <div class="line col-3">
+                            <div>Navigateur</div>
+                            <input type="checkbox" id="">
+                        </div>
+                        <div class="line col-3">
+                            <div>...</div>
+                            <input type="checkbox" id="">
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </section>
+    </main>
+
+    <!-- Script -->
+    <script>
+
+        const max_screen_height = "max-h-[" + window.innerHeight + "px]";
+        const min_screen_height = "min-h-[" + window.innerHeight + "px]";
+        document.body.classList.add(max_screen_height);
+        document.body.classList.add(min_screen_height);
     
+
+        const sidebar = document.getElementById('sidebar');
+        const checkbox_list = document.getElementById('checkbox-list');
+        const input_ts = document.getElementById('input_ts');
+        const wrap_sidebar = document.getElementById('close-sidebar');
+        const main = document.getElementById('main');
+        const list_buttons = document.getElementById('list-buttons');
+
+        // Ouvrir la barre latérale
+        wrap_sidebar.addEventListener('click', () => {
+            
+            const timestamp = new Date().getTime();
+
+            if (wrap_sidebar.id == "open-sidebar") {
+                sidebar.classList.remove('close');
+                checkbox_list.classList.remove('hidde');
+                list_buttons.classList.remove('fixed');
+                input_ts.classList.remove('hidde');
+                wrap_sidebar.innerHTML = "<img src='./assets/arrow-left.svg' alt='back' class='size-[35px] sidebar-transition'>";
+                wrap_sidebar.id = "close-sidebar";
+            }else{
+                sidebar.classList.add('close');
+                checkbox_list.classList.add('hidde');
+                input_ts.classList.add('hidde');
+                list_buttons.classList.add('fixed');
+                wrap_sidebar.innerHTML = "<img src='./assets/arrow-right.svg' alt='back' class='size-[35px] sidebar-transition'>";
+                wrap_sidebar.id = "open-sidebar";
+
+
+            }
+        });
+
+    </script>
 </body>
+
 </html>
