@@ -12,6 +12,11 @@ using namespace std;
 #include <psapi.h>
 #include <locale>
 #include <codecvt>
+#include <tlhelp32.h>
+#include <cctype>
+#include <algorithm>
+#include <unordered_map>
+#include <utility>
 #include "process.h"
 
 string wstring_to_string(const wstring& wide_string)
@@ -20,47 +25,28 @@ string wstring_to_string(const wstring& wide_string)
     return converter.to_bytes(wide_string);
 }
 
-/*ypedef enum
-{
-    enable,
-    disable,
-    add,
-    remove
-}Command;*/
+void readCommand(string, bool&);
 
-void startCPU(int, int, int);
+void addProcPid(string, string);
+void addProcName(string, string);
 
-void readCommand(string);
-
-void addProc(int);
-void addProc(string);
-
-void removeProc(int);
-void removeProc(string);
+void removeProcPid(string, string);
+void removeProcName(string, string);
 
 void enable(string);
 void disable(string);
 
-/*class Processus
+unordered_map<string, int> actions = 
 {
-    private:
-        string pid;
-        string name;
-        bool state;
+    {"enable", 1},
+    {"disable", 2},
+    {"add", 3},
+    {"remove", 4},
+    {"interval", 5},
+    {"quit", 6},
+};
 
-    public:
-        Processus(string, string);
-        string getPid();
-        string getName();
-        bool getState();
-        void setPid(string);
-        void setName(string);
-        void setState(bool);
-        void addProcPid();
-        void addProcName();
-        void removeProcPid();
-        void removeProcName();
-};*/
+//see to do remove all from component and watch processes in component
 
 wstring GetProcessNameByPID(DWORD processID) {
     TCHAR processName[MAX_PATH] = TEXT("<unknown>");
@@ -81,33 +67,38 @@ wstring GetProcessNameByPID(DWORD processID) {
     return L"<unknown>";
 }
 
-vector<int> pids = { 195, 215, 45103 };//see to put pids in string
-vector<string> names = { "Firefox", "Valorant", "Ecofloc"};
+unordered_map<string, pair<vector<process>, bool>> comp = {{"CPU", {{}, false}}, {"GPU", {{}, false} }, {"SD", {{}, false }}, {"NIC", {{}, false }}};
 
-vector<process> processes = { process("195", "Firefox"), process("215", "Valorant"), process("45103", "Ecofloc") };
+int interval = 500;
 
 int main()
 {
     string Input;
+    bool breaker = false;
 
-    //getline();
+    while (!breaker)
+    {
+        cout << ">";
 
-    getline(cin, Input);
+        getline(cin, Input);
 
-    //cout << Input << endl;
+        //todo defineInterval function
 
-    readCommand(Input);
+        if (Input.size() > 0)
+        {
+            readCommand(Input, breaker);
+        }
+        else
+        {
+            cout << "error, need arguments" << endl;
+        }
+    }
+
+    return 0;
 }
 
-void startCPU(int pid, int time, int interval)
+void readCommand(string commandHandle, bool& breaker)
 {
-
-}
-
-void readCommand(string commandHandle)
-{
-    //vector<string> tokens;
-    //string token;
     istringstream tokenStream(commandHandle);
 
     vector<string> chain;
@@ -116,74 +107,169 @@ void readCommand(string commandHandle)
         chain.push_back(commandHandle);
     }
 
-    if (chain[0] == "enable")
+    switch (actions[chain[0]])  //see line 70
     {
-        enable(chain[1]);
-    }
-    else if (chain[0] == "disable")
-    {
-        disable(chain[1]);
-    }
-    else if (chain[0] == "add")
-    {
-        if (chain[1] == "-p")
-        {
-            addProc(stoi(chain[2]));
-        }
-        else if (chain[1] == "-n")
-        {
-            addProc(chain[2]);
-        }
-        else
-        {
-            cout << "error second argument (-p for pid / -n for name)" << endl;
-        }
-    }
-    else if (chain[0] == "remove")
-    {
-        if (chain[1] == "-p")
-        {
-            removeProc(stoi(chain[2]));
-        }
-        else if (chain[1] == "-n")
-        {
-            removeProc(chain[2]);
-        }
-        else
-        {
-            cout << "error second argument (-p for pid / -n for name)" << endl;
-        }
-    }
-    else
-    {
-        cout << "error first argument (list command: add/remove/enable/disable)" << endl;
-    }
-    
-    //Find a solution with switch later
-    /*Command myCommand = chain[0];
+        case 1: //to do
+            if (chain.size() == 2)
+            {
+                enable(chain[1]);
+            }
+            else
+            {
+                cout << "error, need 2 in total for enable and disable" << endl;
+            }
+            break;
 
-    switch ()
-    {
-    default:
-        break;
-    }*/
+        case 2://to do
+            if (chain.size() == 2)
+            {
+                disable(chain[1]);
+            }
+            else
+            {
+                cout << "error, need 2 in total for enable and disable" << endl;
+            }
+            break;
+
+        case 3:
+            if (chain.size() == 4)
+            {
+                if (chain[1] == "-p")
+                {
+                    if (all_of(chain[2].begin(), chain[2].end(), ::isdigit))
+                    {
+                        if (chain[3] == "CPU" || chain[3] == "GPU" || chain[3] == "SD" || chain[3] == "NIC")
+                        {
+                            addProcPid(chain[2], chain[3]);
+                        }
+                        else
+                        {
+                            cout << "error fourth argument (must be CPU, GPU, SD or NIC)" << endl;
+                        }
+                    }
+                    else
+                    {
+                        cout << "error third argument (must be an integer)" << endl;
+                    }
+                }
+                else if (chain[1] == "-n")
+                {
+                    if (chain[3] == "CPU" || chain[3] == "GPU" || chain[3] == "SD" || chain[3] == "NIC")
+                    {
+                        addProcName(chain[2], chain[3]);
+                    }
+                    else
+                    {
+                        cout << "error fourth argument (must be CPU, GPU, SD or NIC)" << endl;
+                    }
+                }
+                else
+                {
+                    cout << "error second argument (-p for pid / -n for name)" << endl;
+                }
+            }
+            else
+            {
+                cout << "error, need 4 in total for add and remove" << endl;
+            }
+            break;
+
+        case 4:
+            if (chain.size() == 4)
+            {
+                if (chain[1] == "-p")
+                {
+                    if (all_of(chain[2].begin(), chain[2].end(), ::isdigit))
+                    {
+                        if (chain[3] == "CPU" || chain[3] == "GPU" || chain[3] == "SD" || chain[3] == "NIC")
+                        {
+                            removeProcPid(chain[2], chain[3]); //to do: check if component
+                        }
+                        else
+                        {
+                            cout << "error fourth argument (must be CPU, GPU, SD or NIC)" << endl;
+                        }
+                    }
+                    else
+                    {
+                        cout << "error third argument (must be an integer)" << endl;
+                    }
+                }
+                else if (chain[1] == "-n")
+                {
+                    if (chain[3] == "CPU" || chain[3] == "GPU" || chain[3] == "SD" || chain[3] == "NIC")
+                    {
+                        removeProcName(chain[2], chain[3]); //to do: check if component
+                    }
+                    else
+                    {
+                        cout << "error fourth argument (must be CPU, GPU, SD or NIC)" << endl;
+                    }
+                }
+                else
+                {
+                    cout << "error second argument (-p for pid / -n for name)" << endl;
+                }
+            }
+            else
+            {
+                cout << "error, need 4 in total for add and remove" << endl;
+            }
+            break;
+
+        case 5:
+            if (chain.size() == 2)
+            {
+                if (all_of(chain[1].begin(), chain[1].end(), ::isdigit))
+                {
+                    interval = stoi(chain[1]);
+                    cout << "Interval has been changed" << endl;
+                }
+                else
+                {
+                    cout << "error second argument (must be an integer)" << endl;
+                }
+            }
+            else
+            {
+                cout << "error, need 2 in total for interval" << endl;
+            }
+            break;
+
+        case 6:
+            breaker = true;
+            break;
+
+        default:
+            cout << "error first argument (list command: add/remove/enable/disable/interval/start/quit)" << endl;
+            break;
+    }
 }
 
-void addProc(int pid)
+void addProcPid(string pid, string component)
 {
-    wstring processName = GetProcessNameByPID(pid);
-
-    if (processName != L"<unknown>" /*&& check list*/)
+    auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&pid](process o) {return o.getPid() == pid; });
+    
+    if (it != comp[component].first.end())
     {
-        processes.push_back(process(to_string(pid), wstring_to_string(processName)));
-        
-        //add to list
-
-        //wcout << L"Process Name: " << processName << endl;
+        cout << "The process is already active" << endl;
     }
     else
     {
-        wcout << L"Failed to retrieve process name or process does not exist." << endl;
+        wstring processName = GetProcessNameByPID(stoi(pid));
+
+        if (processName != L"<unknown>" /*&& check list*/)
+        {
+            comp[component].first.push_back(process(pid, wstring_to_string(processName)));
+
+            //add to list
+
+            wcout << L"Process Name: " << processName << " has been added" << endl;
+        }
+        else
+        {
+            wcout << L"Failed to retrieve process name or process does not exist." << endl;
+        }
     }
     
     /*auto it = find_if(pids.begin(), pids.end(), pid);
@@ -199,61 +285,91 @@ void addProc(int pid)
     //to do add via pid
 }
 
-void addProc(string name)
+void addProcName(string name, string component)
 {
-    auto it = find(names.begin(), names.end(), name);
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    
+    PROCESSENTRY32 pe32;
+    pe32.dwSize = sizeof(PROCESSENTRY32);
 
-    if (it != names.end())
-    {
-        cout << "Addition of the process via the name: " << name << endl;
+    wstring wstr(name.begin(), name.end());
 
+    if (Process32First(hSnapshot, &pe32)) {
+        do {
+            if (_wcsicmp(pe32.szExeFile, wstr.c_str()) == 0) { // Case-insensitive comparison
+                std::stringstream ss;
+                ss << pe32.th32ProcessID;
+                auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&ss](process o) {return o.getPid() == ss.str(); });
+                if (it >= comp[component].first.end())
+                {
+                    comp[component].first.push_back(process(ss.str(), name));
+                    cout << name << " (Pid: " << ss.str() << ") has been added" << endl;
+                }
+            }
+        } while (Process32Next(hSnapshot, &pe32));
     }
-    else
-    {
-        cout << "Invalid name";
-    }
-    //to do add via name
+
+    CloseHandle(hSnapshot);
 }
 
-void removeProc(int pid)
+void removeProcPid(string pid, string component)
 {
-    auto it = find(pids.begin(), pids.end(), pid);
+    auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&pid](process o) { return o.getPid() == pid; });
 
-    if (it != pids.end())
+    if (it != comp[component].first.end())
     {
-        cout << "The process was removed via the pid: " << pid << endl;
+        comp[component].first.erase(it);
+
+        cout << "The process has been removed" << endl;
     }
     else
     {
-        cout << "Invalid pid";
+        cout << "No process has been found" << endl;
     }
-    //to do remove via pid
 }
 
-void removeProc(string name)
+void removeProcName(string name, string component)
 {
-    auto it = find(names.begin(), names.end(), name);
-
-    if (it != names.end())
+    for (auto it = comp[component].first.begin(); it != comp[component].first.end();)
     {
-        cout << "The process was removed via the name: " << name << endl;
-    }
-    else
-    {
-        cout << "Invalid name";
+        if (it->getName() == name)
+        {
+            cout << it->getName() << " (Pid: " << it->getPid() << ") has been removed" << endl;
+            it = comp[component].first.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
     }
     //to do remove via name
 }
 
-void enable(string comp)
+void enable(string component)
 {
-    cout << comp << " is now enable" << endl;
+    if (!comp[component].second)
+    {
+        comp[component].second = true;
+        cout << component << " is now enable" << endl;
+    }
+    else
+    {
+        cout << component << " was already enable" << endl;
+    }
     //to do enable component
 }
 
-void disable(string comp)
+void disable(string component)
 {
-    cout << comp << " is now disable" << endl;
+    if (comp[component].second)
+    {
+        comp[component].second = false;
+        cout << component << " is now disable" << endl;
+    }
+    else
+    {
+        cout << component << " was already disable" << endl;
+    }
     //to do disable component
 }
 
