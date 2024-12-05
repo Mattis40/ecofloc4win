@@ -148,9 +148,8 @@ int main()
 				std::lock_guard<std::mutex> lock(data_mutex);
 				for (auto& data : monitoringData)
 				{
-					std::vector<int> gpu_usage = GPU::getGPUUsage(data.getPids());
-					int gpu_power = GPU::getGPUPower();
-					data.updateGPUEnergy(gpu_power);
+					int gpu_joules = GPU::getGPUJoules(data.getPids(), 500);
+					data.updateGPUEnergy(gpu_joules);
 				}
 			}
 			screen.Post(Event::Custom);

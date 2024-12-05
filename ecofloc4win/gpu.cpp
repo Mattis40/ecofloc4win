@@ -113,10 +113,14 @@ namespace GPU {
         return power / 1000.0;
     }
 
-	std::vector<int> getGPUJoules(std::vector<int> pids) {
-		std::vector<int> results;
+	int getGPUJoules(std::vector<int> pids, int ms) {
+        double interval_s = (double)ms / 1000.0;
+	    int results = 0;
 		for (int pid : pids) {
-			results.push_back(gpu_usage(pid));
+			int usage = gpu_usage(pid);
+			int power = getGPUPower();
+            double power_used = ((usage / 100.0) * power);
+            results += power_used * interval_s;
 		}
 		return results;
 	}
