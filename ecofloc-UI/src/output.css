@@ -1198,9 +1198,13 @@ video {
   height: 100%;
 }
 
+.h-full.flex.flex-col.gap-1{
+}
+
 .h-full.flex.flex-col.gap-1 > .graphique{
   width: 100%;
-  height: 20%;
+  height: 100%;
+  padding: 0;
 }
 
 .inria-sans-light {
