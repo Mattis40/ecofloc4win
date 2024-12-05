@@ -1,0 +1,31 @@
+{
+    "apps": [
+        {
+            "components": [
+                {
+                    "energy_j": 207,
+                    "freq_mhz": 3297,
+                    "power_w": 32,
+                    "type": "CPU",
+                    "voltage_v": 1.2900000035762786
+                },
+                {
+                    "download_bps": 24553,
+                    "energy_j": 122,
+                    "power_w": 6,
+                    "type": "NIC",
+                    "upload_bps": 24328
+                },
+                {
+                    "energy_j": 293,
+                    "power_w": 1,
+                    "read_bps": 4994,
+                    "type": "SD",
+                    "write_bps": 8743
+                }
+            ],
+            "name": "App1"
+        }
+    ],
+    "time": 1733236281
+}
