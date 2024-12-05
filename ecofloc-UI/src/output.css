@@ -620,10 +620,6 @@ video {
   height: 100vh;
 }
 
-.min-h-screen {
-  min-height: 100vh;
-}
-
 .w-1\/4 {
   width: 25%;
 }
@@ -690,10 +686,6 @@ video {
 
 .justify-between {
   justify-content: space-between;
-}
-
-.gap-12 {
-  gap: 3rem;
 }
 
 .gap-2 {
@@ -979,7 +971,7 @@ video {
 /* Défilement élégant */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -1093,7 +1085,7 @@ video {
   font-weight: bold;
   font-size: 1rem;
   text-align: left;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .custom-thead div {
