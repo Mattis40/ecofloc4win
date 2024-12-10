@@ -103,7 +103,7 @@
         }
 
         // Charger et ins�rer les donn�es pour la carte SD
-        loadJson('sd.json', data => {
+        loadJson('../sd.json', data => {
             document.getElementById('write-power').textContent = `${data.write_power} W`;
             document.getElementById('max-write-rate').textContent = `Vitesse max: ${data.max_write_rate} MB/s`;
             document.getElementById('read-power').textContent = `${data.read_power} W`;
@@ -111,14 +111,14 @@
         });
 
         // Charger et ins�rer les donn�es pour le CPU
-        loadJson('cpu.json', data => {
+        loadJson('../cpu.json', data => {
             document.getElementById('cpu-tdp').textContent = `${data.tdp} W`;
             document.getElementById('cpu-clock-speed').textContent = `${data.clockSpeed} MHz`;
             document.getElementById('cpu-voltage').textContent = `${data.voltage} V`;
         });
 
         // Charger et ins�rer les donn�es pour la carte r�seau (NIC)
-        loadJson('nic.json', data => {
+        loadJson('../nic.json', data => {
             document.getElementById('nic-upload-rate').textContent = `${data.upload_rate} Mbps`;
             document.getElementById('nic-max-upload-rate').textContent = `Max: ${data.max_upload_rate} Mbps`;
             document.getElementById('nic-download-rate').textContent = `${data.download_rate} Mbps`;
