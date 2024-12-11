@@ -3,29 +3,35 @@
         {
             "components": [
                 {
-                    "energy_j": 636,
-                    "freq_mhz": 3293,
-                    "power_w": 10,
+<<<<<<< Updated upstream
+=======
+                    "energy_j": 667,
+                    "freq_mhz": 3294,
+                    "power_w": 99,
                     "type": "CPU",
-                    "voltage_v": 1.2700000002980232
+                    "voltage_v": 1.250000000745058
                 },
                 {
-                    "download_bps": 22910,
-                    "energy_j": 477,
-                    "power_w": 12,
+                    "download_bps": 31322,
+                    "energy_j": 203,
+                    "power_w": 11,
                     "type": "NIC",
-                    "upload_bps": 6990
+                    "upload_bps": 30333
                 },
                 {
-                    "energy_j": 608,
-                    "power_w": 5,
-                    "read_bps": 12069,
+                    "energy_j": 73,
+                    "power_w": 4,
+                    "read_bps": 7711,
                     "type": "SD",
-                    "write_bps": 17889
+                    "write_bps": 15141
+>>>>>>> Stashed changes
                 }
             ],
             "name": "App1"
         }
     ],
-    "time": 1733911673
+<<<<<<< Updated upstream
+=======
+    "time": 1733913827
+>>>>>>> Stashed changes
 }
