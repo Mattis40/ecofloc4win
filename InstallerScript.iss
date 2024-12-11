@@ -30,6 +30,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 Source: "ecofloc.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: main
 Source: "config.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: main
+Source: "interface.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: ui
 Source: "ecofloc-UI\*"; DestDir: "{app}\ecofloc-UI\"; Flags: ignoreversion recursesubdirs createallsubdirs ; Components: ui
 
 [Components]
@@ -48,7 +49,9 @@ Root: HKA; Subkey: "Software\Classes\ecofloc\shell\open\command"; ValueType: str
 Root: HKLM; Subkey: "SOFTWARE\Ecofloc"; Flags: uninsdeletekey; Components: ui
 Root: HKLM; Subkey: "SOFTWARE\Ecofloc"; ValueType: string; ValueName: "InstallPath"; ValueData: "{app}"; Flags: uninsdeletevalue; Components: ui
 
+
 [Code]
+//suppression de ecofloc dans la path
 const
   EnvironmentKey = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
 
@@ -93,5 +96,54 @@ begin
   if CurUninstallStep = usUninstall then
   begin
     RemovePath(ExpandConstant('{app}'));
+  end;
+end;
+function IsNodeInstalled(): Boolean;
+var
+  ErrorCode: Integer;
+begin
+  Result := False;
+  Exec('cmd.exe', '/C node -v', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
+  if ErrorCode = 0 then
+    Result := True;
+end;
+
+//installation de npm et node si l'utilisateur sélectionne ui et que npm et node ne sont pas installer sur son ordinateur
+function IsNpmInstalled(): Boolean;
+var
+  ErrorCode: Integer;
+begin
+  Result := False;
+  Exec('cmd.exe', '/C npm -v', '', SW_HIDE, ewWaitUntilTerminated, ErrorCode);
+  if ErrorCode = 0 then
+    Result := True;
+end;
+
+procedure InstallNodeAndNpm();
+var
+  ResultCode: Integer;
+begin
+  MsgBox('Node.js et npm ne sont pas installés. L''installation va maintenant commencer.', mbInformation, MB_OK);
+  if not Exec('msiexec.exe', '/i https://nodejs.org/dist/v18.17.1/node-v18.17.1-x64.msi /quiet /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+  begin
+    MsgBox('Impossible de télécharger et d''installer Node.js. Veuillez installer Node.js manuellement.', mbError, MB_OK);
+  end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+  begin
+    if IsComponentSelected('ui') then
+    begin
+      if not IsNodeInstalled() or not IsNpmInstalled() then
+      begin
+        InstallNodeAndNpm();
+      end
+      else
+      begin
+        MsgBox('Node.js et npm sont déjà installés sur ce système.', mbInformation, MB_OK);
+      end;
+    end;
   end;
 end;
