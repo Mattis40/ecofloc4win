@@ -32,7 +32,6 @@ function showDetailView(event) {
   while(!graphique.classList.contains("graphique")){
     graphique = graphique.parentElement;
   }
-  console.log("Show " , graphique);
   let elementFlex = document.getElementById("flex-graphique");
   if(graphique.classList.contains("selectionner")){
       elementFlex.classList.remove("detail");
@@ -56,18 +55,18 @@ function readFile() {
     fetch('./system_monitoring.json')
     .then(response => {
       if (response.ok) {
-        return response.text(); // Get raw text, not JSON yet
+        return response.text();
       }
-      return null;  // Return null if the response isn't OK
+      return null;  
     })
     .then(text => {
       try {
-        const data = text ? JSON.parse(text) : null; // Try to parse JSON, or return null if empty
+        const data = text ? JSON.parse(text) : null; 
         if (data) {
-          handleJSON(data);  // Only process the data if it's valid
+          handleJSON(data); 
         }
       } catch (error) {
-        // Ignore any errors related to JSON parsing
+          console.error(error);
       }
     });
 }  
