@@ -33,6 +33,7 @@
 using namespace ftxui;
 
 std::vector<MonitoringData> monitoringData = {};
+std::condition_variable new_data_cv;
 std::mutex data_mutex;
 
 // Function to get terminal size
@@ -75,8 +76,6 @@ unordered_map<string, int> actions =
     {"interval", 5},
     {"quit", 6},
 };
-
-//see to do remove all from component and watch processes in component
 
 wstring GetProcessNameByPID(DWORD processID) {
     TCHAR processName[MAX_PATH] = TEXT("<unknown>");
@@ -169,7 +168,6 @@ int main()
 
 	auto screen = ScreenInteractive::Fullscreen();
 
-
 	// State variables for scrolling
 	int scroll_position = 0;
 
@@ -216,23 +214,19 @@ int main()
 
 		return false;
 		});
-
-	MonitoringData blender("Blender", { 27232 });
-	{
-		std::lock_guard<std::mutex> lock(data_mutex);
-		monitoringData.push_back(blender);
-	}
 	
 	std::thread gpu_thread([&screen] {
 		while (true) {
-			{
-				std::lock_guard<std::mutex> lock(data_mutex);
-				for (auto& data : monitoringData)
-				{
-					int gpu_joules = GPU::getGPUJoules(data.getPids(), 500);
-					data.updateGPUEnergy(gpu_joules);
-				}
-			}
+            {
+			    std::unique_lock<std::mutex> lock(data_mutex);
+                new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
+			    for (auto& data : monitoringData)
+			    {
+				    int gpu_joules = GPU::getGPUJoules(data.getPids(), 500);
+				    data.updateGPUEnergy(gpu_joules);
+			    }
+            }
+
 			screen.Post(Event::Custom);
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		}
@@ -404,41 +398,30 @@ void readCommand(string commandHandle)
 
 void addProcPid(string pid, string component)
 {
-    auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&pid](process o) {return o.getPid() == pid; });
+    // auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&pid](process o) {return o.getPid() == pid; });
     
-    if (it != comp[component].first.end())
-    {
-        cout << "The process is already active" << endl;
-    }
-    else
-    {
+    //if (it != comp[component].first.end())
+    //{
+    //    cout << "The process is already active" << endl;
+    //}
+    //else
+    //{
         wstring processName = GetProcessNameByPID(stoi(pid));
 
         if (processName != L"<unknown>" /*&& check list*/)
         {
-            comp[component].first.push_back(process(pid, wstring_to_string(processName)));
-
-            //add to list
-
-            wcout << L"Process Name: " << processName << " has been added" << endl;
+            {
+                std::unique_lock<std::mutex> lock(data_mutex);
+                MonitoringData data(wstring_to_string(processName), { stoi(pid) });
+                monitoringData.push_back(data);
+			    new_data_cv.notify_one();
+            }
         }
         else
         {
             wcout << L"Failed to retrieve process name or process does not exist." << endl;
         }
-    }
-    
-    /*auto it = find_if(pids.begin(), pids.end(), pid);
-
-    if (it != pids.end())
-    {
-        cout << "Addition of the process via the pid: " << pid << endl;
-    }
-    else
-    {
-        cout << "Invalid pid";
-    }*/
-    //to do add via pid
+    //}
 }
 
 void addProcName(string name, string component)
