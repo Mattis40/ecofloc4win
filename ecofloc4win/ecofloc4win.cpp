@@ -41,11 +41,14 @@ int GetTerminalHeight() {
 
 string wstring_to_string(const wstring& wide_string)
 {
-    wstring_convert<codecvt_utf8<wchar_t>> converter;
-    return converter.to_bytes(wide_string);
+    string str;
+    size_t size;
+    str.resize(wide_string.length());
+    wcstombs_s(&size, &str[0], str.size() + 1, wide_string.c_str(), wide_string.size());
+    return str;
 }
 
-void readCommand(string, bool&);
+void readCommand(string);
 
 void addProcPid(string, string);
 void addProcName(string, string);
@@ -94,7 +97,18 @@ int interval = 500;
 int main()
 {
 	std::string input;
-	auto input_box = Input(&input, "Type here");
+	Component input_box = Input(&input, "Type here");
+    input_box |= CatchEvent([&](Event event) {
+        if (event == Event::Return) {
+            if (!input.empty()) {
+                std::cout << "Command: " << input << std::endl;
+                readCommand(input);
+                input.clear();
+            }
+            return true;
+        }
+        return false;
+        });
 	auto cell = [](const char* t) { return text(t) | border; };
 
 	auto screen = ScreenInteractive::Fullscreen();
@@ -222,7 +236,7 @@ int main()
 	return 0;
 }
 
-void readCommand(string commandHandle, bool& breaker)
+void readCommand(string commandHandle)
 {
     istringstream tokenStream(commandHandle);
 
@@ -362,7 +376,7 @@ void readCommand(string commandHandle, bool& breaker)
             break;
 
         case 6:
-            breaker = true;
+            // to do
             break;
 
         default:
