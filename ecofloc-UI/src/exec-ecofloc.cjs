@@ -11,7 +11,7 @@ app.use(express.json());
 
 // API Endpoint pour exécuter un fichier .exe
 app.post('/execute', (req, res) => {
-    const exePath = 'testjson.exe'; // Remplacez par le chemin absolu de votre fichier .exe
+    const exePath = 'echo hello'; // Remplacez par le chemin absolu de votre fichier .exe
 
     exec(`"${exePath}"`, (error, stdout, stderr) => {
         if (error) {
