@@ -1,51 +1,7 @@
 let precedentTimeStamp = 0;
 let totalW = 0;
-let mainIdGraph = "";
 const list_tab = document.getElementById("list-tab");
 const flex_graphique = document.getElementById("flex-graphique");
-
-const dictionnaireComposants = {
-  "CPU":"CPU",
-  "GPU":"GPU",
-  "RAM":"RAM",
-  "NIC":"NIC",
-  "SD":"SD",
-  "TOTAL":"Total Consommation"
-};
-
-const unGraph = (id, value) => {
-  return `
-  <div id="box${id}" class="graphique">
-    <h3 class="text-center font-semibold">${value}</h3>
-    <div id="graph${id}" class="responsive-graph flex-grow"></div>
-  </div>`
-}
-
-const initialGraph = () => {
-  let content = "";
-  for (let cle in dictionnaireComposants) {
-    content += unGraph(cle, dictionnaireComposants[cle]);
-  } 
-  return content;
-}
-
-const detailedMarkup = (id) => {
-  let content = `
-    <div class="h-full" style="width: 80%; margin-right: 30px;">` +
-      unGraph(id, dictionnaireComposants[id])
-    + `</div>
-    <div class="h-full flex flex-col gap-1" style="flex-grow: 1;">
-  ` 
-  for (let cle in dictionnaireComposants) {
-    if(id != cle) {
-      content +=  unGraph(cle, dictionnaireComposants[cle]);
-    } 
-  }
-    content += `
-        </div>
-    `
-    return content;
-};
 
 function setListener(){
   for (let cle in dictionnaireGraphComposants) {
@@ -56,10 +12,9 @@ function setListener(){
       dictionnaireGraphComposants[cle].show(event.target.checked);
     });
   }
-  for (let cle in dictionnaireComposants) {
-    document.getElementById(`box`+cle).addEventListener("click", () => {
-    showDetailView(cle);
-  });
+  let flexElements = document.querySelectorAll(".graphique");
+  for (let unFlexElement of flexElements) {
+      unFlexElement.addEventListener("click", showDetailView);
   }
 }
 
@@ -72,30 +27,29 @@ function mettreAJourTousLesElement(){
   graphTOTAL.mettreAJourElement();
 }
 
-
-function renderInitialView() {
-  flex_graphique.innerHTML = initialGraph();
-}
-
-function showDetailView(id) {
-  if(this.mainIdGraph == id) {
-    list_tab.classList.add('flex');
-    list_tab.classList.remove('hide');
-    flex_graphique.classList.add('h-3/4');
-    flex_graphique.classList.remove('h-full');
-    renderInitialView();
-    this.mainIdGraph = "";
+function showDetailView(event) {
+  let graphique = event.target;
+  while(!graphique.classList.contains("graphique")){
+    graphique = graphique.parentElement;
   }
-  else {
-    list_tab.classList.remove('flex');
-    list_tab.classList.add('hide');
-    flex_graphique.classList.add('h-full');
-    flex_graphique.classList.remove('h-3/4');
-    flex_graphique.innerHTML = detailedMarkup(id);
-    this.mainIdGraph = id;
+  console.log("Show " , graphique);
+  let elementFlex = document.getElementById("flex-graphique");
+  if(graphique.classList.contains("selectionner")){
+      elementFlex.classList.remove("detail");
+      graphique.classList.remove("selectionner")
+  } else{
+      if(!elementFlex.classList.contains("detail")){
+          elementFlex.classList.add("detail");
+      }
+      let flexElements = document.querySelectorAll(".graphique");
+      for (let unFlexElement of flexElements) {
+          if(unFlexElement.classList.contains("selectionner")){
+              unFlexElement.classList.remove("selectionner");
+          }
+      }
+      graphique.classList.add("selectionner");
   }
   mettreAJourTousLesElement();
-  setListener();
 }
 
 function readFile() {
@@ -153,7 +107,6 @@ function updatePlot(data) {
     graphTOTAL.updatePlot(totalW);
 }
 
-renderInitialView();
 let graphCPU = new DynamicGraph("graphCPU", "rgb(248 113 113 / var(--tw-bg-opacity, 1))");
 let graphSD = new DynamicGraph("graphSD", "rgb(129 140 248 / var(--tw-bg-opacity, 1))");
 let graphNIC = new DynamicGraph("graphNIC", "rgb(96 165 250 / var(--tw-bg-opacity, 1))");

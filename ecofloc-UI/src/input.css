@@ -72,10 +72,12 @@
   align-items: center;
 }
 
+/* Flex */
 .list-graph{
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
+  flex-direction: column-reverse;
   align-items: center;
   justify-content: center;
   gap: 1rem;
@@ -97,6 +99,18 @@
   background-color: #27272a;
   gap: .5rem;
 }
+.detail .graphique { 
+  width: 10%;
+  height: 15%;
+}
+
+.detail .selectionner {
+  width: 80%;
+  height: 90%;
+  order: 1;
+}
+
+
 
 .render{
   height: 100%;
