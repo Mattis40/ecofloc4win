@@ -222,53 +222,53 @@
             }
         });
 
-        function executeScript() {
-            // Adresse de votre serveur Node.js
-            const serverUrl = 'http://localhost:3000/execute';
+function executeScript() {
+    // Adresse de votre serveur Node.js
+    const serverUrl = 'http://localhost:3000/execute';
 
-            // Envoi d'une requête POST au serveur
-            fetch(serverUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // Ajoutez des données si nécessaire
-                body: JSON.stringify({}),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Script exécuté avec succès :', data.stdout);
-                        alert('Script exécuté avec succès !');
-                    } else {
-                        console.error('Erreur lors de l\'exécution :', data.message);
-                        alert(`Erreur : ${data.message}`);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur réseau ou serveur :', error);
-                    alert('Impossible de contacter le serveur.');
-                });
-
-            function stopExecutable() {
-                fetch('http://localhost:3000/stop', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data.message);
-                        alert(data.message);  // Affiche un message à l'utilisateur
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Failed to stop executable');
-                    });
+    // Envoi d'une requête POST au serveur
+    fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // Ajoutez des données si nécessaire
+        body: JSON.stringify({}),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Script exécuté avec succès :', data.stdout);
+                //alert('Script exécuté avec succès !');
+            } else {
+                console.error('Erreur lors de l\'exécution :', data.message);
+                alert(`Erreur : ${data.message}`);
             }
+        })
+        .catch(error => {
+            console.error('Erreur réseau ou serveur :', error);
+            alert('Impossible de contacter le serveur.');
+        });
+}
 
+// Définir la fonction `stopExecutable` en dehors de `executeScript`
+function stopExecutable() {
+    fetch('http://localhost:3000/stop', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+            alert(data.message);  // Affiche un message à l'utilisateur
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to stop executable');
+        });
+}
 
 
     </script>

@@ -5,40 +5,77 @@ const cors = require('cors'); // Pour permettre les requêtes depuis votre front-
 const app = express();
 const port = 3000;
 
+let processRunning = false; // Indique si le processus est en cours d'exécution
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// API Endpoint pour exécuter le fichier testjson.exe dans le même dossier
+// API pour lancer l'exécutable
 app.post('/execute', (req, res) => {
-    const exePath = './testjson.exe'; // Utilisation du chemin relatif pour le fichier .exe dans le même dossier
+    const exePath = `"${__dirname}\\testjson.exe"`; // Chemin absolu vers l'exécutable
 
-    exec(`"${exePath}"`, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Erreur d'exécution: ${error.message}`);
-            return res.status(500).json({ success: false, message: error.message });
-        }
-
-        if (stderr) {
-            console.warn(`Stderr: ${stderr}`);
-            return res.status(400).json({ success: false, message: stderr });
-        }
-
-        console.log(`Stdout: ${stdout}`);
-        res.json({ success: true, stdout });
-    });
-});
-
-// API Endpoint pour arrêter le processus
-app.post('/stop', (req, res) => {
-    if (!currentProcess) {
-        return res.status(400).json({ success: false, message: 'Aucun processus en cours à arrêter.' });
+    if (processRunning) {
+        return res.status(400).json({ success: false, message: 'Un processus est déjà en cours.' });
     }
 
-    // Tuer le processus en cours
-    currentProcess.kill();
+    try {
+        // Lancer l'exécutable
+        const process = exec(exePath, (error, stdout, stderr) => {
+            processRunning = false; // Réinitialiser après exécution
+            if (error) {
+                console.error(`Erreur d'exécution : ${error.message}`);
+                return; // Pas de `res.json` ici car la réponse a déjà été envoyée
+            }
 
-    res.json({ success: true, message: 'Processus arrêté avec succès.' });
+            if (stderr) {
+                console.warn(`Stderr : ${stderr}`);
+                return; // Idem, gérer sans réponse supplémentaire
+            }
+
+            console.log(`Stdout : ${stdout}`);
+        });
+
+        processRunning = true; // Indique que le processus a démarré
+        console.log('Processus lancé.');
+        return res.json({ success: true, message: 'Processus lancé.' });
+    } catch (error) {
+        console.error(`Erreur inattendue : ${error.message}`);
+        processRunning = false; // Assurer que l'état est réinitialisé
+        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du processus.' });
+    }
+});
+
+// API pour arrêter l'exécutable
+app.post('/stop', (req, res) => {
+    const exeName = 'testjson.exe'; // Nom du processus à tuer
+
+    if (!processRunning) {
+        return res.status(400).json({ success: false, message: 'Aucun processus en cours.' });
+    }
+
+    try {
+        // Utilisation de taskkill pour arrêter le processus par nom
+        exec(`taskkill /IM ${exeName} /F`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Erreur lors de l'arrêt : ${error.message}`);
+                return res.status(500).json({ success: false, message: `Erreur : ${error.message}` });
+            }
+
+            if (stderr) {
+                console.warn(`Stderr : ${stderr}`);
+                // Optionnel : envoyer un avertissement
+            }
+
+            console.log(`Processus arrêté : ${stdout}`);
+            processRunning = false; // Réinitialiser après l'arrêt
+            return res.json({ success: true, message: 'Processus arrêté.' });
+        });
+    } catch (error) {
+        console.error(`Erreur inattendue : ${error.message}`);
+        processRunning = false; // Assurer que l'état est réinitialisé
+        return res.status(500).json({ success: false, message: 'Erreur lors de l\'arrêt du processus.' });
+    }
 });
 
 // Démarrer le serveur
