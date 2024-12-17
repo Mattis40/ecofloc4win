@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 
 let processRunning = false; // Indique si le processus est en cours d'exécution
+let configuratorRunning = false; // Indique si le configurator est en cours d'exécution
 
 // Middleware
 app.use(cors());
@@ -45,6 +46,39 @@ app.post('/execute', (req, res) => {
         return res.status(500).json({ success: false, message: 'Erreur lors du lancement du processus.' });
     }
 });
+
+// API pour lancer le configurator
+app.post('/configurator', (req, res) => {
+    const exePath = `"${__dirname}\\EcoflocConfigurator.exe"`; // Chemin absolu vers le configurator
+
+    if (configuratorRunning) {
+        return res.status(400).json({ success: false, message: 'Configurator est déjà en cours.' });
+    }
+
+    try {
+        const process = exec(exePath, (error, stdout, stderr) => {
+            configuratorRunning = false; // Réinitialiser après exécution
+            if (error) {
+                console.error(`Erreur d'exécution : ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.warn(`Stderr : ${stderr}`);
+                return;
+            }
+            console.log(`Stdout : ${stdout}`);
+        });
+
+        configuratorRunning = true;
+        console.log('Configurator lancé.');
+        return res.json({ success: true, message: 'Configurator lancé.' });
+    } catch (error) {
+        console.error(`Erreur inattendue : ${error.message}`);
+        configuratorRunning = false;
+        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du configurator.' });
+    }
+});
+
 
 // API pour arrêter l'exécutable
 app.post('/stop', (req, res) => {
