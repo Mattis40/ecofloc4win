@@ -1,12 +1,13 @@
-﻿using System.Diagnostics;
+using System;
 using System.IO;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace EcoflocConfigurator
 {
     public partial class App : Application
     {
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
@@ -17,35 +18,19 @@ namespace EcoflocConfigurator
             string currentDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             Directory.SetCurrentDirectory(currentDirectory);
 
-            // Console.WriteLine("Répertoire de travail défini : " + Directory.GetCurrentDirectory());
+            //Console.WriteLine("Répertoire de travail défini : " + Directory.GetCurrentDirectory());
 
-            // Verifier si une instance de l'application est déjà en cours d'exécution
-            var existingProcess = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName)
-                .Where(p => p.Id != Process.GetCurrentProcess().Id)
-                .FirstOrDefault();
+            // Délai pour permettre à l'application de se mettre au premier plan
+            await Task.Delay(1000);
 
-            if (existingProcess == null)
+            // Mettre la fenêtre au premier plan et lui donner le focus
+            if (MainWindow != null)
             {
-                // Si aucune instance n'existe
-            }
-            else
-            {
-                // Si une instance existe
-                IntPtr hwnd = existingProcess.MainWindowHandle;
-                if (hwnd != IntPtr.Zero)
-                {
-                    // Remettre la fenêtre existante au premier plan
-                    ShowWindow(hwnd, 5); // 5 = SW_RESTORE = Restore the window to its normal state
-                    SetForegroundWindow(hwnd);
-                }
-                Current.Shutdown(); // Fermer l'application actuelle
+                //MainWindow.Activate();
+                //MainWindow.Focus();
+                MainWindow.Topmost = true;
+                MainWindow.Topmost = false;  // Désactiver Topmost après pour ne pas forcer la fenêtre à rester toujours au-dessus
             }
         }
-
-        // Imports pour gérer les fenêtres de l'application
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        static extern bool SetForegroundWindow(IntPtr hwnd);
     }
 }
