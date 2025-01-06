@@ -1,7 +1,7 @@
 /**
  * @file gpu.cpp
  * @brief Récupérer les metrics du GPU
- * @author Alexis Dumolié
+ * @author Mattis PINGARD
  * @date 2025-01-06
  */
 
@@ -11,20 +11,8 @@
 #include <vector>
 #include <nvml.h>
 
-/**
- * @namespace GPU
- * @brief Donne accès à des fonctions permettant de récupérer les metrics du GPU
- */
 namespace GPU {
 
-    /**
-     * @brief Renvoie le pourcentage d'utilisation d'un processus
-     *
-     * Cette fonction renvoie à partir d'un id processus le pourcentage d'utilisation
-     * du GPU de ce dernier
-     * @param pid Le pid du processus ciblé par la fonction
-     * @return Retourne un entier représentant le pourcentage d'utilisation du processus et -1 sinon.
-    */
     int gpu_usage(int pid) {
         nvmlReturn_t result;
         unsigned int deviceCount;
@@ -87,7 +75,6 @@ namespace GPU {
         return usage;
     }
 
-    // Function to retrieve GPU usage for a list of PIDs
     std::vector<int> getGPUUsage(std::vector<int> pids) {
         std::vector<int> results;
         for (int pid : pids) {
@@ -96,7 +83,7 @@ namespace GPU {
         return results;
     }
 
-	// Function to retrieve GPU power usage
+	
     int getGPUPower() {
         nvmlReturn_t result;
         nvmlDevice_t device;
@@ -111,12 +98,12 @@ namespace GPU {
         // Obtenir le handle du GPU 0 (ou un autre GPU selon l'index)
         result = nvmlDeviceGetHandleByIndex(0, &device);
         if (NVML_SUCCESS != result) {
-            std::cout << "Erreur lors de la r�cup�ration du handle du GPU : " << nvmlErrorString(result) << std::endl;
+            std::cout << "Erreur lors de la récupération du handle du GPU : " << nvmlErrorString(result) << std::endl;
             nvmlShutdown();
             return 1;
         }
 
-        // Lire la puissance utilis�e (en milliwatts)
+        // Lire la puissance utilisée (en milliwatts)
         unsigned int power;
         result = nvmlDeviceGetPowerUsage(device, &power);
         if (NVML_SUCCESS != result) {
@@ -124,11 +111,11 @@ namespace GPU {
             nvmlShutdown();
             return 1;
         }
-        // La puissance est donn�e en milliwatts, donc on la convertit en watts
-        //std::cout << "Puissance utilis�e par le GPU : " << power / 1000.0 << " W" << std::endl;
+        // La puissance est donnée en milliwatts, donc on la convertit en watts
+        //std::cout << "Puissance utilisée par le GPU : " << power / 1000.0 << " W" << std::endl;
 
 
-        // Nettoyage et arr�t de NVML
+        // Nettoyage et arrêt de NVML
         nvmlShutdown();
         return power / 1000.0;
     }

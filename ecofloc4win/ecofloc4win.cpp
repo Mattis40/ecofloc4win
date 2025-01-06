@@ -96,7 +96,7 @@ wstring GetProcessNameByPID(DWORD processID) {
     return L"<unknown>";
 }
 
-unordered_map<string, pair<vector<process>, bool>> comp = {{"CPU", {{}, false}}, {"GPU", {{}, false} }, {"SD", {{}, false }}, {"NIC", {{}, false }}};
+unordered_map<string, pair<vector<Process>, bool>> comp = {{"CPU", {{}, false}}, {"GPU", {{}, false} }, {"SD", {{}, false }}, {"NIC", {{}, false }}};
 
 int interval = 500;
 	
@@ -438,10 +438,10 @@ void addProcName(string name, string component)
             if (_wcsicmp(pe32.szExeFile, wstr.c_str()) == 0) { // Case-insensitive comparison
                 std::stringstream ss;
                 ss << pe32.th32ProcessID;
-                auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&ss](process o) {return o.getPid() == ss.str(); });
+                auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&ss](Process o) {return o.getPid() == ss.str(); });
                 if (it >= comp[component].first.end())
                 {
-                    comp[component].first.push_back(process(ss.str(), name));
+                    comp[component].first.push_back(Process(ss.str(), name));
                     cout << name << " (Pid: " << ss.str() << ") has been added" << endl;
                 }
             }
@@ -453,7 +453,7 @@ void addProcName(string name, string component)
 
 void removeProcPid(string pid, string component)
 {
-    auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&pid](process o) { return o.getPid() == pid; });
+    auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&pid](Process o) { return o.getPid() == pid; });
 
     if (it != comp[component].first.end())
     {
