@@ -32,6 +32,7 @@ namespace GPU
      * Cette fonction permet de récupérer la puissance consommé par le GPU à l'instant t
      * elle retourne donc un entier correspondant à la puissance en Watt (W)
 	 *
+     * @param pids La liste des pids des processus ciblés par la fonction
      * @return Retourne un entier correspondant à la puissance en Watt (W) ou -1 si une erreur est survenue
     */
 	int getGPUPower();
