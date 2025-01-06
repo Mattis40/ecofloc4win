@@ -1,10 +1,30 @@
+/**
+ * @file gpu.cpp
+ * @brief R√©cup√©rer les metrics du GPU
+ * @author Alexis Dumoli√©
+ * @date 2025-01-06
+ */
+
 #include "gpu.h"
 
 #include <iostream>
 #include <vector>
 #include <nvml.h>
 
+/**
+ * @namespace GPU
+ * @brief Donne acc√®s √† des fonctions permettant de r√©cup√©rer les metrics du GPU
+ */
 namespace GPU {
+
+    /**
+     * @brief Renvoie le pourcentage d'utilisation d'un processus
+     *
+     * Cette fonction renvoie √† partir d'un id processus le pourcentage d'utilisation
+     * du GPU de ce dernier
+     * @param pid Le pid du processus cibl√© par la fonction
+     * @return Retourne un entier repr√©sentant le pourcentage d'utilisation du processus et -1 sinon.
+    */
     int gpu_usage(int pid) {
         nvmlReturn_t result;
         unsigned int deviceCount;
@@ -91,12 +111,12 @@ namespace GPU {
         // Obtenir le handle du GPU 0 (ou un autre GPU selon l'index)
         result = nvmlDeviceGetHandleByIndex(0, &device);
         if (NVML_SUCCESS != result) {
-            std::cout << "Erreur lors de la rÈcupÈration du handle du GPU : " << nvmlErrorString(result) << std::endl;
+            std::cout << "Erreur lors de la rÔøΩcupÔøΩration du handle du GPU : " << nvmlErrorString(result) << std::endl;
             nvmlShutdown();
             return 1;
         }
 
-        // Lire la puissance utilisÈe (en milliwatts)
+        // Lire la puissance utilisÔøΩe (en milliwatts)
         unsigned int power;
         result = nvmlDeviceGetPowerUsage(device, &power);
         if (NVML_SUCCESS != result) {
@@ -104,11 +124,11 @@ namespace GPU {
             nvmlShutdown();
             return 1;
         }
-        // La puissance est donnÈe en milliwatts, donc on la convertit en watts
-        //std::cout << "Puissance utilisÈe par le GPU : " << power / 1000.0 << " W" << std::endl;
+        // La puissance est donnÔøΩe en milliwatts, donc on la convertit en watts
+        //std::cout << "Puissance utilisÔøΩe par le GPU : " << power / 1000.0 << " W" << std::endl;
 
 
-        // Nettoyage et arrÍt de NVML
+        // Nettoyage et arrÔøΩt de NVML
         nvmlShutdown();
         return power / 1000.0;
     }
