@@ -213,8 +213,41 @@ int main()
 		}
 
 		return false;
-		});
-	
+	});
+
+	monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+	monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+	monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+	monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
+    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
+    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
+    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
+
 	std::thread gpu_thread([&screen] {
 		while (true) {
             {
