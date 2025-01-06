@@ -11,7 +11,7 @@
  * encapsulates data and functionalities related to monitoring energy usage
  * and enabling/disabling monitoring features for an application.
  *
- * @author [Your Name]
+ * @author Ecofloc4win
  * @date 2025-01-06
  */
 
