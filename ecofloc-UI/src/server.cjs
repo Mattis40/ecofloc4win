@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 const cors = require('cors'); // To enable queries from your front-end
 
 const app = express();
-const port = 3000;
+const port = 3030;
 
 let processRunning = false; // Indicates whether the process is running
 let configuratorRunning = false; // Indicates whether the configurator is running
