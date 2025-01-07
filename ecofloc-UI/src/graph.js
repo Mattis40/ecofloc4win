@@ -1,43 +1,43 @@
 class DynamicGraph {
-    constructor(nomGraphique, color) {
+    constructor(graphName, color) {
         // Define the layout for the plot
         this.layout = {
             xaxis: {
                 rangemode: 'tozero', 
                 gridcolor: 'rgba(255,255,255,0.2)',
                 tickfont: {
-                    color: 'white'               // Couleur des nombres sur l'axe X
+                    color: 'white'               // Color of numbers on the X axis
                   } 
             },
             yaxis: {
                 rangemode: 'tozero',
                 gridcolor: 'rgba(255,255,255,0.2)',
                 tickfont: {
-                    color: 'white'               // Couleur des nombres sur l'axe X
+                    color: 'white'               // Color of numbers on the X axis
                 }
             },
             margin: {
-                l: 30,  // Marge gauche
-                r: 30,  // Marge droite
-                t: 10,  // Marge en haut
-                b: 20   // Marge en bas
+                l: 30,  // Left margin
+                r: 30,  // Right margin
+                t: 10,  // Up margin
+                b: 20   // Down margin
             },
-            paper_bgcolor: 'rgba(0,0,0,0)',  // Fond extérieur transparent
-            plot_bgcolor: 'rgba(0,0,0,0)',   // Fond du graphique transparent
+            paper_bgcolor: 'rgba(0,0,0,0)',  // Transparent outer background
+            plot_bgcolor: 'rgba(0,0,0,0)',   // Transparent chart background
             dragmode: false
         };
         // Define the initial data with an empty array for 'y'
         this.data = [{
             y: [], // Starting values
-            line: {color: color}, // Couleur de la ligne verte
+            line: {color: color}, // Green line color
             fill: 'tozeroy',
         }];
 
         // Set the graph name
-        this.nomGraphique = nomGraphique;
+        this.graphName = graphName;
         this.showGraph = true
         // Create the initial plot
-        Plotly.newPlot(this.nomGraphique, this.data, this.layout, { responsive: true, displayModeBar: false });
+        Plotly.newPlot(this.graphName, this.data, this.layout, { responsive: true, displayModeBar: false });
     }
 
     // Method to update the plot by pushing new values to 'y'
@@ -49,12 +49,12 @@ class DynamicGraph {
         currentY.push(value);
 
         // Update the plot with the new data
-        Plotly.update(this.nomGraphique, {
+        Plotly.update(this.graphName, {
             y: [currentY]
         });
     }
     show(value) {
-        const element = document.getElementById(this.nomGraphique);
+        const element = document.getElementById(this.graphName);
         this.showGraph = value;
         if (value) {
             element.parentElement.style.display = "block"; // Show the element
@@ -63,11 +63,11 @@ class DynamicGraph {
         }
     }
 
-    mettreAJourElement() {
-        const currentElement = document.getElementById(this.nomGraphique);
+    updateElements() {
+        const currentElement = document.getElementById(this.graphName);
         const graphData = this.data;
         const layout = this.layout;
-        Plotly.newPlot(this.nomGraphique, graphData, layout, { responsive: true, displayModeBar: false });
+        Plotly.newPlot(this.graphName, graphData, layout, { responsive: true, displayModeBar: false });
         this.show(this.showGraph);
     }
 }

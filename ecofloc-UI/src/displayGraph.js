@@ -1,58 +1,58 @@
-let precedentTimeStamp = 0;
+let previousTimeStamp = 0;
 let totalW = 0;
-const list_tab = document.getElementById("list-tab");
-const flex_graphique = document.getElementById("flex-graphique");
+/*const list_tab = document.getElementById("list-tab");
+const flex_graph = document.getElementById("flex-graph");*/
 
 function setListener(){
-  for (let cle in dictionnaireGraphComposants) {
+  for (let cle in dictionaryGraphComponents) {
     if(cle == "TOTAL") {
       continue;
     }
     document.getElementById(`checkbox`+cle).addEventListener("click", (event) => {
-      dictionnaireGraphComposants[cle].show(event.target.checked);
+      dictionaryGraphComponents[cle].show(event.target.checked);
     });
   }
-  let flexElements = document.querySelectorAll(".graphique");
+  let flexElements = document.querySelectorAll(".graph");
   for (let unFlexElement of flexElements) {
       unFlexElement.addEventListener("click", showDetailView);
   }
 }
 
-function mettreAJourTousLesElement(){
-  graphCPU.mettreAJourElement();
-  graphGPU.mettreAJourElement();
-  graphNIC.mettreAJourElement();
-  graphRAM.mettreAJourElement();
-  graphSD.mettreAJourElement();
-  graphTOTAL.mettreAJourElement();
+function updateAllElements(){
+  graphCPU.updateElements();
+  graphGPU.updateElements();
+  graphNIC.updateElements();
+  graphRAM.updateElements();
+  graphSD.updateElements();
+  graphTOTAL.updateElements();
 }
 
 function showDetailView(event) {
-  let graphique = event.target;
-  while(!graphique.classList.contains("graphique")){
-    graphique = graphique.parentElement;
+  let graph = event.target;
+  while(!graph.classList.contains("graph")){
+    graph = graph.parentElement;
   }
-  let elementFlex = document.getElementById("flex-graphique");
-  if(graphique.classList.contains("selectionner")){
+  let elementFlex = document.getElementById("flex-graph");
+  if(graph.classList.contains("select")){
       elementFlex.classList.remove("detail");
-      graphique.classList.remove("selectionner")
+      graph.classList.remove("select")
   } else{
       if(!elementFlex.classList.contains("detail")){
           elementFlex.classList.add("detail");
       }
-      let flexElements = document.querySelectorAll(".graphique");
+      let flexElements = document.querySelectorAll(".graph");
       for (let unFlexElement of flexElements) {
-          if(unFlexElement.classList.contains("selectionner")){
-              unFlexElement.classList.remove("selectionner");
+          if(unFlexElement.classList.contains("select")){
+              unFlexElement.classList.remove("select");
           }
       }
-      graphique.classList.add("selectionner");
+      graph.classList.add("select");
   }
-  mettreAJourTousLesElement();
+  updateAllElements();
 }
 
 function readFile() {
-    fetch('./system_monitoring.json')
+    fetch('./systemMonitoring.json')
     .then(response => {
       if (response.ok) {
         return response.text();
@@ -72,18 +72,18 @@ function readFile() {
 }  
 
 function handleJSON(data){
-    if(data['time'] != precedentTimeStamp) {
-        precedentTimeStamp = data['time'];
+    if(data['time'] != previousTimeStamp) {
+        previousTimeStamp = data['time'];
         updatePlot(data);
     }
 } 
 
 function updatePlot(data) {
-    const datacomponents = data['apps'][0]['components'];
+    const dataComponents = data['apps'][0]['components'];
     totalW = 0;
     graphGPU.updatePlot(100);
     graphRAM.updatePlot(100);
-    for(let c of datacomponents){
+    for(let c of dataComponents){
       
       switch (c['type']){
         case 'CPU':
@@ -112,7 +112,7 @@ let graphNIC = new DynamicGraph("graphNIC", "rgb(96 165 250 / var(--tw-bg-opacit
 let graphGPU = new DynamicGraph("graphGPU", "rgb(74 222 128 / var(--tw-bg-opacity, 1))");
 let graphRAM = new DynamicGraph("graphRAM", "rgb(45 212 191 / var(--tw-bg-opacity, 1))");
 let graphTOTAL = new DynamicGraph("graphTOTAL",  "rgb(192 132 252 / var(--tw-bg-opacity, 1))");
-const dictionnaireGraphComposants = {
+const dictionaryGraphComponents = {
   "CPU":graphCPU,
   "GPU":graphGPU,
   "RAM":graphRAM,

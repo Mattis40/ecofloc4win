@@ -21,7 +21,7 @@
         <div class="w-full px-[26%] flex flex-row justify-between content-center">
             <a href="./">
                 <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
-                    Accueil
+                    Home
                 </h2>
             </a>
             <a href="monitoring.html">
@@ -31,7 +31,7 @@
             </a>
             <a href="#">
                 <h2 class="text-emerald-600 rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:text-emerald-600 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
-                    Composants
+                    Components
                 </h2>
             </a>
         </div>
@@ -41,36 +41,36 @@
         <div class="w-full max-w-6xl grid grid-cols-1 gap-4 h-full">
             <!-- CPU Section -->
             <div class="bg-zinc-700 rounded-xl p-4 shadow-lg hover:shadow-emerald-400/20 transition duration-300">
-                <h2 class="text-2xl font-bold text-emerald-400 mb-2">Processeur (CPU)</h2>
+                <h2 class="text-2xl font-bold text-emerald-400 mb-2">Processor (CPU)</h2>
                 <div class="grid grid-cols-3 gap-4">
                     <div class="bg-zinc-800 p-3 rounded-lg">
                         <h3 class="text-emerald-300 text-base font-semibold mb-1">TDP</h3>
-                        <p id="cpu-tdp" class="text-white text-xl font-bold">Chargement...</p>
+                        <p id="cpu-tdp" class="text-white text-xl font-bold">Loading...</p>
                     </div>
                     <div class="bg-zinc-800 p-3 rounded-lg">
-                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Fr&eacute;quence</h3>
-                        <p id="cpu-clock-speed" class="text-white text-xl font-bold">Chargement...</p>
+                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Frequency</h3>
+                        <p id="cpu-clock-speed" class="text-white text-xl font-bold">Loading...</p>
                     </div>
                     <div class="bg-zinc-800 p-3 rounded-lg">
                         <h3 class="text-emerald-300 text-base font-semibold mb-1">Voltage</h3>
-                        <p id="cpu-voltage" class="text-white text-xl font-bold">Chargement...</p>
+                        <p id="cpu-voltage" class="text-white text-xl font-bold">Loading...</p>
                     </div>
                 </div>
             </div>
 
             <!-- NIC Section -->
             <div class="bg-zinc-700 rounded-xl p-4 shadow-lg hover:shadow-emerald-400/20 transition duration-300">
-                <h2 class="text-2xl font-bold text-emerald-400 mb-2">Carte R&eacute;seau (NIC)</h2>
+                <h2 class="text-2xl font-bold text-emerald-400 mb-2">Network Card (NIC)</h2>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-zinc-800 p-3 rounded-lg">
-                        <h3 class="text-emerald-300 text-base font-semibold mb-1">D&eacute;bit Upload</h3>
-                        <p id="nic-upload-rate" class="text-white text-xl font-bold">Chargement...</p>
-                        <p id="nic-max-upload-rate" class="text-emerald-200 text-xs">Chargement...</p>
+                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Upload Speed</h3>
+                        <p id="nic-upload-rate" class="text-white text-xl font-bold">Loading...</p>
+                        <p id="nic-max-upload-rate" class="text-emerald-200 text-xs">Loading...</p>
                     </div>
                     <div class="bg-zinc-800 p-3 rounded-lg">
-                        <h3 class="text-emerald-300 text-base font-semibold mb-1">D&eacute;bit Download</h3>
-                        <p id="nic-download-rate" class="text-white text-xl font-bold">Chargement...</p>
-                        <p id="nic-max-download-rate" class="text-emerald-200 text-xs">Chargement...</p>
+                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Download Speed</h3>
+                        <p id="nic-download-rate" class="text-white text-xl font-bold">Loading...</p>
+                        <p id="nic-max-download-rate" class="text-emerald-200 text-xs">Loading...</p>
                     </div>
                 </div>
             </div>
@@ -78,17 +78,17 @@
 
             <!-- SD Card Section -->
             <div class="bg-zinc-700 rounded-xl p-4 shadow-lg hover:shadow-emerald-400/20 transition duration-300">
-                <h2 class="text-2xl font-bold text-emerald-400 mb-2">Carte SD</h2>
+                <h2 class="text-2xl font-bold text-emerald-400 mb-2">SD Card</h2>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-zinc-800 p-3 rounded-lg">
-                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Puissance &eacute;criture</h3>
-                        <p id="write-power" class="text-white text-xl font-bold">Chargement...</p>
-                        <p id="max-write-rate" class="text-emerald-200 text-xs">Chargement...</p>
+                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Power Writing</h3>
+                        <p id="write-power" class="text-white text-xl font-bold">Loading...</p>
+                        <p id="max-write-rate" class="text-emerald-200 text-xs">Loading...</p>
                     </div>
                     <div class="bg-zinc-800 p-3 rounded-lg">
-                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Puissance Lecture</h3>
-                        <p id="read-power" class="text-white text-xl font-bold">Chargement...</p>
-                        <p id="max-read-rate" class="text-emerald-200 text-xs">Chargement...</p>
+                        <h3 class="text-emerald-300 text-base font-semibold mb-1">Power Reading</h3>
+                        <p id="read-power" class="text-white text-xl font-bold">Loading...</p>
+                        <p id="max-read-rate" class="text-emerald-200 text-xs">Loading...</p>
                     </div>
                 </div>
             </div>
@@ -97,41 +97,41 @@
             <!-- Modify Button -->
             <div class="flex justify-center mt-auto">
                 <button onClick="configurator()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-8 rounded-lg transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50">
-                    Modifier
+                    Modify
                 </button>
             </div>
         </div>
     </main>
     <script>
-        // Fonction pour charger et ins�rer les donn�es d'un fichier JSON
+        // Function to load and insert data from a JSON file
         function loadJson(filePath, callback) {
             fetch(filePath)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Erreur lors du chargement du fichier ${filePath}`);
+                        throw new Error(`Error loading file ${filePath}`);
                     }
                     return response.json();
                 })
                 .then(data => callback(data))
-                .catch(error => console.error('Erreur:', error));
+                .catch(error => console.error('Error:', error));
         }
 
-        // Charger et ins�rer les donn�es pour la carte SD
+        // Load and insert data for SD card
         loadJson('../sd.json', data => {
             document.getElementById('write-power').textContent = `${data.write_power} W`;
-            document.getElementById('max-write-rate').textContent = `Vitesse max: ${data.max_write_rate} MB/s`;
+            document.getElementById('max-write-rate').textContent = `Max speed: ${data.max_write_rate} MB/s`;
             document.getElementById('read-power').textContent = `${data.read_power} W`;
-            document.getElementById('max-read-rate').textContent = `Vitesse max: ${data.max_read_rate} MB/s`;
+            document.getElementById('max-read-rate').textContent = `Max speed: ${data.max_read_rate} MB/s`;
         });
 
-        // Charger et ins�rer les donn�es pour le CPU
+        // Load and insert data for CPU
         loadJson('../cpu.json', data => {
             document.getElementById('cpu-tdp').textContent = `${data.tdp} W`;
             document.getElementById('cpu-clock-speed').textContent = `${data.clockSpeed} MHz`;
             document.getElementById('cpu-voltage').textContent = `${data.voltage} V`;
         });
 
-        // Charger et ins�rer les donn�es pour la carte r�seau (NIC)
+        // Load and insert data for network card (NIC)
         loadJson('../nic.json', data => {
             document.getElementById('nic-upload-rate').textContent = `${data.upload_rate} Mbps`;
             document.getElementById('nic-max-upload-rate').textContent = `Max: ${data.max_upload_rate} Mbps`;
@@ -140,31 +140,31 @@
         });
 
         function configurator() {
-            // Adresse de votre serveur Node.js
+            // Address of your Node.js server
             const serverUrl = 'http://localhost:3000/configurator';
 
-            // Envoi d'une requête POST au serveur
+            // Sending a POST request to the server
             fetch(serverUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // Ajoutez des données si nécessaire
+                // Add data if necessary
                 body: JSON.stringify({}),
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        console.log('Script exécuté avec succès :', data.stdout);
-                        //alert('Script exécuté avec succès !');
+                        console.log('Script executed successfully :', data.stdout);
+                        //alert('Script executed successfully !');
                     } else {
-                        console.error('Erreur lors de l\'exécution :', data.message);
-                        alert(`Erreur : ${data.message}`);
+                        console.error('Error during execution :', data.message);
+                        alert(`Error : ${data.message}`);
                     }
                 })
                 .catch(error => {
-                    console.error('Erreur réseau ou serveur :', error);
-                    alert('Impossible de contacter le serveur.');
+                    console.error('Network or server error :', error);
+                    alert('Unable to contact server.');
                 });
         }
 

@@ -19,7 +19,7 @@
         <div class="w-full px-[26%] flex flex-row justify-between content-center">
             <a href="./">
                 <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
-                    Accueil
+                    Home
                 </h2>
             </a>
             <a href="#">
@@ -27,9 +27,9 @@
                     Monitoring
                 </h2>
             </a>
-            <a href="composants.html">
+            <a href="components.html">
                 <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:text-emerald-600 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
-                    Composants
+                    Components
                 </h2>
             </a>
         </div>
@@ -68,7 +68,7 @@
             </div>
             <!-- Ipt-TimeStamp -->
             <div id="input_ts" class="mt-4 sidebar-transition">
-                <label class="block mb-2">Intervalle (ms)</label>
+                <label class="block mb-2">Interval (ms)</label>
                 <input type="number" min="500" value="1000" max="300000" step="250" class="w-full bg-zinc-700 text-white p-2 rounded-md">
             </div>
             <!-- Play/Stop buttons -->
@@ -85,29 +85,29 @@
         <!-- Graphs and Table -->
         <section id="main" class="flex-1 flex flex-col p-4 pb-2 gap-2">
             <!-- Graphs -->
-            <div id="flex-graphique" class="list-graph h-3/4">
-                <div id="boxCPU" class="graphique">
+            <div id="flex-graph" class="list-graph h-3/4">
+                <div id="boxCPU" class="graph">
                     <h3 class="text-center font-semibold">CPU</h3>
                     <div id="graphCPU" class="responsive-graph flex-grow"></div>
                 </div>
-                <div id="boxGPU" class="graphique">
+                <div id="boxGPU" class="graph">
                     <h3 class="text-center font-semibold">GPU</h3>
                     <div id="graphGPU" class="responsive-graph flex-grow"></div>
                 </div>
-                <div id="boxRAM" class="graphique">
+                <div id="boxRAM" class="graph">
                     <h3 class="text-center font-semibold">RAM</h3>
                     <div id="graphRAM" class="responsive-graph flex-grow"></div>
                 </div>
-                <div id="boxNIC" class="graphique">
+                <div id="boxNIC" class="graph">
                     <h3 class="text-center font-semibold">NIC</h3>
                     <div id="graphNIC" class="responsive-graph flex-grow"></div>
                 </div>
-                <div id="boxSD" class="graphique">
+                <div id="boxSD" class="graph">
                     <h3 class="text-center font-semibold">SD</h3>
                     <div id="graphSD" class="responsive-graph flex-grow"></div>
                 </div>
-                <div id="boxTOTAL" class="graphique">
-                    <h3 class="text-center font-semibold">Total Consommation</h3>
+                <div id="boxTOTAL" class="graph">
+                    <h3 class="text-center font-semibold">Total Consumption</h3>
                     <div id="graphTOTAL" class="responsive-graph flex-grow"></div>
                 </div>
             </div>
@@ -120,6 +120,7 @@
                         <div class="col-2">PID</div>
                     </div>
                     <div class="custom-tbody ">
+                        <!--remove example later-->
                         <div class="line">
                             <div class="col-1 cell">Firefox.exe</div>
                             <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
@@ -165,11 +166,11 @@
                     </div>
                     <div class="custom-tbody">
                         <div class="line col-3">
-                            <div>Bureautique</div>
+                            <div>Office</div>
                             <input type="checkbox" id="">
                         </div>
                         <div class="line col-3">
-                            <div>Navigateur</div>
+                            <div>Browser</div>
                             <input type="checkbox" id="">
                         </div>
                         <div class="line col-3">
@@ -198,7 +199,7 @@
         const main = document.getElementById('main');
         const list_buttons = document.getElementById('list-buttons');
 
-        // Ouvrir la barre latérale
+        // Open sidebar
         wrap_sidebar.addEventListener('click', () => {
             
             const timestamp = new Date().getTime();
@@ -223,35 +224,35 @@
         });
 
 function executeScript() {
-    // Adresse de votre serveur Node.js
+    // Address of your Node.js server
     const serverUrl = 'http://localhost:3000/execute';
 
-    // Envoi d'une requête POST au serveur
+    // Sending a POST request to the server
     fetch(serverUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        // Ajoutez des données si nécessaire
+        // Add data if necessary
         body: JSON.stringify({}),
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('Script exécuté avec succès :', data.stdout);
-                //alert('Script exécuté avec succès !');
+                console.log('Script executed successfully :', data.stdout);
+                //alert('Script executed successfully !');
             } else {
-                console.error('Erreur lors de l\'exécution :', data.message);
-                alert(`Erreur : ${data.message}`);
+                console.error('Error during execution :', data.message);
+                alert(`Error : ${data.message}`);
             }
         })
         .catch(error => {
-            console.error('Erreur réseau ou serveur :', error);
-            alert('Impossible de contacter le serveur.');
+            console.error('Network or server error :', error);
+            alert('Unable to contact server.');
         });
 }
 
-// Définir la fonction `stopExecutable` en dehors de `executeScript`
+// Define `stopExecutable` function outside `executeScript`
 function stopExecutable() {
     fetch('http://localhost:3000/stop', {
         method: 'POST',
@@ -262,7 +263,7 @@ function stopExecutable() {
         .then(response => response.json())
         .then(data => {
             console.log(data.message);
-            alert(data.message);  // Affiche un message à l'utilisateur
+            alert(data.message);  // Display a message to the user
         })
         .catch(error => {
             console.error('Error:', error);
@@ -272,8 +273,8 @@ function stopExecutable() {
 
 
     </script>
-    <script src="graphique.js"></script>
-    <script src="affichage-graphique.js"></script>
+    <script src="graph.js"></script>
+    <script src="displayGraph.js"></script>
 </body>
 
 </html>

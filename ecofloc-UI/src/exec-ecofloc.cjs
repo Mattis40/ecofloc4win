@@ -1,6 +1,6 @@
 const express = require('express');
 const { exec } = require('child_process');
-const cors = require('cors'); // Pour les requêtes cross-origin depuis un front-end
+const cors = require('cors'); // For cross-origin queries from a front-end
 
 const app = express();
 const port = 3000;
@@ -9,13 +9,13 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-// API Endpoint pour exécuter un fichier .exe
+// Endpoint API to run an .exe file
 app.post('/execute', (req, res) => {
-    const exePath = 'echo hello'; // Remplacez par le chemin absolu de votre fichier .exe
+    const exePath = 'echo hello'; // Replace with the absolute path of your .exe file
 
     exec(`"${exePath}"`, (error, stdout, stderr) => {
         if (error) {
-            console.error(`Erreur d'exécution: ${error.message}`);
+            console.error(`Runtime error: ${error.message}`);
             return res.status(500).send({ error: error.message });
         }
 
@@ -29,7 +29,7 @@ app.post('/execute', (req, res) => {
     });
 });
 
-// Démarrer le serveur
+// Start the server
 app.listen(port, () => {
-    console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });

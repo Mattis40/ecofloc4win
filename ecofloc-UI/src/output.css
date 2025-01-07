@@ -1062,7 +1062,7 @@ video {
   height: 100%;
 }
 
-.graphique{
+.graph{
   width: 32%;
   height: 48%;
   display: flex;
@@ -1075,12 +1075,12 @@ video {
   gap: .5rem;
 }
 
-.detail .graphique {
+.detail .graph {
   width: 20%;
   height: 15%;
 }
 
-.detail .selectionner {
+.detail .select {
   width: 80%;
   height: 90%;
   order: 1;
@@ -1199,7 +1199,7 @@ video {
   text-align: center;
 }
 
-.h-full > div > .graphique{
+.h-full > div > .graph{
   width: 100%;
   height: 100%;
 }
@@ -1207,7 +1207,7 @@ video {
 .h-full.flex.flex-col.gap-1{
 }
 
-.h-full.flex.flex-col.gap-1 > .graphique{
+.h-full.flex.flex-col.gap-1 > .graph{
   width: 100%;
   height: 100%;
   padding: 0;

@@ -1,118 +1,118 @@
 const express = require('express');
 const { exec } = require('child_process');
-const cors = require('cors'); // Pour permettre les requêtes depuis votre front-end
+const cors = require('cors'); // To enable queries from your front-end
 
 const app = express();
 const port = 3000;
 
-let processRunning = false; // Indique si le processus est en cours d'exécution
-let configuratorRunning = false; // Indique si le configurator est en cours d'exécution
+let processRunning = false; // Indicates whether the process is running
+let configuratorRunning = false; // Indicates whether the configurator is running
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// API pour lancer l'exécutable
+// API to launch the executable
 app.post('/execute', (req, res) => {
-    const exePath = `"${__dirname}\\testjson.exe"`; // Chemin absolu vers l'exécutable
+    const exePath = `"${__dirname}\\testjson.exe"`; // Absolute path to executable
 
     if (processRunning) {
-        return res.status(400).json({ success: false, message: 'Un processus est déjà en cours.' });
+        return res.status(400).json({ success: false, message: 'A process is already underway.' });
     }
 
     try {
-        // Lancer l'exécutable
+        // Run the executable
         const process = exec(exePath, (error, stdout, stderr) => {
-            processRunning = false; // Réinitialiser après exécution
+            processRunning = false; // Reset after execution
             if (error) {
-                console.error(`Erreur d'exécution : ${error.message}`);
-                return; // Pas de `res.json` ici car la réponse a déjà été envoyée
+                console.error(`Runtime error: ${error.message}`);
+                return; // No `res.json` here because the response has already been sent
             }
 
             if (stderr) {
-                console.warn(`Stderr : ${stderr}`);
-                return; // Idem, gérer sans réponse supplémentaire
+                console.warn(`Stderr: ${stderr}`);
+                return; // Same, manage without additional response
             }
 
-            console.log(`Stdout : ${stdout}`);
+            console.log(`Stdout: ${stdout}`);
         });
 
-        processRunning = true; // Indique que le processus a démarré
-        console.log('Processus lancé.');
-        return res.json({ success: true, message: 'Processus lancé.' });
+        processRunning = true; // Indicates that the process has started
+        console.log('Process started.');
+        return res.json({ success: true, message: 'Process started.' });
     } catch (error) {
-        console.error(`Erreur inattendue : ${error.message}`);
-        processRunning = false; // Assurer que l'état est réinitialisé
-        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du processus.' });
+        console.error(`Unexpected error: ${error.message}`);
+        processRunning = false; // Ensure the state is reset
+        return res.status(500).json({ success: false, message: 'Error starting process.' });
     }
 });
 
-// API pour lancer le configurator
+// API to launch the configurator
 app.post('/configurator', (req, res) => {
-    const exePath = `"${__dirname}\\EcoflocConfigurator.exe"`; // Chemin absolu vers le configurator
+    const exePath = `"${__dirname}\\EcoflocConfigurator.exe"`; // Absolute path to the configurator
 
     if (configuratorRunning) {
-        return res.status(400).json({ success: false, message: 'Configurator est déjà en cours.' });
+        return res.status(400).json({ success: false, message: 'Configurator is already underway.' });
     }
 
     try {
         const process = exec(exePath, (error, stdout, stderr) => {
-            configuratorRunning = false; // Réinitialiser après exécution
+            configuratorRunning = false; // Reset after execution
             if (error) {
-                console.error(`Erreur d'exécution : ${error.message}`);
+                console.error(`Runtime error: ${error.message}`);
                 return;
             }
             if (stderr) {
-                console.warn(`Stderr : ${stderr}`);
+                console.warn(`Stderr: ${stderr}`);
                 return;
             }
-            console.log(`Stdout : ${stdout}`);
+            console.log(`Stdout: ${stdout}`);
         });
 
         configuratorRunning = true;
-        console.log('Configurator lancé.');
-        return res.json({ success: true, message: 'Configurator lancé.' });
+        console.log('Configurator started.');
+        return res.json({ success: true, message: 'Configurator started.' });
     } catch (error) {
-        console.error(`Erreur inattendue : ${error.message}`);
+        console.error(`Unexpected error: ${error.message}`);
         configuratorRunning = false;
-        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du configurator.' });
+        return res.status(500).json({ success: false, message: 'Error starting configurator.' });
     }
 });
 
 
-// API pour arrêter l'exécutable
+// API to stop the executable
 app.post('/stop', (req, res) => {
-    const exeName = 'testjson.exe'; // Nom du processus à tuer
+    const exeName = 'testjson.exe'; // Name of process to kill
 
     if (!processRunning) {
-        return res.status(400).json({ success: false, message: 'Aucun processus en cours.' });
+        return res.status(400).json({ success: false, message: 'No processes running.' });
     }
 
     try {
-        // Utilisation de taskkill pour arrêter le processus par nom
+        // Using taskkill to kill process by name
         exec(`taskkill /IM ${exeName} /F`, (error, stdout, stderr) => {
             if (error) {
-                console.error(`Erreur lors de l'arrêt : ${error.message}`);
-                return res.status(500).json({ success: false, message: `Erreur : ${error.message}` });
+                console.error(`Error during shutdown: ${error.message}`);
+                return res.status(500).json({ success: false, message: `Error: ${error.message}` });
             }
 
             if (stderr) {
-                console.warn(`Stderr : ${stderr}`);
-                // Optionnel : envoyer un avertissement
+                console.warn(`Stderr: ${stderr}`);
+                // Optional: send a warning
             }
 
-            console.log(`Processus arrêté : ${stdout}`);
-            processRunning = false; // Réinitialiser après l'arrêt
-            return res.json({ success: true, message: 'Processus arrêté.' });
+            console.log(`Process stopped: ${stdout}`);
+            processRunning = false; // Reset after shutdown
+            return res.json({ success: true, message: 'Process stopped.' });
         });
     } catch (error) {
-        console.error(`Erreur inattendue : ${error.message}`);
-        processRunning = false; // Assurer que l'état est réinitialisé
-        return res.status(500).json({ success: false, message: 'Erreur lors de l\'arrêt du processus.' });
+        console.error(`Unexpected error: ${error.message}`);
+        processRunning = false; // Ensure the state is reset
+        return res.status(500).json({ success: false, message: 'Error stopping process.' });
     }
 });
 
-// Démarrer le serveur
+// Start the server
 app.listen(port, () => {
-    console.log(`Serveur en cours d'exécution sur http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });
