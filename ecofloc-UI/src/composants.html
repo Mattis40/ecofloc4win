@@ -97,7 +97,7 @@
 
             <!-- Modify Button -->
             <div class="flex justify-center mt-auto">
-                <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-8 rounded-lg transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50">
+                <button onClick="configurator()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-8 rounded-lg transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50">
                     Modifier
                 </button>
             </div>
@@ -140,15 +140,35 @@
             document.getElementById('nic-max-download-rate').textContent = `Max: ${data.max_download_rate} Mbps`;
         });
 
-        document.querySelector('button').addEventListener('click', () => {
-            const confirmation = confirm("Voulez-vous exécuter l'application ?");
-            if (confirmation) {
-                // Remplacer "myapp://action" par ton protocole personnalisé
-                window.location.href = "ecofloc://";
-            } else {
-                alert("Action annulée.");
-            }
-        });
+        function configurator() {
+            // Adresse de votre serveur Node.js
+            const serverUrl = 'http://localhost:3000/configurator';
+
+            // Envoi d'une requête POST au serveur
+            fetch(serverUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // Ajoutez des données si nécessaire
+                body: JSON.stringify({}),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Script exécuté avec succès :', data.stdout);
+                        //alert('Script exécuté avec succès !');
+                    } else {
+                        console.error('Erreur lors de l\'exécution :', data.message);
+                        alert(`Erreur : ${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur réseau ou serveur :', error);
+                    alert('Impossible de contacter le serveur.');
+                });
+        }
+
     </script>
 
 </body>
