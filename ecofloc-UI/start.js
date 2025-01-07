@@ -10,13 +10,14 @@ exec('npm run dev --prefix ./ecofloc-UI', (err, stdout, stderr) => {
   console.error('stderr:', stderr);
 });
 
-exec('node run src/server.cjs', (err, stdout, stderr) => {
+// Run the Node.js server (server.cjs)
+exec('node ./ecofloc-UI/src/server.cjs', (err, stdout, stderr) => {
   if (err) {
-    console.error('Error:', err);
+    console.error('Error starting Node server:', err);
     return;
   }
-  console.log('stdout:', stdout);
-  console.error('stderr:', stderr);
+  console.log('Node server stdout:', stdout);
+  console.error('Node server stderr:', stderr);
 });
 
 console.log('Running on: http://localhost:5173/src/ \n');

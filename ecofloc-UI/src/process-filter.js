@@ -64,6 +64,39 @@ function getFilterCategorie(nomCategorie) {
     return otherFilterElement.checked;
 }
 
+function changePidState(nomProc, pidProc, etat) {
+    // Adresse de votre serveur Node.js
+    const serverUrl = 'http://localhost:3030/changePidState';
+    console.log(nomProc);
+    console.log(pidProc);
+    console.log(etat);
+    // Envoi d'une requête POST au serveur
+    fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        // Ajoutez les données
+        body: JSON.stringify({ nomProc, pidProc, etat }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Script exécuté avec succès :', data.stdout);
+                //alert('Script exécuté avec succès !');
+            } else {
+                console.error('Erreur lors de l\'exécution :', data.message);
+                alert(`Erreur : ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur réseau ou serveur :', error);
+            alert('Impossible de contacter le serveur.');
+        });
+}
+
+
+
 function afficherListeProcessus() {
     while (listeProcessusHtmlElement.firstChild) {
         listeProcessusHtmlElement.removeChild(listeProcessusHtmlElement.firstChild);
@@ -92,8 +125,7 @@ function afficherListeProcessus() {
                     let clickedCheckbox = event.target;
                     const dataNomProcessus = event.target.getAttribute("data-nom-processus");
                     const dataNumeroPid = event.target.getAttribute("data-numero-pid");
-                    console.log(dataNomProcessus);
-                    console.log(dataNumeroPid);
+                    changePidState(dataNomProcessus, dataNumeroPid,clickedCheckbox.checked);
                     if (clickedCheckbox.checked) {
                         console.log('La checkbox est cochée');
                     } else {

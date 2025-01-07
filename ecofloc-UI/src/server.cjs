@@ -1,9 +1,11 @@
 const express = require('express');
 const { exec } = require('child_process');
 const cors = require('cors'); // Pour permettre les requ�tes depuis votre front-end
+const fs = require('fs');
 
 const app = express();
 const port = 3030;
+const appProcessPath = './process.json';
 
 let processRunning = false; // Indique si le processus est en cours d'ex�cution
 let configuratorRunning = false; // Indique si le configurator est en cours d'ex�cution
@@ -110,6 +112,44 @@ app.post('/stop', (req, res) => {
         processRunning = false; // Assurer que l'�tat est r�initialis�
         return res.status(500).json({ success: false, message: 'Erreur lors de l\'arr�t du processus.' });
     }
+});
+
+app.post('/changePidState', (req, res) => {
+    const { nomProc, pidProc, etat } = req.body; // Extract nomProc and pidProc from the request body
+    console.log('Received changePidState request');
+    console.log('nomProc:', nomProc);
+    console.log('pidProc:', pidProc);
+    console.log('Etat:', etat)
+
+    // Récupérer
+    const data = JSON.parse(fs.readFileSync(appProcessPath, 'utf-8'));
+
+    // Parcourir les processus pour modifier la valeur
+    data.forEach(process => {
+        if (process.name == nomProc) {
+            console.log("Trouver nom proc");
+            process.pid.forEach(pidInfo => {
+                if (pidInfo.numeroPid == pidProc) {
+                    console.log("Trouver pid");
+                    pidInfo.checked = etat;
+                }
+            });
+        }
+    });
+    
+    // Sauvegarder les modifications dans le fichier JSON
+    fs.writeFileSync(appProcessPath, JSON.stringify(data, null, 4), 'utf-8');
+    
+    console.log('Valeur modifiée avec succès.');
+
+    // Example response:
+    res.json({
+        success: true,
+        message: 'Process state changed successfully!',
+        nomProc,
+        pidProc,
+        etat
+    });
 });
 
 // D�marrer le serveur

@@ -4,7 +4,7 @@
         "name": "[System Process]",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 0
             }
         ]
@@ -14,7 +14,7 @@
         "name": "System",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 4
             }
         ]
@@ -24,7 +24,7 @@
         "name": "Registry",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 172
             }
         ]
@@ -34,7 +34,7 @@
         "name": "smss.exe",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 620
             }
         ]
@@ -106,11 +106,11 @@
                 "numeroPid": 1556
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 1684
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 1692
             },
             {
@@ -138,11 +138,11 @@
                 "numeroPid": 2124
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 2380
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 2824
             },
             {
@@ -150,7 +150,7 @@
                 "numeroPid": 3324
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 3416
             },
             {
