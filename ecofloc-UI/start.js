@@ -10,17 +10,14 @@ exec('npm run dev --prefix ./ecofloc-UI', (err, stdout, stderr) => {
   console.error('stderr:', stderr);
 });
 
-/*exec('node run src/exec-ecofloc.cjs', (err, stdout, stderr) => {
+exec('node run src/server.cjs', (err, stdout, stderr) => {
   if (err) {
     console.error('Error:', err);
     return;
   }
   console.log('stdout:', stdout);
   console.error('stderr:', stderr);
-
-  // Open index.html (or your default URL) in the browser
-  open('http://localhost:5173/src/'); 
-});*/
+});
 
 console.log('Running on: http://localhost:5173/src/ \n');
 exec(`start http://localhost:5173/src/`, (err, stdout, stderr) => {

@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 const cors = require('cors'); // Pour les requêtes cross-origin depuis un front-end
 
 const app = express();
-const port = 3000;
+const port = 3030;
 
 // Middleware
 app.use(cors());

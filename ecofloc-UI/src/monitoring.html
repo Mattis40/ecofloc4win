@@ -119,7 +119,7 @@
                         <div class="col-1">Process name</div>
                         <div class="col-2">PID</div>
                     </div>
-                    <div class="custom-tbody ">
+                    <div class="custom-tbody" id="ListeProcessus">
                         <div class="line">
                             <div class="col-1 cell">Firefox.exe</div>
                             <div class="col-2 cell">12364 <input type="checkbox" id=""></div>
@@ -163,25 +163,28 @@
                     <div class="custom-thead col-3">
                         <div>Group Application</div>
                     </div>
-                    <div class="custom-tbody">
+                    <div class="custom-tbody" id="TableFilter">
                         <div class="line col-3">
-                            <div>Bureautique</div>
-                            <input type="checkbox" id="">
+                            <div>All</div>
+                            <input type="checkbox" id="AllFilter" value="All">
                         </div>
                         <div class="line col-3">
-                            <div>Navigateur</div>
-                            <input type="checkbox" id="">
+                            <div>OfficeApplication</div>
+                            <input type="checkbox" id="OfficeApplicationFilter" value="Office">
                         </div>
                         <div class="line col-3">
-                            <div>...</div>
-                            <input type="checkbox" id="">
+                            <div>Browser</div>
+                            <input type="checkbox" id="NavigateurFilter" value="Browser">
+                        </div>
+                        <div class="line col-3">
+                            <div>Other</div>
+                            <input type="checkbox" id="OtherFilter" value="Other">
                         </div>
                     </div>
                 </div>
              </div>
         </section>
     </main>
-
     <!-- Script -->
     <script>
 
@@ -224,7 +227,7 @@
 
 function executeScript() {
     // Adresse de votre serveur Node.js
-    const serverUrl = 'http://localhost:3000/execute';
+    const serverUrl = 'http://localhost:3030/execute';
 
     // Envoi d'une requête POST au serveur
     fetch(serverUrl, {
@@ -253,7 +256,7 @@ function executeScript() {
 
 // Définir la fonction `stopExecutable` en dehors de `executeScript`
 function stopExecutable() {
-    fetch('http://localhost:3000/stop', {
+    fetch('http://localhost:3030/stop', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -272,7 +275,9 @@ function stopExecutable() {
 
 
     </script>
-    <script src="graphique.js"></script>
+    <script src="ClassApplication.js"></script>
+    <script src="process-filter.js"></script>
+    <script src="ClassDynamicGraph.js"></script>
     <script src="affichage-graphique.js"></script>
 </body>
 
