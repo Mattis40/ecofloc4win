@@ -7,17 +7,27 @@ const flex_graphique = document.getElementById("flex-graphique");
 const dictionnaireComposants = {
   "CPU":"CPU",
   "GPU":"GPU",
-  "RAM":"RAM",
   "NIC":"NIC",
   "SD":"SD",
-  "TOTAL":"Total Consommation"
+  "TOTAL":"Total Consommation",
+  "RAM":"RAM"
 };
 
 const unGraph = (id, value) => {
+
+  if (value == "RAM") {
+    return `
+        <div class="graphique">
+          <h3 class="text-center font-semibold">RAM</h3>
+          <div class="flex flex-grow justify-center items-center h-[90%] bg-wip rounded-md" >
+            <p class="text-center font-bold bg-zinc-800 p-4 rounded-md">Work in progress...</p>
+            </div>
+        </div>`
+  }
   return `
   <div id="box${id}" class="graphique">
     <h3 class="text-center font-semibold">${value}</h3>
-    <div id="graph${id}" class="responsive-graph flex-grow"></div>
+    <div id="graph${id}" class="flex h-full"></div>
   </div>`
 }
 
@@ -158,15 +168,15 @@ let graphCPU = new DynamicGraph("graphCPU", "rgb(248 113 113 / var(--tw-bg-opaci
 let graphSD = new DynamicGraph("graphSD", "rgb(129 140 248 / var(--tw-bg-opacity, 1))");
 let graphNIC = new DynamicGraph("graphNIC", "rgb(96 165 250 / var(--tw-bg-opacity, 1))");
 let graphGPU = new DynamicGraph("graphGPU", "rgb(74 222 128 / var(--tw-bg-opacity, 1))");
-let graphRAM = new DynamicGraph("graphRAM", "rgb(45 212 191 / var(--tw-bg-opacity, 1))");
 let graphTOTAL = new DynamicGraph("graphTOTAL",  "rgb(192 132 252 / var(--tw-bg-opacity, 1))");
+//let graphRAM = new DynamicGraph("graphRAM", "rgb(45 212 191 / var(--tw-bg-opacity, 1))");
 const dictionnaireGraphComposants = {
   "CPU":graphCPU,
   "GPU":graphGPU,
-  "RAM":graphRAM,
   "NIC":graphNIC,
   "SD":graphSD,
-  "TOTAL":graphTOTAL
+  "TOTAL":graphTOTAL,
+  "RAM":graphRAM
 };
 setListener();
 setInterval(readFile, 500);
