@@ -1,16 +1,74 @@
 const listeProcessusHtmlElement = document.getElementById("ListeProcessus");
 const tableFilterHtmlElement = document.getElementById("TableFilter")
 let mesProcessus = [];
-const otherFilterElement = document.getElementById("OtherFilter");
-const allFilterElement = document.getElementById("AllFilter");
+let setCategorie = new Set();
+
+function makeGroupApplication(){
+    if(tableFilterHtmlElement) {
+        tableFilterHtmlElement.innerHTML = '';
+        for (const item of setCategorie) {
+            const lineDiv = document.createElement('div');
+            lineDiv.classList.add('line', 'col-3');
+
+            const labelDiv = document.createElement('div');
+            labelDiv.textContent = item;
+
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = item+'Filter';
+            input.value = item;
+            input.checked = true;
+
+            lineDiv.appendChild(labelDiv);
+            lineDiv.appendChild(input);
+
+            tableFilterHtmlElement.appendChild(lineDiv);
+        }
+        for(let filter of tableFilterHtmlElement.querySelectorAll("input")){
+            filter.checked = true;
+            filter.indeterminate = false;
+            filter.addEventListener("change", (event) => {
+                const currentFilter = event.target;
+                if(currentFilter.value == "All"){
+                    for(let filter of tableFilterHtmlElement.querySelectorAll("input")) {
+                        filter.checked = currentFilter.checked;
+                    }
+                }
+                else{
+                    let all = true;
+                    let atLeastOne = false;
+                    for(let filter of tableFilterHtmlElement.querySelectorAll("input")) {
+                        if(filter.checked && filter.value != "All"){
+                            atLeastOne = true;
+                        }
+                        if(!filter.checked && filter.value != "All"){
+                            all = false;
+                        }
+                    }
+                    const allFilterElement = document.getElementById("AllFilter");
+                    allFilterElement.checked = atLeastOne;
+                    allFilterElement.indeterminate = (!all && atLeastOne); 
+                }
+                afficherListeProcessus();
+            });
+        }
+    }
+}
 
 function parseDataToMesProcessus(data){
     if(data){
         mesProcessus = [];
+        setCategorie = new Set();
+        setCategorie.add("All");
+        setCategorie.add("Other");
         data.forEach(process => {
             let uneApplication = new Application(process.name,process.pid, process.categorie, process.color);
             mesProcessus.push(uneApplication);
+            if(uneApplication.categorie != "") {
+                setCategorie.add(uneApplication.categorie);
+            }
         });
+        makeGroupApplication();
         afficherListeProcessus();
     }
 }
@@ -32,42 +90,13 @@ fetch('process.json')
     console.error('Erreur:', error);
 });
 
-if(tableFilterHtmlElement){
-    for(let filter of tableFilterHtmlElement.querySelectorAll("input")){
-        filter.checked = true;
-        filter.indeterminate = false;
-        filter.addEventListener("change", (event) => {
-            const currentFilter = event.target;
-            if(currentFilter.value == "All"){
-                for(let filter of tableFilterHtmlElement.querySelectorAll("input")) {
-                    filter.checked = currentFilter.checked;
-                }
-            }
-            else{
-                let all = true;
-                let atLeastOne = false;
-                for(let filter of tableFilterHtmlElement.querySelectorAll("input")) {
-                    if(filter.checked && filter.value != "All"){
-                        atLeastOne = true;
-                    }
-                    if(!filter.checked && filter.value != "All"){
-                        all = false;
-                    }
-                }
-                allFilterElement.checked = atLeastOne;
-                allFilterElement.indeterminate = (!all && atLeastOne); 
-            }
-            afficherListeProcessus();
-        });
-    }
-}
-
 function getFilterCategorie(nomCategorie) {
     for(let filter of tableFilterHtmlElement.querySelectorAll("input")){
         if(filter.value == nomCategorie){
             return filter.checked;
         }
     }
+    const otherFilterElement = document.getElementById("OtherFilter");
     return otherFilterElement.checked;
 }
 
