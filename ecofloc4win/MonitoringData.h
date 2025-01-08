@@ -2,12 +2,22 @@
 
 #include <vector>
 #include <string>
+#include <windows.h>
+#include <map>
+
+struct IoEventInfo {
+	DWORD pid;
+	std::wstring processName;
+	USHORT operationType;
+	ULONG bytesTransferred = 0;  // Track total bytes transferred for each IRP
+};
 
 class MonitoringData
 {
 public:
 	std::string name;
 	std::vector<int> pids;
+	std::map<ULONGLONG, IoEventInfo> irpMap;
 
 	bool cpuEnabled = false;
 	bool gpuEnabled = false;
@@ -43,5 +53,9 @@ public:
 	void updateGPUEnergy(double energy);
 	void updateSDEnergy(double energy);
 	void updateNICEnergy(double energy);
+
+	void addIrp(ULONGLONG irpAddress, const IoEventInfo& info);
+	void updateIrp(ULONGLONG irpAddress, ULONG bytesTransferred);
+	void removeIrp(ULONGLONG irpAddress);
 };
 
