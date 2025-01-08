@@ -110,6 +110,9 @@ unordered_map<string, pair<vector<process>, bool>> comp = {{"CPU", {{}, false}},
 
 int interval = 500;
 
+/*
+* This function gets the index of a counter in the registry based on its name.
+*/
 DWORD getCounterIndex(const std::string& counterName) {
     HKEY hKey;
     if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib\\009",
@@ -171,6 +174,9 @@ DWORD getCounterIndex(const std::string& counterName) {
     return -1;  // Counter name not found
 }
 
+/*
+* This function gets the instance name for a given process ID.
+*/
 std::wstring GetInstanceForPID(int targetPID) {
     PDH_HQUERY query = nullptr;
     PDH_HCOUNTER pidCounter = nullptr;

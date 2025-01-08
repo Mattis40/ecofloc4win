@@ -142,13 +142,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ecofloc4win.cpp" />
-    <ClCompile Include="EventProcessor.cpp" />
     <ClCompile Include="gpu.cpp" />
     <ClCompile Include="MonitoringData.cpp" />
     <ClCompile Include="process.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EventProcessor.h" />
     <ClInclude Include="gpu.h" />
     <ClInclude Include="MonitoringData.h" />
     <ClInclude Include="process.h" />
