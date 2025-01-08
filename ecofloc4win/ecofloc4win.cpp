@@ -1,34 +1,42 @@
 #define NOMINMAX
+//#define WIN32_LEAN_AND_MEAN  // Prevent inclusion of unnecessary Windows headers
 
-#include <ftxui/component/screen_interactive.hpp>
-#include <ftxui/component/component.hpp>
-#include <ftxui/dom/elements.hpp>
-#include <ftxui/dom/table.hpp>
+#define WIN32_WINNT 0x0600  // Vista and later
+
+#include <winsock2.h>        // Include Winsock2 before windows.h to avoid conflicts
+#include <WS2tcpip.h>
+#include <windows.h>         // Windows core headers
+#include <iphlpapi.h>        // Network management functions
+#include <tcpestats.h>       // TCP extended stats
+#include <psapi.h>           // For ProcessStatus API
+#include <tchar.h>           // Generic text mappings for Unicode/ANSI
+#include <locale>            // For localization and locale functions
+#include <codecvt>           // For string conversions
+#include <tlhelp32.h>        // For process and snapshot handling
+#include <cctype>            // For character handling functions
+#include <algorithm>         // For STL algorithms
+#include <unordered_map>     // For unordered map functionality
+#include <utility>           // For utility functions and data types
+#include <vector>            // For vector container
+#include <string>            // For string handling
+#include <sstream>           // For string streams
+#include <list>              // For list container
+#include <mutex>             // For mutex support in multithreading
+#include <Pdh.h>
+#include <PdhMsg.h>
+#include <cstring>
 #include <iostream>
 
-#include <vector>
-#include <string>
-#include <sstream>
-#include <list>
-#include <windows.h>
-#include <tchar.h>
-#include <psapi.h>
-#include <locale>
-#include <codecvt>
-#include <tlhelp32.h>
-#include <cctype>
-#include <algorithm>
-#include <unordered_map>
-#include <utility>
-#include "process.h"
-#include <windows.h>
-#include <mutex>
+#include "process.h"         // Custom header for process handling
+#include "gpu.h"             // Custom header for GPU monitoring
+#include "MonitoringData.h"  // Custom header for monitoring data
 
+#include "ftxui/component/screen_interactive.hpp"
+#include "ftxui/component/component.hpp"
+#include "ftxui/dom/elements.hpp"
+#include "ftxui/dom/table.hpp"
 #include "ftxui/dom/node.hpp"
 #include "ftxui/screen/color.hpp"
-
-#include "gpu.h"
-#include "MonitoringData.h"
 
 using namespace ftxui;
 
@@ -67,6 +75,8 @@ void removeProcName(string, string);
 void enable(string);
 void disable(string);
 
+std::wstring getLocalizedCounterPath(const std::wstring& processName, const std::string& counterName);
+
 unordered_map<string, int> actions = 
 {
     {"enable", 1},
@@ -99,7 +109,149 @@ wstring GetProcessNameByPID(DWORD processID) {
 unordered_map<string, pair<vector<process>, bool>> comp = {{"CPU", {{}, false}}, {"GPU", {{}, false} }, {"SD", {{}, false }}, {"NIC", {{}, false }}};
 
 int interval = 500;
-	
+
+DWORD getCounterIndex(const std::string& counterName) {
+    HKEY hKey;
+    if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib\\009",
+        0, KEY_READ, &hKey) != ERROR_SUCCESS) {
+        std::cerr << "Failed to open registry key" << std::endl;
+        return -1;
+    }
+
+    DWORD dataSize = 0;
+    if (RegQueryValueEx(hKey, L"Counter", NULL, NULL, NULL, &dataSize) != ERROR_SUCCESS) {
+        std::cerr << "Failed to query registry value size" << std::endl;
+        RegCloseKey(hKey);
+        return -1;
+    }
+
+    // Allocate buffer for the Counter data
+    std::unique_ptr<char[]> buffer(new char[dataSize]);
+    if (RegQueryValueEx(hKey, L"Counter", NULL, NULL, reinterpret_cast<LPBYTE>(buffer.get()), &dataSize) != ERROR_SUCCESS) {
+        std::cerr << "Failed to query registry value" << std::endl;
+        RegCloseKey(hKey);
+        return -1;
+    }
+
+    RegCloseKey(hKey);
+
+    // Parse the buffer
+    std::string temp;
+    std::string currentIndex;
+    bool isIndex = true; // Tracks if the current string is an index or a name
+
+    for (DWORD i = 0; i < dataSize; i += 2) { // Increment by 2 to skip null terminators
+        if (buffer[i] == '\0') {
+            // Process accumulated string
+            if (!temp.empty()) {
+                if (isIndex) {
+                    currentIndex = temp;  // Save the index
+                }
+                else {
+                    // Debug: Output the parsed index and name
+
+                    // Check if the name matches the target counter name
+                    if (temp == counterName) {
+                        RegCloseKey(hKey);
+                        return std::stoul(currentIndex);  // Convert index to integer
+                    }
+                }
+
+                temp.clear();          // Reset for the next string
+                isIndex = !isIndex;    // Toggle between index and name
+            }
+        }
+        else {
+            temp += buffer[i];  // Append meaningful character (skip '\0')
+        }
+    }
+
+    // Cleanup and return
+    RegCloseKey(hKey);
+    return -1;  // Counter name not found
+}
+
+std::wstring GetInstanceForPID(int targetPID) {
+    PDH_HQUERY query = nullptr;
+    PDH_HCOUNTER pidCounter = nullptr;
+
+    DWORD counterIndex = getCounterIndex("ID Process");
+    DWORD processIndex = getCounterIndex("Process");
+
+	std::wstring queryPath = getLocalizedCounterPath(L"*", "ID Process");
+
+
+    // Open a query
+    if (PdhOpenQuery(nullptr, 0, &query) != ERROR_SUCCESS) {
+        std::cerr << "Failed to open PDH query." << std::endl;
+        return L"";
+    }
+
+    // Add the wildcard counter for all processes
+    if (PdhAddCounter(query, queryPath.c_str(), 0, &pidCounter) != ERROR_SUCCESS) {
+        std::cerr << "Failed to add counter for process ID." << std::endl;
+        PdhCloseQuery(query);
+        return L"";
+    }
+
+    // Collect data
+    if (PdhCollectQueryData(query) != ERROR_SUCCESS) {
+        std::cerr << "Failed to collect query data." << std::endl;
+        PdhCloseQuery(query);
+        return L"";
+    }
+
+    // Get counter info to enumerate instances
+    DWORD bufferSize = 0;
+    DWORD itemCount = 0;
+    PdhGetRawCounterArray(pidCounter, &bufferSize, &itemCount, nullptr);
+
+    std::vector<BYTE> buffer(bufferSize);
+    PDH_RAW_COUNTER_ITEM* items = reinterpret_cast<PDH_RAW_COUNTER_ITEM*>(buffer.data());
+    if (PdhGetRawCounterArray(pidCounter, &bufferSize, &itemCount, items) != ERROR_SUCCESS) {
+        std::cerr << "Failed to get counter array." << std::endl;
+        PdhCloseQuery(query);
+        return L"";
+    }
+
+    // Match the target PID with the instance name
+    std::wstring matchedInstance;
+    for (DWORD i = 0; i < itemCount; ++i) {
+        if (static_cast<int>(items[i].RawValue.FirstValue) == targetPID) {
+            matchedInstance = items[i].szName;
+            break;
+        }
+    }
+
+    PdhCloseQuery(query);
+    return matchedInstance;
+}
+
+
+
+std::wstring getLocalizedCounterPath(const std::wstring& processName, const std::string& counterName) {
+	wchar_t localizedName[PDH_MAX_COUNTER_PATH];
+	wchar_t localizedProcessName[PDH_MAX_COUNTER_PATH];
+	DWORD size = PDH_MAX_COUNTER_PATH;
+	DWORD counterIndex = getCounterIndex(counterName);
+	DWORD processIndex = getCounterIndex("Process");
+
+	if (PdhLookupPerfNameByIndex(NULL, counterIndex, localizedName, &size) != ERROR_SUCCESS) {
+		std::cerr << "Failed to get localized counter path" << std::endl;
+		return L"";
+	}
+
+    if (PdhLookupPerfNameByIndex(NULL, processIndex, localizedProcessName, &size) != ERROR_SUCCESS) {
+        std::cerr << "Failed to get localized counter path" << std::endl;
+        return L"";
+    }
+
+	std::wstring localizedProcessNameW(localizedProcessName);
+	std::wstring localizedNameW(localizedName);
+    return L"\\"+ localizedProcessNameW + L"(" + processName + L")\\" + localizedNameW;
+    //return L"\\" + localizedProcessNameW + L"(steam)\\" + localizedNameW;
+}
+
 auto CreateTableRows() -> std::vector<std::vector<std::string>> {
 	std::vector<std::vector<std::string>> rows;
 	std::lock_guard<std::mutex> lock(data_mutex);
@@ -215,39 +367,6 @@ int main()
 		return false;
 	});
 
-	monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-	monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-	monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-	monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-    monitoringData.push_back(MonitoringData("chrome.exe", { 1, 2 }));
-    monitoringData.push_back(MonitoringData("firefox.exe", { 3, 4 }));
-    monitoringData.push_back(MonitoringData("notepad.exe", { 5, 6 }));
-    monitoringData.push_back(MonitoringData("explorer.exe", { 7, 8 }));
-
 	std::thread gpu_thread([&screen] {
 		while (true) {
             {
@@ -265,18 +384,79 @@ int main()
 		}
 	});
 
-	std::thread redraw_thread([&screen] {
-		while (true) {
-			screen.PostEvent(Event::Custom);
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
-		}
-	});
+    std::thread sd_thread([&screen] {
+        PDH_HQUERY query;
+        if (PdhOpenQuery(NULL, 0, &query) != ERROR_SUCCESS) {
+            std::cerr << "Failed to open PDH query." << std::endl;
+            return;
+        }
+
+        std::map<std::wstring, std::pair<PDH_HCOUNTER, PDH_HCOUNTER>> process_counters;
+
+        while (true) {
+            {
+                std::unique_lock<std::mutex> lock(data_mutex);
+                new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
+
+                for (auto& data : monitoringData) {
+                    std::wstring instanceName = GetInstanceForPID(data.getPids()[0]);
+
+                    if (process_counters.find(instanceName) == process_counters.end()) {
+                        PDH_HCOUNTER counterDiskRead, counterDiskWrite;
+                        std::wstring readPath = getLocalizedCounterPath(instanceName, "IO Read Bytes/sec");
+                        std::wstring writePath = getLocalizedCounterPath(instanceName, "IO Write Bytes/sec");
+
+                        if (PdhAddCounter(query, readPath.c_str(), 0, &counterDiskRead) != ERROR_SUCCESS ||
+                            PdhAddCounter(query, writePath.c_str(), 0, &counterDiskWrite) != ERROR_SUCCESS) {
+                            std::cerr << "Failed to add PDH counters for: " << data.getName() << std::endl;
+                            continue;
+                        }
+
+                        process_counters[instanceName] = { counterDiskRead, counterDiskWrite };
+                    }
+                }
+            }
+
+            if (PdhCollectQueryData(query) != ERROR_SUCCESS) {
+                std::cerr << "Failed to collect PDH query data." << std::endl;
+                continue;
+            }
+
+            for (auto& [instanceName, counters] : process_counters) {
+                PDH_FMT_COUNTERVALUE diskReadValue, diskWriteValue;
+                long readRate = 0, writeRate = 0;
+
+                if (PdhGetFormattedCounterValue(counters.first, PDH_FMT_LONG, NULL, &diskReadValue) == ERROR_SUCCESS) {
+                    readRate = diskReadValue.longValue;
+                }
+                if (PdhGetFormattedCounterValue(counters.second, PDH_FMT_LONG, NULL, &diskWriteValue) == ERROR_SUCCESS) {
+                    writeRate = diskWriteValue.longValue;
+                }
+
+                double readPower = 2.2 * readRate / 5600000000;
+                double writePower = 2.2 * writeRate / 5300000000;
+                double averagePower = readPower + writePower;
+
+                auto it = std::find_if(monitoringData.begin(), monitoringData.end(), [&](const auto& d) {
+                    return GetInstanceForPID(d.getPids()[0]) == instanceName;
+                    });
+                if (it != monitoringData.end()) {
+                    it->updateSDEnergy(averagePower * 5);
+                }
+            }
+
+            screen.Post(Event::Custom);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+
+        PdhCloseQuery(query);
+        });
 
 	// Run the application
 	screen.Loop(component);
 
-	redraw_thread.join();
 	gpu_thread.join();
+	sd_thread.join();
 	return 0;
 }
 
@@ -441,19 +621,19 @@ void addProcPid(string pid, string component)
     //{
         wstring processName = GetProcessNameByPID(stoi(pid));
 
-        if (processName != L"<unknown>" /*&& check list*/)
-        {
+        //if (processName != L"<unknown>" /*&& check list*/)
+        //{
             {
                 std::unique_lock<std::mutex> lock(data_mutex);
                 MonitoringData data(wstring_to_string(processName), { stoi(pid) });
                 monitoringData.push_back(data);
 			    new_data_cv.notify_one();
             }
-        }
-        else
-        {
-            wcout << L"Failed to retrieve process name or process does not exist." << endl;
-        }
+        //}
+        //else
+        //{
+        //    wcout << L"Failed to retrieve process name or process does not exist." << endl;
+        //}
     //}
 }
 

@@ -129,6 +129,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <AdditionalIncludeDirectories>C:\Users\Mattis\OneDrive\Desktop\Cours\Semestre5\Ecofloc\ecofloc4win\vcpkg_installed\x64-windows\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include;C:\Users\Mattis\OneDrive\Desktop\Cours\Semestre5\Ecofloc\ecofloc4win\vcpkg_installed\x64-windows\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,16 +137,18 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\lib\x64;C:\Users\Mattis\OneDrive\Desktop\Cours\Semestre5\Ecofloc\ecofloc4win\vcpkg_installed\x64-windows\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ftxui-screen.lib;ftxui-dom.lib;ftxui-component.lib;nvml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ftxui-screen.lib;ftxui-dom.lib;ftxui-component.lib;nvml.lib;tdh.lib;pdh.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ecofloc4win.cpp" />
+    <ClCompile Include="EventProcessor.cpp" />
     <ClCompile Include="gpu.cpp" />
     <ClCompile Include="MonitoringData.cpp" />
     <ClCompile Include="process.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EventProcessor.h" />
     <ClInclude Include="gpu.h" />
     <ClInclude Include="MonitoringData.h" />
     <ClInclude Include="process.h" />

@@ -89,3 +89,17 @@ void MonitoringData::updateNICEnergy(double energy)
 {
 	nicEnergy += energy;
 }
+
+void MonitoringData::addIrp(ULONGLONG irpAddress, const IoEventInfo& info) {
+	irpMap[irpAddress] = info;
+}
+
+void MonitoringData::updateIrp(ULONGLONG irpAddress, ULONG bytesTransferred) {
+	if (irpMap.find(irpAddress) != irpMap.end()) {
+		irpMap[irpAddress].bytesTransferred += bytesTransferred;
+	}
+}
+
+void MonitoringData::removeIrp(ULONGLONG irpAddress) {
+	irpMap.erase(irpAddress);
+}
