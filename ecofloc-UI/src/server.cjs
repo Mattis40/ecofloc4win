@@ -2,6 +2,7 @@ const express = require('express');
 const { exec } = require('child_process');
 const cors = require('cors'); // Pour permettre les requ�tes depuis votre front-end
 const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const port = 3030;
@@ -13,6 +14,15 @@ let configuratorRunning = false; // Indique si le configurator est en cours d'ex
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Changer le dir par le correcte
+const absolutePath = path.resolve('./ecofloc-UI/src');
+if (fs.existsSync(absolutePath)) {
+  process.chdir(absolutePath); // Change le répertoire de travail
+  console.log(`Répertoire de travail changé à : ${absolutePath}`);
+} else {
+  console.error(`Le répertoire ${absolutePath} n'existe pas.`);
+}
 
 // API pour lancer l'ex�cutable
 app.post('/execute', (req, res) => {
@@ -115,6 +125,7 @@ app.post('/stop', (req, res) => {
 });
 
 app.post('/changePidState', (req, res) => {
+    console.log('Répertoire courant :', process.cwd());
     const { nomProc, pidProc, etat } = req.body; // Extract nomProc and pidProc from the request body
     console.log('Received changePidState request');
     console.log('nomProc:', nomProc);

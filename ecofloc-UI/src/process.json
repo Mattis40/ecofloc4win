@@ -4,7 +4,7 @@
         "name": "[System Process]",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 0
             }
         ]
@@ -14,7 +14,7 @@
         "name": "System",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 4
             }
         ]
@@ -58,7 +58,7 @@
         "name": "wininit.exe",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 1096
             }
         ]
