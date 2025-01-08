@@ -9,6 +9,7 @@
 #include <regex>
 #include <random>
 #include <algorithm>
+#include <iterator>
 #include "json.hpp"
 #include <iostream>
 
@@ -116,37 +117,67 @@ std::vector<ProcessInfo> getProcesses() {
     return processes;
 }
 
+std::vector<std::vector<std::string>> getDiffVector(const std::vector<std::string>& list1, const std::vector<std::string>& list2) {
+    std::vector<std::string> diffTemp;
+    std::vector<std::vector<std::string>> output;
+    std::set_difference(list1.begin(), list1.end(), list2.begin(), list2.end(),std::inserter(diffTemp, diffTemp.begin()));
+    
+    for (int i = 0; i < diffTemp.size(); i++) {
+        if (std::find(list2.begin(), list2.end(), diffTemp[i]) != list2.end()) {// Added
+            output[0].push_back(diffTemp[i]);
+        }
+        else { // Removed
+            output[1].push_back(diffTemp[i]);
+        }
+    }
+
+    return output;
+}
+
+json removeElemFromJsonFromKeyValue(json input, const std::string key, const std::string value) {
+    for (auto it = input.begin(); it != input.end(); ) {
+        if (it->contains(key) && (*it)[key] == value) {
+            it = input.erase(it); // Remove the entry and update iterator
+        }
+        else {
+            ++it; // Move to the next entry
+        }
+    }
+    return input;
+}
+
 // Fonction pour écrire les processus dans un fichier JSON
-void writeProcessesToJson(const std::vector<ProcessInfo>& processes, const std::string& filename) {
+void writeProcessesToJsonExistingJson(const std::vector<ProcessInfo>& processes, const std::string& filename) {
     std::ifstream f(filename);
     json input = json::parse(f);
     json output;
-    std::vector<std::string> listProcessName;
-    int i = 0;
+    std::vector<std::string> listProcessNameNew;
+    std::vector<std::string> listProcessNameOld;
 
     for (auto it = input.begin(); it != input.end(); ++it)
     {
-        listProcessName.push_back(input["name"][i]);
+        listProcessNameOld.push_back(it->at("name"));
         std::cout << *it << std::endl;
-        i++;
     }
-    i = 0;
-
-    for (auto it = input.begin(); it != input.end(); ++it)
-    {
-        listProcessName.push_back(input["name"][i]);
-        std::cout << *it << std::endl;
-        i++;
+    for (const auto& process : processes) {
+        listProcessNameNew.push_back(process.name);
     }
-    // (std::find(listProcessName.begin(), listProcessName.end(), process.name) != listProcessName.end())
-    if (listProcessName.size() > processes.size()) {
-        for (const auto& process : processes) {
-            if (!(std::find(listProcessName.begin(), listProcessName.end(), process.name) != listProcessName.end())) {
 
-            }
+    std::vector<std::vector<std::string>> diff = getDiffVector(listProcessNameOld, listProcessNameNew);
+    for (const auto& process : processes) {
+        for (int i = 0; i < diff[0].size(); i++) {
+            //addElemProcessToJson();
         }
+        for (int i = 0; i < diff[1].size(); i++) {
+            removeElemFromJsonFromKeyValue(input,"name", diff[1][i]);
+        }
+
     }
-    else {
+    
+    if (listProcessNameOld.size() > listProcessNameNew.size()) {//Removes processes from the json
+
+    }
+    else {//Add processes to the json
 
     }
     
@@ -199,8 +230,10 @@ int main()
 
     // Écrire dans un fichier JSON
     std::string filename = "processes.json";
-    writeProcessesToJson(processes, filename);
-
+    std::ifstream f(filename);
+    json lol = json::parse(f);
+    //writeProcessesToJsonExistingJson(processes, filename);
+    std::cout << removeElemFromJsonFromKeyValue(lol,"name","Registry").dump(4) << std::endl;
     std::cout << "Fichier JSON généré : " << filename << std::endl;
     return 0;
 }
