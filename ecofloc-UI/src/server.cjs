@@ -26,7 +26,7 @@ if (fs.existsSync(absolutePath)) {
 
 // API pour lancer l'ex�cutable
 app.post('/execute', (req, res) => {
-    const exePath = `"${__dirname}\\testjson.exe"`; // Chemin absolu vers l'ex�cutable
+    const exePath = `"${__dirname}\\Generator.exe"`; // Chemin absolu vers l'ex�cutable
 
     if (processRunning) {
         return res.status(400).json({ success: false, message: 'Un processus est d�j� en cours.' });
@@ -94,7 +94,7 @@ app.post('/configurator', (req, res) => {
 
 // API pour arr�ter l'ex�cutable
 app.post('/stop', (req, res) => {
-    const exeName = 'testjson.exe'; // Nom du processus � tuer
+    const exeName = 'Generator.exe'; // Nom du processus � tuer
 
     if (!processRunning) {
         return res.status(400).json({ success: false, message: 'Aucun processus en cours.' });

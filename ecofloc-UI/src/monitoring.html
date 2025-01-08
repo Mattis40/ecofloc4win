@@ -61,9 +61,11 @@
                     <h3 class="text-center font-medium">Total Consommation</h3>
                     <div class="render bg-purple-400"></div>
                 </div>
-                <div class="graphique-wip">
-                    <h3 class="text-center flex-1 font-medium">RAM</h3>
-                    <div class="">Work in progress...</div>
+                <div class="graphique">
+                    <h3 class="text-center font-semibold">RAM</h3>
+                    <div class="flex flex-grow justify-center items-center h-[90%] bg-wip rounded-md" >
+                      <p class="text-center font-bold bg-zinc-800 p-4 rounded-md fixed wip">Work in progress...</p>
+                    </div>
                 </div>
             </div>
 
@@ -164,6 +166,54 @@
         const min_screen_height = "min-h-[" + window.innerHeight + "px]";
         document.body.classList.add(max_screen_height);
         document.body.classList.add(min_screen_height);
+
+
+        function executeScript() {
+        // Adresse de votre serveur Node.js
+        const serverUrl = 'http://localhost:3030/execute';
+
+        // Envoi d'une requête POST au serveur
+        fetch(serverUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            // Ajoutez des données si nécessaire
+            body: JSON.stringify({}),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Script exécuté avec succès :', data.stdout);
+                } else {
+                    console.error(`Erreur lors de l'exécution :`, data.message);
+                    alert(`Erreur : ${data.message}`);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur réseau ou serveur :', error);
+                alert('Impossible de contacter le serveur.');
+            });
+        }
+
+        // Définir la fonction stopExecutable en dehors de executeScript
+        function stopExecutable() {
+            fetch('http://localhost:3030/stop', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    alert(data.message);  // Affiche un message à l'utilisateur
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to stop executable');
+                });
+        }
 
 
     </script>

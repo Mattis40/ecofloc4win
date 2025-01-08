@@ -1,0 +1,38 @@
+{
+    "apps": [
+        {
+            "components": [
+                {
+                    "energy_j": 438,
+                    "freq_mhz": 3257,
+                    "power_w": 32,
+                    "type": "CPU",
+                    "voltage_v": 1.2299999993294477
+                },
+                {
+                    "download_bps": 31247,
+                    "energy_j": 310,
+                    "power_w": 3,
+                    "type": "NIC",
+                    "upload_bps": 5990
+                },
+                {
+                    "energy_j": 681,
+                    "power_w": 9,
+                    "read_bps": 29700,
+                    "type": "SD",
+                    "write_bps": 29411
+                },
+                {
+                    "energy_j": 612,
+                    "freq_mhz": 1683,
+                    "power_w": 39,
+                    "type": "GPU",
+                    "voltage_v": 1.0099999997764826
+                }
+            ],
+            "name": "App1"
+        }
+    ],
+    "time": 1736341418
+}

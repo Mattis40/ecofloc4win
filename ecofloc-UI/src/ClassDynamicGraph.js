@@ -1,73 +1,54 @@
 class DynamicGraph {
     constructor(nomGraphique, color) {
-        // Define the layout for the plot
+        // Layout configuration for the graph
         this.layout = {
             xaxis: {
-                rangemode: 'tozero', 
+                rangemode: 'tozero',
                 gridcolor: 'rgba(255,255,255,0.2)',
-                tickfont: {
-                    color: 'white'               // Couleur des nombres sur l'axe X
-                  } 
+                tickfont: { color: 'white' }
             },
             yaxis: {
                 rangemode: 'tozero',
                 gridcolor: 'rgba(255,255,255,0.2)',
-                tickfont: {
-                    color: 'white'               // Couleur des nombres sur l'axe X
-                }
+                tickfont: { color: 'white' }
             },
-            margin: {
-                l: 30,  // Marge gauche
-                r: 30,  // Marge droite
-                t: 10,  // Marge en haut
-                b: 20   // Marge en bas
-            },
-            paper_bgcolor: 'rgba(0,0,0,0)',  // Fond extérieur transparent
-            plot_bgcolor: 'rgba(0,0,0,0)',   // Fond du graphique transparent
+            margin: { l: 30, r: 30, t: 10, b: 20 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
             dragmode: false
         };
-        // Define the initial data with an empty array for 'y'
+
+        // Data initialization
         this.data = [{
-            y: [], // Starting values
-            line: {color: color}, // Couleur de la ligne verte
-            fill: 'tozeroy',
+            y: [],
+            line: { color: color },
+            fill: 'tozeroy'
         }];
 
-        // Set the graph name
+        // Graph name and visibility
         this.nomGraphique = nomGraphique;
-        this.showGraph = true
+        this.showGraph = true;
+
         // Create the initial plot
         Plotly.newPlot(this.nomGraphique, this.data, this.layout, { responsive: true, displayModeBar: false });
     }
 
-    // Method to update the plot by pushing new values to 'y'
+    // Updates the plot with a new value
     updatePlot(value) {
-        // Get the current data from the plot
-        var currentY = this.data[0].y;
-
-        // Push the new value to the 'y' array
-        currentY.push(value);
-
-        // Update the plot with the new data
-        Plotly.update(this.nomGraphique, {
-            y: [currentY]
-        });
+        this.data[0].y.push(value);
+        Plotly.update(this.nomGraphique, { y: [this.data[0].y] });
     }
-    show(value) {
+
+    // Shows or hides the graph
+    show(isVisible) {
         const element = document.getElementById(this.nomGraphique);
-        this.showGraph = value;
-        if (value) {
-            element.parentElement.style.display = "block"; // Show the element
-        } else {
-            element.parentElement.style.display = "none"; // Hide the element
-        }
+        this.showGraph = isVisible;
+        element.parentElement.style.display = isVisible ? "block" : "none";
     }
 
-    mettreAJourElement() {
-        const currentElement = document.getElementById(this.nomGraphique);
-        const graphData = this.data;
-        const layout = this.layout;
-        Plotly.newPlot(this.nomGraphique, graphData, layout, { responsive: true, displayModeBar: false });
+    // Re-render the graph to ensure it updates correctly
+    refreshGraph() {
+        Plotly.newPlot(this.nomGraphique, this.data, this.layout, { responsive: true, displayModeBar: false });
         this.show(this.showGraph);
     }
 }
