@@ -2,6 +2,20 @@ const listeProcessusHtmlElement = document.getElementById("ListeProcessus");
 const tableFilterHtmlElement = document.getElementById("TableFilter")
 let mesProcessus = [];
 let setCategorie = new Set();
+function areSetsEqual(set1, set2) {
+    if (set1.size !== set2.size) {
+        return false; // Si les tailles sont différentes, les Set ne sont pas égaux
+    }
+
+    // Comparer chaque élément dans set1
+    for (let item of set1) {
+        if (!set2.has(item)) {
+            return false; // Si un élément de set1 n'est pas dans set2, ils ne sont pas égaux
+        }
+    }
+
+    return true; // Si toutes les conditions sont remplies, les Set sont égaux
+}
 
 function makeGroupApplication(){
     if(tableFilterHtmlElement) {
@@ -58,6 +72,7 @@ function makeGroupApplication(){
 function parseDataToMesProcessus(data){
     if(data){
         mesProcessus = [];
+        const oldCategorie = setCategorie;
         setCategorie = new Set();
         setCategorie.add("All");
         setCategorie.add("Other");
@@ -68,7 +83,9 @@ function parseDataToMesProcessus(data){
                 setCategorie.add(uneApplication.categorie);
             }
         });
-        makeGroupApplication();
+        if(!areSetsEqual(oldCategorie, setCategorie)) {
+            makeGroupApplication();
+        }
         afficherListeProcessus();
     }
 }
