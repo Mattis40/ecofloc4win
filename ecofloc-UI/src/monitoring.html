@@ -36,85 +36,57 @@
     </header>
 
     <!-- Main Content -->
-    <main class=" flex-1 flex flex-row bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 text-white">
-        <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar-transition">
-            <!-- Wrap button -->
-            <button id="close-sidebar" class="sidebar-transition">
-                <img src="./assets/arrow-left.svg" alt="back" class="size-[35px] sidebar-transition">
-            </button>
-            <!-- CheckBox list -->
-            <div id="checkbox-list" class="space-y-2 sidebar-transition mt-[15%]">
-                <label class="flex items-center space-x-2">
-                    <input id="checkboxCPU" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
-                    <span>CPU</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input id="checkboxGPU" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
-                    <span>GPU</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input id="checkboxRAM" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
-                    <span>RAM</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input id="checkboxNIC" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
-                    <span>NIC</span>
-                </label>
-                <label class="flex items-center space-x-2">
-                    <input id="checkboxSD" type="checkbox" checked class="w-5 h-5 accent-emerald-500">
-                    <span>SD</span>
-                </label>
-            </div>
-            <!-- Ipt-TimeStamp -->
-            <div id="input_ts" class="mt-4 sidebar-transition">
-                <label class="block mb-2">Intervalle (ms)</label>
-                <input type="number" min="500" value="1000" max="300000" step="250" class="w-full bg-zinc-700 text-white p-2 rounded-md">
-            </div>
-            <!-- Play/Stop buttons -->
-            <div id="list-buttons" class="sidebar-transition">
-                <button onclick="executeScript(); return false;" class="p-2">
-                    <img src="./assets/play.svg" alt="play" class="size-[50px]">
-                </button>
-                <button class="p-2" onclick="stopExecutable()">
-                    <img src="./assets/stop.svg" alt="stop" class="size-[50px]">
-                </button>
-            </div>
-        </aside>        
-
-        <!-- Graphs and Table -->
-        <section id="main" class="flex-1 flex flex-col p-4 pb-2 gap-2">
+    <main class=" flex-1 flex flex-col w-full bg-zinc-900 text-white">
+            
+        
             <!-- Graphs -->
-            <div id="flex-graphique" class="list-graph h-3/4">
-                <div id="boxCPU" class="graphique">
-                    <h3 class="text-center font-semibold">CPU</h3>
-                    <div id="graphCPU" class="responsive-graph flex-grow"></div>
+            <div id="flex-graphique" class="list-graph h-3/4 flex-1">
+                <div class="graphique">
+                    <h3 class="text-center font-medium">CPU</h3>
+                    <div class="render bg-red-400"></div>
                 </div>
-                <div id="boxGPU" class="graphique">
-                    <h3 class="text-center font-semibold">GPU</h3>
-                    <div id="graphGPU" class="responsive-graph flex-grow"></div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">GPU</h3>
+                    <div class="render bg-green-400"></div>
                 </div>
-                <div id="boxRAM" class="graphique">
-                    <h3 class="text-center font-semibold">RAM</h3>
-                    <div id="graphRAM" class="responsive-graph flex-grow"></div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">NIC</h3>
+                    <div class="render bg-blue-400"></div>
                 </div>
-                <div id="boxNIC" class="graphique">
-                    <h3 class="text-center font-semibold">NIC</h3>
-                    <div id="graphNIC" class="responsive-graph flex-grow"></div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">SD</h3>
+                    <div class="render bg-purple-600"></div>
                 </div>
-                <div id="boxSD" class="graphique">
-                    <h3 class="text-center font-semibold">SD</h3>
-                    <div id="graphSD" class="responsive-graph flex-grow"></div>
+                <div class="graphique">
+                    <h3 class="text-center font-medium">Total Consommation</h3>
+                    <div class="render bg-purple-400"></div>
                 </div>
-                <div id="boxTOTAL" class="graphique">
-                    <h3 class="text-center font-semibold">Total Consommation</h3>
-                    <div id="graphTOTAL" class="responsive-graph flex-grow"></div>
+                <div class="graphique-wip">
+                    <h3 class="text-center flex-1 font-medium">RAM</h3>
+                    <div class="">Work in progress...</div>
                 </div>
             </div>
 
-            <!-- Tables -->
-             <div id="list-tab" class="w-full h-1/4 flex flex-row justify-between bg-zinc-800 rounded-md p-2 px-2 gap-5">
-                <div id="process-tab" class="custom-table w-3/4">
+            <!-- Options & Table -->
+            <section class="w-full flex h-1/4 gap-[.5em] my-[.5em] ">
+                <aside id="options">
+                    <!-- Ipt-TimeStamp -->
+                    <div id="input_ts" class="mt-4 sidebar-transition">
+                        <label class="block mb-2">Intervalle (ms)</label>
+                        <input type="number" min="500" value="1000" max="30000" step="250" class="w-full bg-zinc-700 text-white p-2 rounded-md">
+                    </div>
+                    <!-- Play/Stop buttons -->
+                    <div id="list-buttons" class="sidebar-transition">
+                        <button onclick="executeScript(); return false;" class="p-2">
+                            <img src="./assets/play.svg" alt="play" class="size-[50px]">
+                        </button>
+                        <button class="p-2" onclick="stopExecutable()">
+                            <img src="./assets/stop.svg" alt="stop" class="size-[50px]">
+                        </button>
+                    </div>
+                </aside>
+                <div id="list-tab" class="w-full h-full flex flex-row justify-between bg-zinc-800 rounded-md p-2 px-2 gap-5">
+                    <div id="process-tab" class="custom-table w-3/4">
                     <div class="custom-thead">
                         <div class="col-1">Process name</div>
                         <div class="col-2">PID</div>
@@ -158,8 +130,8 @@
                         </div>
 
                     </div>
-                </div>
-                <div id="group-tab" class="custom-table w-1/4">
+                    </div>
+                    <div id="group-tab" class="custom-table w-1/4">
                     <div class="custom-thead col-3">
                         <div>Group Application</div>
                     </div>
@@ -181,9 +153,9 @@
                             <input type="checkbox" id="OtherFilter" value="Other">
                         </div>
                     </div>
+                    </div>
                 </div>
-             </div>
-        </section>
+            </section>
     </main>
     <!-- Script -->
     <script>
@@ -192,86 +164,6 @@
         const min_screen_height = "min-h-[" + window.innerHeight + "px]";
         document.body.classList.add(max_screen_height);
         document.body.classList.add(min_screen_height);
-    
-
-        const sidebar = document.getElementById('sidebar');
-        const checkbox_list = document.getElementById('checkbox-list');
-        const input_ts = document.getElementById('input_ts');
-        const wrap_sidebar = document.getElementById('close-sidebar');
-        const main = document.getElementById('main');
-        const list_buttons = document.getElementById('list-buttons');
-
-        // Ouvrir la barre latérale
-        wrap_sidebar.addEventListener('click', () => {
-            
-            const timestamp = new Date().getTime();
-
-            if (wrap_sidebar.id == "open-sidebar") {
-                sidebar.classList.remove('close');
-                checkbox_list.classList.remove('hide');
-                list_buttons.classList.remove('fixed');
-                input_ts.classList.remove('hide');
-                wrap_sidebar.innerHTML = "<img src='./assets/arrow-left.svg' alt='back' class='size-[35px] sidebar-transition'>";
-                wrap_sidebar.id = "close-sidebar";
-            }else{
-                sidebar.classList.add('close');
-                checkbox_list.classList.add('hide');
-                input_ts.classList.add('hide');
-                list_buttons.classList.add('fixed');
-                wrap_sidebar.innerHTML = "<img src='./assets/arrow-right.svg' alt='back' class='size-[35px] sidebar-transition'>";
-                wrap_sidebar.id = "open-sidebar";
-
-
-            }
-        });
-
-function executeScript() {
-    // Adresse de votre serveur Node.js
-    const serverUrl = 'http://localhost:3030/execute';
-
-    // Envoi d'une requête POST au serveur
-    fetch(serverUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        // Ajoutez des données si nécessaire
-        body: JSON.stringify({}),
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Script exécuté avec succès :', data.stdout);
-                //alert('Script exécuté avec succès !');
-            } else {
-                console.error('Erreur lors de l\'exécution :', data.message);
-                alert(`Erreur : ${data.message}`);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur réseau ou serveur :', error);
-            alert('Impossible de contacter le serveur.');
-        });
-}
-
-// Définir la fonction `stopExecutable` en dehors de `executeScript`
-function stopExecutable() {
-    fetch('http://localhost:3030/stop', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data.message);
-            alert(data.message);  // Affiche un message à l'utilisateur
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to stop executable');
-        });
-}
 
 
     </script>
@@ -279,6 +171,8 @@ function stopExecutable() {
     <script src="process-filter.js"></script>
     <script src="ClassDynamicGraph.js"></script>
     <script src="affichage-graphique.js"></script>
+    
+    
 </body>
 
 </html>

@@ -558,6 +558,11 @@ video {
   position: fixed;
 }
 
+.my-\[\.5em\] {
+  margin-top: .5em;
+  margin-bottom: .5em;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -610,6 +615,10 @@ video {
 
 .h-5 {
   height: 1.25rem;
+}
+
+.h-\[90\%\] {
+  height: 90%;
 }
 
 .h-full {
@@ -692,6 +701,10 @@ video {
   justify-content: space-between;
 }
 
+.gap-1 {
+  gap: 0.25rem;
+}
+
 .gap-2 {
   gap: 0.5rem;
 }
@@ -702,6 +715,10 @@ video {
 
 .gap-5 {
   gap: 1.25rem;
+}
+
+.gap-\[\.5em\] {
+  gap: .5em;
 }
 
 .space-x-2 > :not([hidden]) ~ :not([hidden]) {
@@ -765,6 +782,11 @@ video {
 .bg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(39 39 42 / var(--tw-bg-opacity, 1));
+}
+
+.bg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 24 27 / var(--tw-bg-opacity, 1));
 }
 
 .bg-gradient-to-b {
@@ -1019,22 +1041,16 @@ video {
 
 .list-graph{
   width: 100%;
+  height: 75%;
   display: flex;
-  flex-wrap: wrap-reverse;
-  flex-direction: column-reverse;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
+  padding: 2em;
   gap: 1rem;
-}
-
-.responsive-graph {
-  width: 100%;
-  height: 100%;
 }
 
 .graphique{
   width: 32%;
-  height: 48%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1045,15 +1061,9 @@ video {
   gap: .5rem;
 }
 
-.detail .graphique {
-  width: 20%;
-  height: 15%;
-}
-
-.detail .selectionner {
-  width: 80%;
-  height: 90%;
-  order: 1;
+.bg-wip{
+  background-color: #27272a;
+  background: repeating-linear-gradient( -45deg, #374151, #374151 2px, #27272a 2px, #27272a 15px );
 }
 
 .render{
@@ -1097,8 +1107,9 @@ video {
   color: #d1d5db;
   /* Texte gris clair */
   overflow-y: auto;
-  max-height: 200px;
+  max-height: 150px;
   /* Défilement si nécessaire */
+  min-height: 150px;
 }
 
 .custom-tbody .line {
@@ -1169,18 +1180,14 @@ video {
   text-align: center;
 }
 
-.h-full > div > .graphique{
-  width: 100%;
-  height: 100%;
-}
-
-.h-full.flex.flex-col.gap-1{
-}
-
-.h-full.flex.flex-col.gap-1 > .graphique{
-  width: 100%;
-  height: 100%;
-  padding: 0;
+#options{
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  justify-content: center;
+  background-color: #27272a;
+  padding: 1em;
+  border-radius: 0.375rem;
 }
 
 .inria-sans-light {

@@ -4,7 +4,7 @@
         "name": "[System Process]",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 0
             }
         ]
@@ -14,7 +14,7 @@
         "name": "System",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 4
             }
         ]
