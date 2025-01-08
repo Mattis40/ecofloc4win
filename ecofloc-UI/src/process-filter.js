@@ -4,6 +4,17 @@ let mesProcessus = [];
 const otherFilterElement = document.getElementById("OtherFilter");
 const allFilterElement = document.getElementById("AllFilter");
 
+function parseDataToMesProcessus(data){
+    if(data){
+        mesProcessus = [];
+        data.forEach(process => {
+            let uneApplication = new Application(process.name,process.pid, process.categorie, process.color);
+            mesProcessus.push(uneApplication);
+        });
+        afficherListeProcessus();
+    }
+}
+
 fetch('process.json')
 .then(response => {
     // Vérifier si la réponse est correcte
@@ -15,11 +26,7 @@ fetch('process.json')
 .then(data => {
 
     // Afficher chaque processus dans la liste
-    data.forEach(process => {
-        let uneApplication = new Application(process.name,process.pid, process.categorie, process.color);
-        mesProcessus.push(uneApplication);
-    });
-    afficherListeProcessus();
+    parseDataToMesProcessus(data);
 })
 .catch(error => {
     console.error('Erreur:', error);
@@ -67,9 +74,6 @@ function getFilterCategorie(nomCategorie) {
 function changePidState(nomProc, pidProc, etat) {
     // Adresse de votre serveur Node.js
     const serverUrl = 'http://localhost:3030/changePidState';
-    console.log(nomProc);
-    console.log(pidProc);
-    console.log(etat);
     // Envoi d'une requête POST au serveur
     fetch(serverUrl, {
         method: 'POST',
@@ -82,7 +86,7 @@ function changePidState(nomProc, pidProc, etat) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log('Script exécuté avec succès :', data.stdout);
+                console.log('Script exécuté avec succès');
                 //alert('Script exécuté avec succès !');
             } else {
                 console.error('Erreur lors de l\'exécution :', data.message);
@@ -126,11 +130,6 @@ function afficherListeProcessus() {
                     const dataNomProcessus = event.target.getAttribute("data-nom-processus");
                     const dataNumeroPid = event.target.getAttribute("data-numero-pid");
                     changePidState(dataNomProcessus, dataNumeroPid,clickedCheckbox.checked);
-                    if (clickedCheckbox.checked) {
-                        console.log('La checkbox est cochée');
-                    } else {
-                        console.log('La checkbox n\'est pas cochée');
-                    }
                 });
                 col2Div.appendChild(inputCheckbox); // Ajouter la case à cocher à col-2
 
@@ -144,3 +143,20 @@ function afficherListeProcessus() {
         }
     }
 }
+
+const eventSource = new EventSource('http://localhost:3030/events');
+
+eventSource.onmessage = (event) => {
+    try {
+        const data = JSON.parse(event.data);
+        if(!data["message"]){
+            parseDataToMesProcessus(data);
+        }
+    } catch (err) {
+        console.error('Erreur de parsing des données:', err);
+    }
+};
+
+eventSource.onerror = () => {
+    console.error('Erreur de connexion au serveur SSE');
+};

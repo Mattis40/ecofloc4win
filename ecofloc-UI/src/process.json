@@ -86,7 +86,7 @@
         "name": "services.exe",
         "pid": [
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 1224
             }
         ]
@@ -148,19 +148,19 @@
                 "numeroPid": 2124
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 2380
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 2824
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 3324
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 3416
             },
             {
@@ -188,7 +188,7 @@
                 "numeroPid": 5272
             },
             {
-                "checked": true,
+                "checked": false,
                 "numeroPid": 8360
             },
             {
@@ -1242,4 +1242,3 @@
         ]
     }
 ]
-

@@ -138,10 +138,8 @@ app.post('/changePidState', (req, res) => {
     // Parcourir les processus pour modifier la valeur
     data.forEach(process => {
         if (process.name == nomProc) {
-            console.log("Trouver nom proc");
             process.pid.forEach(pidInfo => {
                 if (pidInfo.numeroPid == pidProc) {
-                    console.log("Trouver pid");
                     pidInfo.checked = etat;
                 }
             });
@@ -162,6 +160,52 @@ app.post('/changePidState', (req, res) => {
         etat
     });
 });
+
+// Route SSE
+app.get('/events', (req, res) => {
+    // Configuration des headers pour SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    console.log('Client SSE connecté');
+
+    // Envoi d'un message initial
+    res.write(`data: ${JSON.stringify({ message: 'Connexion établie' })}\n\n`);
+
+    const filePath = './process.json';
+
+    // Surveiller le fichier JSON
+    const watcher = fs.watch(filePath, (eventType) => {
+        if (eventType === 'change') {
+            console.log(`Fichier modifié: ${filePath}`);
+
+            // Lire le contenu du fichier
+            fs.readFile(filePath, 'utf8', (err, data) => {
+                if (err) {
+                    console.error('Erreur de lecture du fichier:', err);
+                    return;
+                }
+
+                // Vérifier si le contenu est un JSON valide
+                try {
+                    const jsonData = JSON.parse(data); // Valider le JSON
+                    res.write(`data: ${JSON.stringify(jsonData)}\n\n`); // Envoyer au client
+                } catch (parseErr) {
+                    console.error('Erreur de parsing JSON:', parseErr);
+                    res.write(`data: ${JSON.stringify({ error: 'Invalid JSON format' })}\n\n`);
+                }
+            });
+        }
+    });
+
+    // Nettoyer le watcher lorsque le client se déconnecte
+    req.on('close', () => {
+        console.log('Client SSE déconnecté');
+        watcher.close();
+    });
+});
+
 
 // D�marrer le serveur
 app.listen(port, () => {
