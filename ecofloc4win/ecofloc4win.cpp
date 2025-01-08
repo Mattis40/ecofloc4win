@@ -454,7 +454,7 @@ int main()
                     it->updateSDEnergy(averagePower * 5);
                 }
             }
-
+            
             screen.Post(Event::Custom);
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
@@ -518,32 +518,17 @@ int main()
                                 double bytesIn = static_cast<double>(dataRod->DataBytesIn);
                                 double bytesOut = static_cast<double>(dataRod->DataBytesOut);
 
-								std::cout << "Bytes In: " << bytesIn << std::endl;
-								std::cout << "Bytes Out: " << bytesOut << std::endl;
-
                                 double intervalSec = 500.0 / 1000.0;
-
-								std::cout << "Interval: " << intervalSec << std::endl;
 
 								long downloadRate = bytesIn / intervalSec;
 								long uploadRate = bytesOut / intervalSec;
 
-								std::cout << "Download Rate : " << downloadRate << std::endl;
-								std::cout << "Upload Rate : " << uploadRate << std::endl;
-
                                 double downloadPower = 1.138 * ((double)downloadRate / 300000);
                                 double uploadPower = 1.138 * ((double)uploadRate / 300000);
 
-								std::cout << "Download Power : " << downloadPower << std::endl;
-								std::cout << "Upload Power : " << uploadPower << std::endl;
-
 								double averagePower = downloadPower + uploadPower;
 
-								std::cout << "Average power : " << averagePower << std::endl;
-
 								double intervalEnergy = averagePower * intervalSec;
-
-								std::cout << "Interval Energy : " << intervalEnergy << std::endl;
 
                                 {
                                     std::lock_guard<std::mutex> lock(data_mutex);
@@ -552,7 +537,6 @@ int main()
                                         });
                                     if (it != monitoringData.end()) {
                                         it->updateNICEnergy(intervalEnergy);
-										std::cout << "Name : " << it->getName() << " NIC Energy : " << intervalEnergy << std::endl;
                                     }
                                 }
                             }
@@ -571,8 +555,8 @@ int main()
 	// Run the application
 	screen.Loop(component);
 
-	//gpu_thread.join();
-	//sd_thread.join();
+	gpu_thread.join();
+	sd_thread.join();
 	nic_thread.join();
 	return 0;
 }
@@ -734,7 +718,7 @@ void addProcPid(string pid, string component)
         std::unique_lock<std::mutex> lock(data_mutex);
         MonitoringData data(wstring_to_string(processName), { stoi(pid) });
         monitoringData.push_back(data);
-		new_data_cv.notify_one();
+		new_data_cv.notify_all();
     }
 }
 
