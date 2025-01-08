@@ -26,6 +26,9 @@
 #include <PdhMsg.h>
 #include <cstring>
 #include <iostream>
+#include <tcpmib.h>
+
+#pragma comment(lib, "Ws2_32.lib") // Link with Ws2_32.lib
 
 #include "process.h"         // Custom header for process handling
 #include "gpu.h"             // Custom header for GPU monitoring
@@ -459,11 +462,118 @@ int main()
         PdhCloseQuery(query);
         });
 
+    std::thread nic_thread([&screen] {
+        while (true) {
+            std::vector<MonitoringData> localMonitoringData;
+
+            {
+                std::unique_lock<std::mutex> lock(data_mutex);
+                new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
+                localMonitoringData = monitoringData;
+            }
+
+            for (auto& data : localMonitoringData) {
+                PMIB_TCPTABLE_OWNER_PID tcpTable = nullptr;
+                ULONG ulSize = 0;
+
+                if (GetExtendedTcpTable(nullptr, &ulSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != ERROR_INSUFFICIENT_BUFFER) {
+                    //std::cerr << "Failed to determine size of TCP table." << std::endl;
+                    continue;
+                }
+
+                std::unique_ptr<BYTE[]> buffer(new BYTE[ulSize]);
+                tcpTable = reinterpret_cast<PMIB_TCPTABLE_OWNER_PID>(buffer.get());
+
+                if (GetExtendedTcpTable(tcpTable, &ulSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != NO_ERROR) {
+                    //std::cerr << "Failed to retrieve TCP table." << std::endl;
+                    continue;
+                }
+
+                for (DWORD i = 0; i < tcpTable->dwNumEntries; i++) {
+                    if (tcpTable->table[i].dwOwningPid == data.getPids()[0]) {
+                        MIB_TCPROW_OWNER_PID row = tcpTable->table[i];
+
+                        // Enable ESTATS for this connection
+                        TCP_ESTATS_DATA_RW_v0 rwData = { 0 };
+                        rwData.EnableCollection = TRUE;
+
+                        if (SetPerTcpConnectionEStats(reinterpret_cast<PMIB_TCPROW>(&row), TcpConnectionEstatsData,
+                            reinterpret_cast<PUCHAR>(&rwData), 0, sizeof(rwData), 0) != NO_ERROR) {
+                            //std::cerr << "Failed to enable ESTATS for PID: " << data.getPids()[0] << std::endl;
+                            continue;
+                        }
+
+
+
+                        if (row.dwState == MIB_TCP_STATE_ESTAB && row.dwRemoteAddr != htonl(INADDR_LOOPBACK)) {
+                            ULONG rodSize = sizeof(TCP_ESTATS_DATA_ROD_v0);
+                            std::vector<BYTE> rodBuffer(rodSize);
+                            PTCP_ESTATS_DATA_ROD_v0 dataRod = reinterpret_cast<PTCP_ESTATS_DATA_ROD_v0>(rodBuffer.data());
+
+                            if (GetPerTcpConnectionEStats(reinterpret_cast<PMIB_TCPROW>(&row), TcpConnectionEstatsData,
+                                nullptr, 0, 0, nullptr, 0, 0,
+                                reinterpret_cast<PUCHAR>(dataRod), 0, rodSize) == NO_ERROR) {
+
+                                // Calculate Bytes In and Bytes Out
+                                double bytesIn = static_cast<double>(dataRod->DataBytesIn);
+                                double bytesOut = static_cast<double>(dataRod->DataBytesOut);
+
+								std::cout << "Bytes In: " << bytesIn << std::endl;
+								std::cout << "Bytes Out: " << bytesOut << std::endl;
+
+                                double intervalSec = 500.0 / 1000.0;
+
+								std::cout << "Interval: " << intervalSec << std::endl;
+
+								long downloadRate = bytesIn / intervalSec;
+								long uploadRate = bytesOut / intervalSec;
+
+								std::cout << "Download Rate : " << downloadRate << std::endl;
+								std::cout << "Upload Rate : " << uploadRate << std::endl;
+
+                                double downloadPower = 1.138 * ((double)downloadRate / 300000);
+                                double uploadPower = 1.138 * ((double)uploadRate / 300000);
+
+								std::cout << "Download Power : " << downloadPower << std::endl;
+								std::cout << "Upload Power : " << uploadPower << std::endl;
+
+								double averagePower = downloadPower + uploadPower;
+
+								std::cout << "Average power : " << averagePower << std::endl;
+
+								double intervalEnergy = averagePower * intervalSec;
+
+								std::cout << "Interval Energy : " << intervalEnergy << std::endl;
+
+                                {
+                                    std::lock_guard<std::mutex> lock(data_mutex);
+                                    auto it = std::find_if(monitoringData.begin(), monitoringData.end(), [&](const auto& d) {
+                                        return d.getPids()[0] == data.getPids()[0];
+                                        });
+                                    if (it != monitoringData.end()) {
+                                        it->updateNICEnergy(intervalEnergy);
+										std::cout << "Name : " << it->getName() << " NIC Energy : " << intervalEnergy << std::endl;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            screen.Post(Event::Custom);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+        });
+
+
+
 	// Run the application
 	screen.Loop(component);
 
-	gpu_thread.join();
-	sd_thread.join();
+	//gpu_thread.join();
+	//sd_thread.join();
+	nic_thread.join();
 	return 0;
 }
 
