@@ -227,8 +227,10 @@ std::wstring GetInstanceForPID(int targetPID) {
     return matchedInstance;
 }
 
-
-
+/*
+* This function get the localized counter path for a given process name and counter name to be used in PDH functions
+* and avoid hardcoding the counter path for each language.
+*/
 std::wstring getLocalizedCounterPath(const std::wstring& processName, const std::string& counterName) {
 	wchar_t localizedName[PDH_MAX_COUNTER_PATH];
 	wchar_t localizedProcessName[PDH_MAX_COUNTER_PATH];
@@ -249,7 +251,6 @@ std::wstring getLocalizedCounterPath(const std::wstring& processName, const std:
 	std::wstring localizedProcessNameW(localizedProcessName);
 	std::wstring localizedNameW(localizedName);
     return L"\\"+ localizedProcessNameW + L"(" + processName + L")\\" + localizedNameW;
-    //return L"\\" + localizedProcessNameW + L"(steam)\\" + localizedNameW;
 }
 
 auto CreateTableRows() -> std::vector<std::vector<std::string>> {
@@ -611,30 +612,14 @@ void readCommand(string commandHandle)
 
 void addProcPid(string pid, string component)
 {
-    // auto it = find_if(comp[component].first.begin(), comp[component].first.end(), [&pid](process o) {return o.getPid() == pid; });
-    
-    //if (it != comp[component].first.end())
-    //{
-    //    cout << "The process is already active" << endl;
-    //}
-    //else
-    //{
-        wstring processName = GetProcessNameByPID(stoi(pid));
+    wstring processName = GetProcessNameByPID(stoi(pid));
 
-        //if (processName != L"<unknown>" /*&& check list*/)
-        //{
-            {
-                std::unique_lock<std::mutex> lock(data_mutex);
-                MonitoringData data(wstring_to_string(processName), { stoi(pid) });
-                monitoringData.push_back(data);
-			    new_data_cv.notify_one();
-            }
-        //}
-        //else
-        //{
-        //    wcout << L"Failed to retrieve process name or process does not exist." << endl;
-        //}
-    //}
+    {
+        std::unique_lock<std::mutex> lock(data_mutex);
+        MonitoringData data(wstring_to_string(processName), { stoi(pid) });
+        monitoringData.push_back(data);
+		new_data_cv.notify_one();
+    }
 }
 
 void addProcName(string name, string component)
