@@ -26,6 +26,7 @@
 #include <PdhMsg.h>
 #include <cstring>
 #include <iostream>
+#include <tcpmib.h>
 
 #include "process.h"         // Custom header for process handling
 #include "gpu.h"             // Custom header for GPU monitoring
@@ -419,7 +420,7 @@ int main()
                             continue;
                         }
 
-                        process_counters[instanceName] = { counterDiskRead, counterDiskWrite };
+                           process_counters[instanceName] = { counterDiskRead, counterDiskWrite };
                     }
                 }
             }
@@ -451,7 +452,7 @@ int main()
                     it->updateSDEnergy(averagePower * 5);
                 }
             }
-
+            
             screen.Post(Event::Custom);
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
@@ -459,11 +460,103 @@ int main()
         PdhCloseQuery(query);
         });
 
+    std::thread nic_thread([&screen] {
+        while (true) {
+            std::vector<MonitoringData> localMonitoringData;
+
+            {
+                std::unique_lock<std::mutex> lock(data_mutex);
+                new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
+                localMonitoringData = monitoringData;
+            }
+
+            for (auto& data : localMonitoringData) {
+                PMIB_TCPTABLE_OWNER_PID tcpTable = nullptr;
+                ULONG ulSize = 0;
+
+				// Get the size of the table
+                if (GetExtendedTcpTable(nullptr, &ulSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != ERROR_INSUFFICIENT_BUFFER) {
+                    continue;
+                }
+
+                std::unique_ptr<BYTE[]> buffer(new BYTE[ulSize]);
+                tcpTable = reinterpret_cast<PMIB_TCPTABLE_OWNER_PID>(buffer.get());
+
+				// Get the table data
+                if (GetExtendedTcpTable(tcpTable, &ulSize, TRUE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != NO_ERROR) {
+                    continue;
+                }
+
+                for (DWORD i = 0; i < tcpTable->dwNumEntries; i++) {
+                    if (tcpTable->table[i].dwOwningPid == data.getPids()[0]) {
+                        MIB_TCPROW_OWNER_PID row = tcpTable->table[i];
+
+                        // Enable ESTATS for this connection
+                        TCP_ESTATS_DATA_RW_v0 rwData = { 0 };
+                        rwData.EnableCollection = TRUE;
+
+                        if (SetPerTcpConnectionEStats(reinterpret_cast<PMIB_TCPROW>(&row), TcpConnectionEstatsData,
+                            reinterpret_cast<PUCHAR>(&rwData), 0, sizeof(rwData), 0) != NO_ERROR) {
+                            continue;
+                        }
+
+                        if (row.dwState == MIB_TCP_STATE_ESTAB && row.dwRemoteAddr != htonl(INADDR_LOOPBACK)) {
+                            ULONG rodSize = sizeof(TCP_ESTATS_DATA_ROD_v0);
+                            std::vector<BYTE> rodBuffer(rodSize);
+                            PTCP_ESTATS_DATA_ROD_v0 dataRod = reinterpret_cast<PTCP_ESTATS_DATA_ROD_v0>(rodBuffer.data());
+
+							// Get the ESTATS data for this connection
+                            if (GetPerTcpConnectionEStats(reinterpret_cast<PMIB_TCPROW>(&row), TcpConnectionEstatsData,
+                                nullptr, 0, 0, nullptr, 0, 0,
+                                reinterpret_cast<PUCHAR>(dataRod), 0, rodSize) == NO_ERROR) {
+
+								std::cout << "DataBytesIn: " << dataRod->DataBytesIn << std::endl;
+								std::cout << "DataBytesOut: " << dataRod->DataBytesOut << std::endl;
+
+                                // Calculate Bytes In and Bytes Out
+                                double bytesIn = static_cast<double>(dataRod->DataBytesIn);
+                                double bytesOut = static_cast<double>(dataRod->DataBytesOut);
+
+								double intervalSec = 500.0 / 1000.0; // Interval in seconds (will be changed in the future)
+
+								long downloadRate = bytesIn / intervalSec;
+								long uploadRate = bytesOut / intervalSec;
+
+								double downloadPower = 1.138 * ((double)downloadRate / 300000); // 1.138 is the power consumption per byte for download (will be changed in the future using the config)
+								double uploadPower = 1.138 * ((double)uploadRate / 300000); // 1.138 is the power consumption per byte for upload (will be changed in the future using the config)
+
+								double averagePower = downloadPower + uploadPower;
+
+								double intervalEnergy = averagePower * intervalSec;
+
+                                {
+                                    std::lock_guard<std::mutex> lock(data_mutex);
+                                    auto it = std::find_if(monitoringData.begin(), monitoringData.end(), [&](const auto& d) {
+                                        return d.getPids()[0] == data.getPids()[0];
+                                        });
+                                    if (it != monitoringData.end()) {
+                                        it->updateNICEnergy(intervalEnergy);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            screen.Post(Event::Custom);
+            std::this_thread::sleep_for(std::chrono::milliseconds(500)); // interval based on user input (will be changed in the future)
+        }
+        });
+
+
+
 	// Run the application
 	screen.Loop(component);
 
 	gpu_thread.join();
 	sd_thread.join();
+	nic_thread.join();
 	return 0;
 }
 
@@ -624,7 +717,7 @@ void addProcPid(string pid, string component)
         std::unique_lock<std::mutex> lock(data_mutex);
         MonitoringData data(wstring_to_string(processName), { stoi(pid) });
         monitoringData.push_back(data);
-		new_data_cv.notify_one();
+		new_data_cv.notify_all();
     }
 }
 

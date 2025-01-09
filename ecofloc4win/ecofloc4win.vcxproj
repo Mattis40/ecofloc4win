@@ -137,7 +137,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\lib\x64;C:\Users\Mattis\OneDrive\Desktop\Cours\Semestre5\Ecofloc\ecofloc4win\vcpkg_installed\x64-windows\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ftxui-screen.lib;ftxui-dom.lib;ftxui-component.lib;nvml.lib;tdh.lib;pdh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ftxui-screen.lib;ftxui-dom.lib;ftxui-component.lib;nvml.lib;tdh.lib;pdh.lib;iphlpapi.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
