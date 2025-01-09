@@ -96,6 +96,11 @@
                         </div>
                         <div class="col-2">PID</div>
                         <div>
+                            <button placeholder="text" class="rotateOnClick">
+                                <img src="https://cdn-icons-png.flaticon.com/128/2805/2805355.png" alt="Refresh" title="Refresh" width="20" height="20" style="filter: brightness(0) invert(1);">
+                            </button>
+                        </div>
+                        <div>
                             <input class="green-checkbox" type="checkbox" id="SelectAllProc">
                         </div>
                     </div>
@@ -167,7 +172,12 @@
     </main>
     <!-- Script -->
     <script>
-
+        document.querySelector('.rotateOnClick').addEventListener('click', function() {
+        this.classList.add('activeRotation');
+        this.addEventListener('animationend', () => {
+            this.classList.remove('activeRotation');
+        });
+        });
         const max_screen_height = "max-h-[" + window.innerHeight + "px]";
         const min_screen_height = "min-h-[" + window.innerHeight + "px]";
         document.body.classList.add(max_screen_height);
