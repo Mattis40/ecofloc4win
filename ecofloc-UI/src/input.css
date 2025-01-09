@@ -72,7 +72,27 @@
   background-color: #27272a;
   background: repeating-linear-gradient( -45deg, #374151, #374151 2px, #27272a 2px, #27272a 15px );
 }
-
+.wip::after{
+  content: "...";
+  padding-left: 1px;
+}
+.wip:hover:after{
+  animation: dots 1.5s steps(3, end) infinite;
+}
+@keyframes dots {
+  0% {
+    content: ".";
+  }
+  33% {
+    content: "..";
+  }
+  66% {
+    content: "...";
+  }
+  100% {
+    content: ".";
+  }
+}
 .wip{
   transition: .3s cubic-bezier(0,0,1,1);
 }

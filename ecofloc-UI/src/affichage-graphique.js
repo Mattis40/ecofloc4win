@@ -20,7 +20,7 @@ const generateGraphHTML = (id, label) => {
             <div class="graphique">
                 <h3 class="text-center font-semibold">RAM</h3>
                 <div class="flex flex-grow justify-center items-center h-[90%] bg-wip rounded-md">
-                    <p class="text-center font-bold bg-zinc-800 p-4 rounded-md fixed wip">Work in progress...</p>
+                    <p class="text-center font-bold bg-zinc-800 p-4 rounded-md fixed wip">Work in progress</p>
                 </div>
             </div>`;
     }
