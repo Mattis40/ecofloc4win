@@ -124,6 +124,26 @@ app.post('/stop', (req, res) => {
     }
 });
 
+app.post('/changeListePidState', (req, res) => {
+    const { liste, etat } = req.body; // Récupère les données envoyées
+    console.log('taille liste reçue :', liste.length);
+    console.log('etat :', etat);
+    const data = JSON.parse(fs.readFileSync(appProcessPath, 'utf-8'));
+    // Réponse au client
+    data.forEach(process => {
+        if (liste.includes(process.name)) {
+            process.pid.forEach(pidInfo => {
+                pidInfo.checked = etat;
+            });
+        }
+    });
+    // Sauvegarder les modifications dans le fichier JSON
+    fs.writeFileSync(appProcessPath, JSON.stringify(data, null, 4), 'utf-8');
+    
+    console.log('Valeur modifiée avec succès.');
+    res.json({ message: 'Liste reçue avec succès', receivedListe: liste });
+});
+
 app.post('/changePidState', (req, res) => {
     console.log('Répertoire courant :', process.cwd());
     const { nomProc, pidProc, etat } = req.body; // Extract nomProc and pidProc from the request body
@@ -145,7 +165,6 @@ app.post('/changePidState', (req, res) => {
             });
         }
     });
-    
     // Sauvegarder les modifications dans le fichier JSON
     fs.writeFileSync(appProcessPath, JSON.stringify(data, null, 4), 'utf-8');
     

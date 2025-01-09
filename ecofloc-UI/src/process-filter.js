@@ -1,5 +1,7 @@
 const listeProcessusHtmlElement = document.getElementById("ListeProcessus");
-const tableFilterHtmlElement = document.getElementById("TableFilter")
+const tableFilterHtmlElement = document.getElementById("TableFilter");
+const checkBoxSelectAllProcElement = document.getElementById("SelectAllProc");
+
 let mesProcessus = [];
 let setCategorie = new Set();
 function areSetsEqual(set1, set2) {
@@ -151,7 +153,13 @@ function afficherListeProcessus() {
     while (listeProcessusHtmlElement.firstChild) {
         listeProcessusHtmlElement.removeChild(listeProcessusHtmlElement.firstChild);
     }
+    const searchText = document.getElementById("SearchBar").value == "" ? "":document.getElementById("SearchBar").value.toLowerCase();
+    let atLeastOneChecked = false;
+    let allChecked = true;
     for(let unProcessus of mesProcessus){
+        if (!unProcessus.getName().toLowerCase().includes(searchText)){
+            continue;
+        }
         if(getFilterCategorie(unProcessus.categorie)){
             for(let unPid of unProcessus.getListePid()){
                 // Créer les éléments
@@ -168,6 +176,11 @@ function afficherListeProcessus() {
                 const inputCheckbox = document.createElement("input");
                 inputCheckbox.type = "checkbox";
                 col2Div.textContent = unPid["numeroPid"];
+                if(unPid["checked"]){
+                    atLeastOneChecked = true;
+                }else{
+                    allChecked = false;
+                }
                 inputCheckbox.checked = unPid["checked"];
                 inputCheckbox.setAttribute("data-nom-processus", unProcessus.getName());
                 inputCheckbox.setAttribute("data-numero-pid", unPid["numeroPid"]);
@@ -188,7 +201,56 @@ function afficherListeProcessus() {
             }
         }
     }
+    console.log(atLeastOneChecked);
+    console.log(allChecked);
+    checkBoxSelectAllProcElement.checked = atLeastOneChecked;
+    checkBoxSelectAllProcElement.indeterminate = (!allChecked && atLeastOneChecked); 
 }
+
+function selectAllPid(etat) {
+    const searchText = document.getElementById("SearchBar").value == "" ? "":document.getElementById("SearchBar").value.toLowerCase();
+    let listePidAChanger = new Set();
+    for(let unProcessus of mesProcessus){
+        if (!unProcessus.getName().toLowerCase().includes(searchText)){
+            continue;
+        }
+        if(!getFilterCategorie(unProcessus.categorie)){
+            continue;
+        }
+        for(let unPid of unProcessus.getListePid()){
+            if(unPid.checked != etat){
+                listePidAChanger.add(unProcessus.getName());
+            }
+        }
+    }
+    console.log(listePidAChanger);
+    const serverUrl = 'http://localhost:3030/changeListePidState';
+    // Envoi au serveur avec fetch
+    fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json', // Assurez-vous d'envoyer du JSON
+        },
+        body: JSON.stringify({ liste: Array.from(listePidAChanger), etat: etat }), // Sérialise la liste dans le corps de la requête
+    })
+    .then(response => response.json()) // Récupère la réponse du serveur
+    .then(data => {
+        console.log('Réponse du serveur :', data);
+    })
+    .catch(error => {
+        console.error('Erreur lors de l’envoi des données :', error);
+    });
+
+}
+
+checkBoxSelectAllProcElement.addEventListener("change", (event) => {
+    selectAllPid(event.target.checked);
+    if (event.target.checked) {
+        console.log("La case à cocher est cochée.");
+    } else {
+        console.log("La case à cocher est décochée.");
+    }
+});
 
 const eventSource = new EventSource('http://localhost:3030/events');
 
@@ -206,3 +268,9 @@ eventSource.onmessage = (event) => {
 eventSource.onerror = () => {
     console.error('Erreur de connexion au serveur SSE');
 };
+
+document.getElementById("SearchBar").addEventListener("keyup", () => {
+    const searchText = document.getElementById("SearchBar").value;
+    console.log(searchText);
+    afficherListeProcessus();
+});

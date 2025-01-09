@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -1117,7 +1117,7 @@ video {
   justify-content: space-between;
 }
 
-.col-2 input[type="checkbox"] {
+.col-2 input[type="checkbox"], .green-checkbox {
   accent-color: #10b981;
   /* Vert Tailwind */
 }
@@ -1265,6 +1265,14 @@ video {
   font-family: "Roboto", sans-serif;
   font-weight: 900;
   font-style: italic;
+}
+
+#SearchBar {
+  background-color: #232323;
+  margin-left: 2rem;
+  border: 1px solid #ffffff36;
+  padding: 0 10px;
+  border-radius: 8px;
 }
 
 .hover\:scale-105:hover {

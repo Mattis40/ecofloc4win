@@ -90,8 +90,14 @@
                 <div id="list-tab" class="w-full h-full flex flex-row justify-between bg-zinc-800 rounded-md p-2 px-2 gap-5">
                     <div id="process-tab" class="custom-table w-3/4">
                     <div class="custom-thead">
-                        <div class="col-1">Process name</div>
+                        <div class="col-1">
+                            Process name
+                            <input type="text" id="SearchBar" placeholder="Search..">
+                        </div>
                         <div class="col-2">PID</div>
+                        <div>
+                            <input class="green-checkbox" type="checkbox" id="SelectAllProc">
+                        </div>
                     </div>
                     <div class="custom-tbody" id="ListeProcessus">
                         <div class="line">
