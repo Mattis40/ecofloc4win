@@ -166,7 +166,7 @@ json addElemProcessToJson(json input, const ProcessInfo process) {
     // Création d'un objet JSON avec l'ordre souhaité
     json processJson = json::object({
         {"name", process.name},
-        {"pid", pidArray},
+        {"pids", pidArray},
         {"categorie", determineCategory(process.name)},
         });
 
@@ -188,8 +188,7 @@ json removeElemFromJsonFromKeyValue(json input, const std::string key, const std
     return input;
 }
 
-void writeInitialProcessesToJson(const std::vector<ProcessInfo>& processes, const std::string& filename) {
-    std::ifstream f(filename);
+json writeInitialProcessesToJson(const std::vector<ProcessInfo>& processes) {
     json output;
 
 
@@ -202,18 +201,13 @@ void writeInitialProcessesToJson(const std::vector<ProcessInfo>& processes, cons
         // Création d'un objet JSON avec l'ordre souhaité
         json processJson = json::object({
             {"name", process.name},
-            {"pid", pidArray},
-            {"categorie", determineCategory(process.name)},
+            {"pids", pidArray},
+            {"categorie", determineCategory(process.name)}
             });
         output.push_back(processJson);
     }
 
-    // Écrire dans le fichier
-    std::ofstream file(filename);
-    if (file.is_open()) {
-        file << output.dump(4); // Beautifier avec une indentation de 4
-        file.close();
-    }
+    return output;
 }
 
 json updatePid(json input, const ProcessInfo process) {
@@ -265,7 +259,7 @@ std::vector<std::pair<std::string, std::vector<int>>> getCheckedPid(const json i
         std::pair<std::string, std::vector<int>> pairTemp;
         std::vector<int> listTemp;
         bool trouve = false;
-        for (int j = 0; i < input[i]["pids"].size(); i++) {
+        for (int j = 0; j < input[i]["pids"].size(); j++) {
             if (input[i]["pids"][j]["checked"] == true) {
                 trouve = true;
                 listTemp.push_back(input[i]["pids"][j]["numeroPid"]);
@@ -274,74 +268,104 @@ std::vector<std::pair<std::string, std::vector<int>>> getCheckedPid(const json i
         if (trouve) {
             pairTemp.first = input[i]["name"];
             pairTemp.second = listTemp;
+            output.push_back(pairTemp);
         }
-        output.push_back(pairTemp);
     }
-
     return output;
 }
 
 json updateJson(json input, std::vector<std::pair<std::string, std::vector<int>>> listChecked) {
     for (int i = 0; i < input.size(); i++) {
+        //Parcours chaque groupe de processus
+
         for (int j = 0; j < listChecked.size(); j++) {
+            //Parcours la liste des processus précédemment checker
+            
             if (input[i]["name"] == listChecked[j].first) {
-                for (int k = 0; k < input[i]["pids"];k++) {
-                    if ()
+                //Quand le nom des processus correspond à des processus checker
+                for (int k = 0; k < input[i]["pids"].size(); k++) {
+                    if (std::find(listChecked[j].second.begin(), listChecked[j].second.end(), input[i]["pids"][k]["numeroPid"]) != listChecked[j].second.end()) {
+                        std::cout << "Nom groupe (newJSON) : " << input[i]["name"] << std::endl;
+                        std::cout << "Nom groupe (listCheck) : " << listChecked[j].first << std::endl;
+                        std::cout << "NumeroPid (newJSON) : " << input[i]["pids"][k]["numeroPid"] << std::endl;
+                        std::cout << "NumPid (listCheck) : " << listChecked[j].second[0] << std::endl;
+                        input[i]["pids"][k]["checked"] = true;
+                    }
                 }
             }
-        }
+        } 
     }
+    std::cout << "Coucou je suis là";
+    return input;
 }
 
-// Fonction pour écrire les processus dans un fichier JSON
-void writeProcessesToJsonExistingJson(const std::vector<ProcessInfo>& processes, const std::string& filename) {
-    std::ifstream f(filename);
-    json input = json::parse(f);
-    json output;
-    std::vector<std::string> listProcessNameNew;
-    std::vector<std::string> listProcessNameOld;
 
-    for (int i = 0; i < input.size(); i++)
-    {
-        listProcessNameOld.push_back(input[i]["name"]);
-    }
-    for (const auto& process : processes) {
-        listProcessNameNew.push_back(process.name);
-    }
+    // Fonction pour écrire les processus dans un fichier JSON
+    void writeProcessesToJsonExistingJson(const std::vector<ProcessInfo>&processes, const std::string & filename) {
+        std::ifstream f(filename);
+        json input = json::parse(f);
+        json output;
+        std::vector<std::string> listProcessNameNew;
+        std::vector<std::string> listProcessNameOld;
 
-    std::vector<std::vector<std::string>> diff = getDiffProcesses(listProcessNameOld, listProcessNameNew); // List of difference between the two jsons
-
-    for (int i = 0; i < diff[1].size(); i++) {
-        std::cout << diff[1][i] << std::endl;
-        input = removeElemFromJsonFromKeyValue(input, "name", diff[1][i]);
-    }
-    
-
-    for (const auto& process : processes) {
-        if (std::find(diff[0].begin(), diff[0].end(), process.name) != diff[0].end()) {
-            input = addElemProcessToJson(input, process);
+        for (int i = 0; i < input.size(); i++)
+        {
+            listProcessNameOld.push_back(input[i]["name"]);
         }
-        input = updatePid(input,process);
-    }
-    // Écrire dans le fichier
-    /*
-    std::ofstream file(filename);
-    if (file.is_open()) {
-        file << input.dump(4); // Beautifier avec une indentation de 4
-        file.close();
-    }*/
+        for (const auto& process : processes) {
+            listProcessNameNew.push_back(process.name);
+        }
+
+        std::vector<std::vector<std::string>> diff = getDiffProcesses(listProcessNameOld, listProcessNameNew); // List of difference between the two jsons
+
+        for (int i = 0; i < diff[1].size(); i++) {
+            std::cout << diff[1][i] << std::endl;
+            input = removeElemFromJsonFromKeyValue(input, "name", diff[1][i]);
+        }
+
+
+        for (const auto& process : processes) {
+            if (std::find(diff[0].begin(), diff[0].end(), process.name) != diff[0].end()) {
+                input = addElemProcessToJson(input, process);
+            }
+            input = updatePid(input, process);
+        }
+        // Écrire dans le fichier
+        /*
+        std::ofstream file(filename);
+        if (file.is_open()) {
+            file << input.dump(4); // Beautifier avec une indentation de 4
+            file.close();
+        }*/
 }
 
 int main()
 {
     // Récupérer les processus
     std::vector<ProcessInfo> processes = getProcesses();
-
+    json output;
     // Écrire dans un fichier JSON
     std::string filename = "processes.json";
     std::ifstream f(filename);
-    writeInitialProcessesToJson(processes, filename);
-    //writeProcessesToJsonExistingJson(processes, filename);
-    std::cout << "Fichier JSON généré : " << filename << std::endl;
+    if (f.good()) {
+        json oldJson = json::parse(f);
+        json newJson = writeInitialProcessesToJson(processes);
+        std::vector<std::pair<std::string, std::vector<int>>> listCheckedPid = getCheckedPid(oldJson);
+        newJson = updateJson(newJson, listCheckedPid);
+        std::ofstream file(filename);
+        if (file.is_open()) {
+            file << newJson.dump(4); // Beautifier avec une indentation de 4
+            file.close();
+        }
+    }
+    else {
+        json initJson = writeInitialProcessesToJson(processes);
+        std::ofstream file(filename);
+        if (file.is_open()) {
+            file << initJson.dump(4); // Beautifier avec une indentation de 4
+            file.close();
+        }
+    }
+    std::cout << "Json File Generated: " << filename << std::endl;
     return 0;
 }
