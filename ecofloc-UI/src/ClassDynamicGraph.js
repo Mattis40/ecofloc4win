@@ -53,7 +53,7 @@
     }
 }*/
 class DynamicGraph {
-    constructor(nomGraphique, defaultColor) {
+    constructor(nomGraphique) {
         // Configuration du layout pour le graphique
         this.layout = {
             xaxis: {
@@ -74,23 +74,32 @@ class DynamicGraph {
         this.data = {}; // Stockage des séries par PID
         this.traceIndices = {}; // Lien entre PID et index des traces
         this.nomGraphique = nomGraphique;
-        this.defaultColor = defaultColor;
 
         // Initialisation du graphique
         Plotly.newPlot(this.nomGraphique, [], this.layout, { responsive: true, displayModeBar: false });
     }
 
-    updatePlot(PID, value) {
+    updatePlot(PID, value, color) {
+        
         // Vérifie si le PID existe déjà
         if (!this.data[PID]) {
             console.log(`Initialisation de la série pour PID: ${PID}`);
-            const color = this.getRandomColor();
-            this.data[PID] = {
-                y: [],
-                line: { color:color },
-                fill: 'none',
-                name: `PID ${PID}`
-            };
+            if (PID !== "TOTAL") {
+                this.data[PID] = {
+                    y: [],
+                    line: { color:color },
+                    fill: 'none',
+                    name: `PID ${PID}`,
+                };
+            }
+            else{
+                this.data["TOTAL"] = {
+                    y: [],
+                    line: { color: "#10b981" },
+                    fill: 'tozeroy',
+                };
+            }
+            
 
             // Ajoute une nouvelle trace pour ce PID
             Plotly.addTraces(this.nomGraphique, this.data[PID]);

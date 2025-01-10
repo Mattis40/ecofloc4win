@@ -77,11 +77,23 @@ const readFile = () => {
 
 // Update individual plots based on the JSON data
 const updatePlots = (data) => {
+    
+    totalW = 0;
     //console.log(data);
     data.apps.forEach(app => {
-        graphCPU.updatePlot(app["pid"], app["power_w_CPU"])
+        graphCPU.updatePlot(app["pid"], app["power_w_CPU"], app["color"]);
+        totalW +=  app["power_w_CPU"];
+        graphGPU.updatePlot(app["pid"], app["power_w_GPU"], app["color"]);
+        totalW +=  app["power_w_GPU"];
+        graphSD.updatePlot(app["pid"], app["power_w_SD"], app["color"]);
+        totalW +=  app["power_w_SD"];
+        graphNIC.updatePlot(app["pid"], app["power_w_NIC"], app["color"]);
+        totalW +=  app["power_w_NIC"];
+
+
         //console.log(app);
     });
+    graphTOTAL.updatePlot("TOTAL",totalW)
     /*const components = data.apps[0].components;
     totalW = 0;
 
