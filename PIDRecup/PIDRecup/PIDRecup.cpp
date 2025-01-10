@@ -259,6 +259,40 @@ json updatePid(json input, const ProcessInfo process) {
     return input;
 }
 
+std::vector<std::pair<std::string, std::vector<int>>> getCheckedPid(const json input) {
+    std::vector<std::pair<std::string, std::vector<int>>> output;
+    for (int i = 0; i < input.size();i++) {
+        std::pair<std::string, std::vector<int>> pairTemp;
+        std::vector<int> listTemp;
+        bool trouve = false;
+        for (int j = 0; i < input[i]["pids"].size(); i++) {
+            if (input[i]["pids"][j]["checked"] == true) {
+                trouve = true;
+                listTemp.push_back(input[i]["pids"][j]["numeroPid"]);
+            }
+        }
+        if (trouve) {
+            pairTemp.first = input[i]["name"];
+            pairTemp.second = listTemp;
+        }
+        output.push_back(pairTemp);
+    }
+
+    return output;
+}
+
+json updateJson(json input, std::vector<std::pair<std::string, std::vector<int>>> listChecked) {
+    for (int i = 0; i < input.size(); i++) {
+        for (int j = 0; j < listChecked.size(); j++) {
+            if (input[i]["name"] == listChecked[j].first) {
+                for (int k = 0; k < input[i]["pids"];k++) {
+                    if ()
+                }
+            }
+        }
+    }
+}
+
 // Fonction pour écrire les processus dans un fichier JSON
 void writeProcessesToJsonExistingJson(const std::vector<ProcessInfo>& processes, const std::string& filename) {
     std::ifstream f(filename);
@@ -306,8 +340,8 @@ int main()
     // Écrire dans un fichier JSON
     std::string filename = "processes.json";
     std::ifstream f(filename);
-    //writeInitialProcessesToJson(processes, filename);
-    writeProcessesToJsonExistingJson(processes, filename);
+    writeInitialProcessesToJson(processes, filename);
+    //writeProcessesToJsonExistingJson(processes, filename);
     std::cout << "Fichier JSON généré : " << filename << std::endl;
     return 0;
 }
