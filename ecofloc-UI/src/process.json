@@ -560,7 +560,7 @@
         "name": "ctfmon.exe",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 5832
             }
         ]

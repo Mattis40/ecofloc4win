@@ -57,12 +57,10 @@ class DynamicGraph {
         // Configuration du layout pour le graphique
         this.layout = {
             xaxis: {
-                rangemode: 'scatter',
                 gridcolor: 'rgba(255,255,255,0.2)',
                 tickfont: { color: 'white' }
             },
             yaxis: {
-                rangemode: 'scatter',
                 gridcolor: 'rgba(255,255,255,0.2)',
                 tickfont: { color: 'white' }
             },
@@ -90,7 +88,7 @@ class DynamicGraph {
             this.data[PID] = {
                 y: [],
                 line: { color:color },
-                fill: 'scatter',
+                fill: 'none',
                 name: `PID ${PID}`
             };
 
