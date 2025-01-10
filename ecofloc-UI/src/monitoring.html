@@ -79,10 +79,10 @@
                     </div>
                     <!-- Play/Stop buttons -->
                     <div id="list-buttons" class="sidebar-transition">
-                        <button onclick="executeScript(); return false;" class="p-2">
+                        <button id="start-button" onclick="executeScript(); return false;" class="p-2">
                             <img src="./assets/play.svg" alt="play" class="size-[50px]">
                         </button>
-                        <button class="p-2" onclick="stopExecutable()">
+                        <button id="stop-button" class="p-2" onclick="stopExecutable()">
                             <img src="./assets/stop.svg" alt="stop" class="size-[50px]">
                         </button>
                     </div>
@@ -96,7 +96,7 @@
                         </div>
                         <div class="col-2">PID</div>
                         <div>
-                            <button placeholder="text" class="rotateOnClick">
+                            <button onclick="updateListPID()" placeholder="text" class="rotateOnClick">
                                 <img src="https://cdn-icons-png.flaticon.com/128/2805/2805355.png" alt="Refresh" title="Refresh" width="20" height="20" style="filter: brightness(0) invert(1);">
                             </button>
                         </div>
@@ -230,6 +230,25 @@
                     alert('Failed to stop executable');
                 });
         }
+
+        function updateListPID(){
+            fetch('http://localhost:3030/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    alert(data.message);  // Affiche un message à l'utilisateur
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to stop executable');
+                });
+        }
+        updateListPID();
 
 
     </script>

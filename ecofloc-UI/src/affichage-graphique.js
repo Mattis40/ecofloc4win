@@ -94,35 +94,7 @@ const updatePlots = (data) => {
         //console.log(app);
     });
     graphTOTAL.updatePlot("TOTAL",totalW)
-    /*const components = data.apps[0].components;
-    totalW = 0;
-
-    components.forEach(component => {
-        const power = component.power_w || 0;
-
-        /*switch (component.type) {
-            case 'CPU':
-                graphCPU.updatePlot(power);
-                totalW += power;
-                break;
-            case 'NIC':
-                graphNIC.updatePlot(power);
-                totalW += power;
-                break;
-            case 'GPU':
-                graphGPU.updatePlot(power);
-                totalW += power;
-                break;
-            case 'SD':
-              graphSD.updatePlot(power);
-              totalW += power;
-              break;
-            default:
-                console.warn(`Unknown component type: ${component.type}`);
-        }
-    });
-
-    graphTOTAL.updatePlot(totalW);*/
+    
 };
 
 // Initialize graphs and set periodic updates
@@ -133,4 +105,15 @@ let graphNIC = new DynamicGraph("graphNIC", "rgb(96, 165, 250)");
 let graphSD = new DynamicGraph("graphSD", "rgb(129, 140, 248)");
 let graphTOTAL = new DynamicGraph("graphTOTAL", "rgb(192, 132, 252)");
 
-setInterval(readFile, 500);
+const startButton = document.querySelector("#start-button");
+const stopButton = document.querySelector("#stop-button");
+
+startButton.addEventListener("click", () => {
+    setInterval(readFile, 500);
+});
+
+stopButton.addEventListener("click", () => {
+    clearInterval(readFile);
+});
+
+

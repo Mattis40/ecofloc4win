@@ -29,7 +29,7 @@ app.post('/execute', (req, res) => {
     const exePath = `"${__dirname}\\Generator.exe"`; // Chemin absolu vers l'ex�cutable
 
     if (processRunning) {
-        return res.status(400).json({ success: false, message: 'Un processus est d�j� en cours.' });
+        return res.status(400).json({ success: false, message: 'Process already running' });
     }
 
     try {
@@ -50,8 +50,7 @@ app.post('/execute', (req, res) => {
         });
 
         processRunning = true; // Indique que le processus a d�marr�
-        console.log('Processus lanc�.');
-        return res.json({ success: true, message: 'Processus lanc�.' });
+        console.log('Process launched');
     } catch (error) {
         console.error(`Erreur inattendue : ${error.message}`);
         processRunning = false; // Assurer que l'�tat est r�initialis�
@@ -64,7 +63,7 @@ app.post('/configurator', (req, res) => {
     const exePath = `"${__dirname}\\EcoflocConfigurator.exe"`; // Chemin absolu vers le configurator
 
     if (configuratorRunning) {
-        return res.status(400).json({ success: false, message: 'Configurator est d�j� en cours.' });
+        return res.status(400).json({ success: false, message: 'Configurator already running' });
     }
 
     try {
@@ -82,8 +81,7 @@ app.post('/configurator', (req, res) => {
         });
 
         configuratorRunning = true;
-        console.log('Configurator lanc�.');
-        return res.json({ success: true, message: 'Configurator lanc�.' });
+        console.log('Configurator started');
     } catch (error) {
         console.error(`Erreur inattendue : ${error.message}`);
         configuratorRunning = false;
@@ -97,7 +95,7 @@ app.post('/stop', (req, res) => {
     const exeName = 'Generator.exe'; // Nom du processus � tuer
 
     if (!processRunning) {
-        return res.status(400).json({ success: false, message: 'Aucun processus en cours.' });
+        return res.status(400).json({ success: false, message: 'No process running' });
     }
 
     try {
@@ -105,7 +103,7 @@ app.post('/stop', (req, res) => {
         exec(`taskkill /IM ${exeName} /F`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Erreur lors de l'arr�t : ${error.message}`);
-                return res.status(500).json({ success: false, message: `Erreur : ${error.message}` });
+                return res.status(500).json({ success: false, message: `Error : ${error.message}` });
             }
 
             if (stderr) {
@@ -113,14 +111,13 @@ app.post('/stop', (req, res) => {
                 // Optionnel : envoyer un avertissement
             }
 
-            console.log(`Processus arr�t� : ${stdout}`);
-            processRunning = false; // R�initialiser apr�s l'arr�t
-            return res.json({ success: true, message: 'Processus arr�t�.' });
+            console.log(`Process stopped : ${stdout}`);
+            processRunning = false;
         });
     } catch (error) {
         console.error(`Erreur inattendue : ${error.message}`);
-        processRunning = false; // Assurer que l'�tat est r�initialis�
-        return res.status(500).json({ success: false, message: 'Erreur lors de l\'arr�t du processus.' });
+        processRunning = false;
+        return res.status(500).json({ success: false, message: 'Error while attempting to stop the process.' });
     }
 });
 
@@ -223,6 +220,32 @@ app.get('/events', (req, res) => {
         console.log('Client SSE déconnecté');
         watcher.close();
     });
+});
+
+// API pour lancer le configurator
+app.post('/update', (req, res) => {
+    const exePath = `"${__dirname}\\PIDRecup.exe"`; // Chemin absolu vers le configurator
+
+     try {
+        const process = exec(exePath, (error, stdout, stderr) => {
+            configuratorRunning = false; // R�initialiser apr�s ex�cution
+            if (error) {
+                console.error(`Erreur d'ex�cution : ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.warn(`Stderr : ${stderr}`);
+                return;
+            }
+            console.log(`Stdout : ${stdout}`);
+        });
+
+        
+    } catch (error) {
+        console.error(`Erreur inattendue : ${error.message}`);
+        configuratorRunning = false;
+        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du configurator.' });
+    }
 });
 
 
