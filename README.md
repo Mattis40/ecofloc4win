@@ -41,6 +41,61 @@ In this beta version of **EcoFloc4Win**, each hardware component—CPU, SD, GPU,
 The Web-UI requires node and npm.
 EcoflocConfigurator.exe requires .NET desktop runtime applications version 8.0.10.
 
+---
+
+## Installation Guide
+
+Follow these steps to install **EcoFloc4Win**:
+
+1. **Download the software**: 
+   - Clone the repository or download the latest release from [GitHub](github path to the repo).
+2. **Install prerequisites**:
+   - Ensure you have Node.js and npm installed for the Web-UI. Download them from [Node.js](https://nodejs.org/).
+   - Install the .NET Desktop Runtime (version 8.0.10). Download it from [Microsoft .NET](https://dotnet.microsoft.com/).
+3. **Run the installer**:
+   - Execute `(name of the installer)` and follow the on-screen instructions.
+4. **Configure hardware specifications**:
+   - Use `EcoflocConfigurator.exe` to customize hardware configurations or manually edit the JSON files in the `config/` directory.
+---
+
+## Usage Guide
+
+Once installed, follow these steps to use **EcoFloc4Win**:
+
+1. **Start the application**:
+   - Open a command prompt as administrator, navigate to the installation directory, and run `EcoFloc.exe`.
+2. **Measure energy consumption**:
+   - Specify the hardware components to monitor using command-line arguments, for example:
+     ```bash
+     EcoFloc.exe --components CPU,GPU --interval 5 --timeout 60 (à voir avec Mattis)
+     ```
+   - This command measures CPU and GPU energy consumption every 5 seconds for 60 seconds.
+3. **View results**:
+   - The results will be saved as a JSON or CSV file in the `results/` directory.
+4. **Web-UI** (optional):
+   - Launch the Web-UI with the executable `(put executable file name)`
+---
+
+## Configuration Guide
+
+Customize **EcoFloc4Win** settings to match your hardware specifications:
+
+1. **Using EcoflocConfigurator.exe**:
+   - Launch `EcoflocConfigurator.exe`.
+   - Select the component you wish to configure (CPU, GPU, SD, or NIC).
+   - Enter the required specifications (e.g., power consumption in Watts) and save your changes.
+
+2. **Manually editing JSON files**:
+   - Navigate to the `config/` directory.
+   - Open the JSON file corresponding to the component you want to configure (e.g., `cpu.json`).
+   - Update the specifications based on your hardware datasheets. For example:
+     ```json
+     {
+       (add the exemple of the config file)
+     }
+     ```
+---
+
 ## References
 [^1]: [Têchnopole Domolandes](https://www.domolandes.fr)
 [^2]: [IUT de Bayonne et du Pays Basque](https://www.domolandes.fr)
