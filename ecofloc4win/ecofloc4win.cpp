@@ -565,10 +565,8 @@ int main()
             }
 
             for (auto& data : localMonitoringData) {
-                //std::cout << "PID start time: " << startPidTime << std::endl;
-                uint64_t startCPUTime = CPU::getCPUTime(); // Temps CPU total en 100 ns
-                //std::cout << "CPU start time: " << startCPUTime << std::endl;
-                uint64_t startPidTime = CPU::getPidTime(data.getPids()[0]); // Temps CPU du processus en 100 ns
+				uint64_t startCPUTime = CPU::getCPUTime();
+                uint64_t startPidTime = CPU::getPidTime(data.getPids()[0]);
 
                 CPU::getCurrentPower(startTotalPower);
 
@@ -579,23 +577,19 @@ int main()
                 avgPowerInterval = (startTotalPower + endTotalPower) / 2;
 
                 uint64_t endCPUTime = CPU::getCPUTime();
-                //std::cout << "CPU end time: " << endCPUTime << std::endl;
                 uint64_t endPidTime = CPU::getPidTime(data.getPids()[0]);
-                //std::cout << "PID end time: " << endPidTime << std::endl;
 
-                double pid_time_diff = static_cast<double>(endPidTime) - static_cast<double>(startPidTime);
-                //std::cout << "PID time diff: " << pid_time_diff << std::endl;
-                double cpu_time_diff = static_cast<double>(endCPUTime) - static_cast<double>(startCPUTime);
-                //std::cout << "CPU time diff: " << cpu_time_diff << std::endl;
+                double pidTimeDiff = static_cast<double>(endPidTime) - static_cast<double>(startPidTime);
+                double cpuTimeDiff = static_cast<double>(endCPUTime) - static_cast<double>(startCPUTime);
 
-                if (pid_time_diff > cpu_time_diff) {
+                if (pidTimeDiff > cpuTimeDiff) {
                     std::cerr << "Error: Process time is greater than CPU time." << std::endl;
                     return 1;
                 }
 
-                double cpu_usage = (pid_time_diff / cpu_time_diff);
+                double cpuUsage = (pidTimeDiff / cpuTimeDiff);
 
-                double intervalEnergy = avgPowerInterval * cpu_usage * interval / 1000; // Convertir en Joules
+                double intervalEnergy = avgPowerInterval * cpuUsage * interval / 1000;
 
                 totalEnergy += intervalEnergy;
 

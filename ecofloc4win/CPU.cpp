@@ -5,7 +5,7 @@ typedef float* (*GetCPUClocksFunc)(int* size);
 typedef float* (*GetCPUCoresPowerFunc)(int* size);
 
 namespace CPU {
-    uint64_t FromFileTime(const FILETIME& ft) {
+    uint64_t fromFileTime(const FILETIME& ft) {
         ULARGE_INTEGER uli = { 0 };
         uli.LowPart = ft.dwLowDateTime;
         uli.HighPart = ft.dwHighDateTime;
@@ -15,8 +15,7 @@ namespace CPU {
     uint64_t getCPUTime() {
         FILETIME idleTime, kernelTime, userTime;
         if (GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
-            uint64_t cpuTime = FromFileTime(kernelTime) + FromFileTime(userTime) + FromFileTime(idleTime);
-            //cpuTime /= 1000000000; // Convertir en s
+            uint64_t cpuTime = fromFileTime(kernelTime) + fromFileTime(userTime) + fromFileTime(idleTime);
             return cpuTime;
         }
         else {
@@ -37,11 +36,10 @@ namespace CPU {
 
         // Get the process times
         if (GetProcessTimes(hProcess, &creationTime, &exitTime, &kernelTime, &userTime)) {
-            uint64_t kernel = FromFileTime(kernelTime);
-            uint64_t user = FromFileTime(userTime);
+            uint64_t kernel = fromFileTime(kernelTime);
+            uint64_t user = fromFileTime(userTime);
 
             uint64_t totalTime = kernel + user;
-            //totalTime /= 1000000000; // Convertir en s
             CloseHandle(hProcess);
             return totalTime;
         }
