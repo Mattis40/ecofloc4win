@@ -1,37 +1,37 @@
 {
     "apps": [
         {
-            "color": "#BC7CC2",
+            "color": "#77C181",
             "pid": 12,
-            "power_w_CPU": 58,
-            "power_w_GPU": 107,
-            "power_w_NIC": 19,
-            "power_w_SD": 7
+            "power_w_CPU": 57,
+            "power_w_GPU": 115,
+            "power_w_NIC": 7,
+            "power_w_SD": 12
         },
         {
-            "color": "#5E99A0",
+            "color": "#98C6AF",
             "pid": 751,
             "power_w_CPU": 69,
-            "power_w_GPU": 117,
-            "power_w_NIC": 6,
-            "power_w_SD": 10
+            "power_w_GPU": 112,
+            "power_w_NIC": 19,
+            "power_w_SD": 13
         },
         {
-            "color": "#B6AE83",
+            "color": "#78769F",
             "pid": 3419,
-            "power_w_CPU": 57,
-            "power_w_GPU": 105,
-            "power_w_NIC": 11,
-            "power_w_SD": 18
+            "power_w_CPU": 51,
+            "power_w_GPU": 106,
+            "power_w_NIC": 19,
+            "power_w_SD": 3
         },
         {
-            "color": "#B48967",
+            "color": "#C39FAA",
             "pid": 8,
-            "power_w_CPU": 67,
-            "power_w_GPU": 100,
-            "power_w_NIC": 12,
-            "power_w_SD": 17
+            "power_w_CPU": 68,
+            "power_w_GPU": 113,
+            "power_w_NIC": 8,
+            "power_w_SD": 2
         }
     ],
-    "time": 1736527519
+    "time": 1736695530
 }
