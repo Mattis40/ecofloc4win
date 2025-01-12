@@ -5,18 +5,19 @@ typedef float* (*GetCPUClocksFunc)(int* size);
 typedef float* (*GetCPUCoresPowerFunc)(int* size);
 
 namespace CPU {
-    uint64_t FromFileTime(const FILETIME& ft) {
+	// Function to convert FILETIME to uint64_t
+    uint64_t fromFileTime(const FILETIME& ft) {
         ULARGE_INTEGER uli = { 0 };
         uli.LowPart = ft.dwLowDateTime;
         uli.HighPart = ft.dwHighDateTime;
         return uli.QuadPart;
     }
 
+	// Function to get the CPU time
     uint64_t getCPUTime() {
         FILETIME idleTime, kernelTime, userTime;
         if (GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
-            uint64_t cpuTime = FromFileTime(kernelTime) + FromFileTime(userTime) + FromFileTime(idleTime);
-            //cpuTime /= 1000000000; // Convertir en s
+            uint64_t cpuTime = fromFileTime(kernelTime) + fromFileTime(userTime) + fromFileTime(idleTime);
             return cpuTime;
         }
         else {
@@ -25,6 +26,7 @@ namespace CPU {
         }
     }
 
+	// Function to get the time spent by a process
     uint64_t getPidTime(DWORD pid) {
         // Open an handle for the specified process with the required permissions
         HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
@@ -37,11 +39,10 @@ namespace CPU {
 
         // Get the process times
         if (GetProcessTimes(hProcess, &creationTime, &exitTime, &kernelTime, &userTime)) {
-            uint64_t kernel = FromFileTime(kernelTime);
-            uint64_t user = FromFileTime(userTime);
+            uint64_t kernel = fromFileTime(kernelTime);
+            uint64_t user = fromFileTime(userTime);
 
             uint64_t totalTime = kernel + user;
-            //totalTime /= 1000000000; // Convertir en s
             CloseHandle(hProcess);
             return totalTime;
         }
@@ -53,7 +54,7 @@ namespace CPU {
 
     }
 
-
+	// Function to get the current power of the CPU
     bool getCurrentPower(double& power) {
         // Load the DLL
         HMODULE hModule = LoadLibrary(L"Wrapper.dll");
