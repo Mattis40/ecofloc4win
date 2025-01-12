@@ -121,5 +121,5 @@ Once installed, follow these steps to use **EcoFloc4Win**:
 
 
 ## References
-[^1]: [Têchnopole Domolandes](https://www.domolandes.fr)
-[^2]: [IUT de Bayonne et du Pays Basque](https://www.domolandes.fr)
+[^1]: [Technopôle Domolandes](https://www.domolandes.fr)
+[^2]: [IUT de Bayonne et du Pays Basque](https://www.iutbayonne.univ-pau.fr)
