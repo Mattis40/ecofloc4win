@@ -5,6 +5,7 @@ typedef float* (*GetCPUClocksFunc)(int* size);
 typedef float* (*GetCPUCoresPowerFunc)(int* size);
 
 namespace CPU {
+	// Function to convert FILETIME to uint64_t
     uint64_t fromFileTime(const FILETIME& ft) {
         ULARGE_INTEGER uli = { 0 };
         uli.LowPart = ft.dwLowDateTime;
@@ -12,6 +13,7 @@ namespace CPU {
         return uli.QuadPart;
     }
 
+	// Function to get the CPU time
     uint64_t getCPUTime() {
         FILETIME idleTime, kernelTime, userTime;
         if (GetSystemTimes(&idleTime, &kernelTime, &userTime)) {
@@ -24,6 +26,7 @@ namespace CPU {
         }
     }
 
+	// Function to get the time spent by a process
     uint64_t getPidTime(DWORD pid) {
         // Open an handle for the specified process with the required permissions
         HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
@@ -51,7 +54,7 @@ namespace CPU {
 
     }
 
-
+	// Function to get the current power of the CPU
     bool getCurrentPower(double& power) {
         // Load the DLL
         HMODULE hModule = LoadLibrary(L"Wrapper.dll");
