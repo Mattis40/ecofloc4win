@@ -38,9 +38,9 @@ namespace EcoflocConfigurator
 
             try
             {
-                if (System.IO.File.Exists("sd.json"))
+                if (System.IO.File.Exists("./config/sd.json"))
                 {
-                    string textInfo = System.IO.File.ReadAllText("sd.json");
+                    string textInfo = System.IO.File.ReadAllText("./config/sd.json");
                     if (!string.IsNullOrEmpty(textInfo))
                     {
                         info = System.Text.Json.JsonSerializer.Deserialize<SDInfo>(textInfo);
@@ -129,7 +129,7 @@ namespace EcoflocConfigurator
 
             // Save the information as JSON
             string json = System.Text.Json.JsonSerializer.Serialize(info);
-            System.IO.File.WriteAllText("sd.json", json);
+            System.IO.File.WriteAllText("./config/sd.json", json);
         }
 
         private bool IsTextBoxEmpty(TextBox textBox)

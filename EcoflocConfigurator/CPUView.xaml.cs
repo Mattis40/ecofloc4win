@@ -36,9 +36,9 @@ namespace EcoflocConfigurator
             info = new CPUInfo();
             try
             {
-                if (System.IO.File.Exists("cpu.json"))
+                if (System.IO.File.Exists("./config/cpu.json"))
                 {
-                    string textInfo = System.IO.File.ReadAllText("cpu.json");
+                    string textInfo = System.IO.File.ReadAllText("./config/cpu.json");
                     if (!string.IsNullOrEmpty(textInfo))
                     {
                         info = System.Text.Json.JsonSerializer.Deserialize<CPUInfo>(textInfo);
@@ -122,7 +122,7 @@ namespace EcoflocConfigurator
 
             // Save the information as JSON
             string json = System.Text.Json.JsonSerializer.Serialize(info);
-            System.IO.File.WriteAllText("cpu.json", json);
+            System.IO.File.WriteAllText("./config/cpu.json", json);
         }
 
         private bool IsTextBoxEmpty(TextBox textBox)

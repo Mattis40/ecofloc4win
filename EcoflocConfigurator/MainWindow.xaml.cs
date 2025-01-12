@@ -1,13 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace EcoflocConfigurator
 {
@@ -16,11 +8,27 @@ namespace EcoflocConfigurator
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string ConfigDirectory = "./config";
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // Créer le dossier config si nécessaire
+            EnsureConfigDirectoryExists();
+
+            // Charger la vue par défaut (CPUView)
             MainContentControl.Content = new CPUView();
             CPUButton.IsEnabled = false;
+        }
+
+        private void EnsureConfigDirectoryExists()
+        {
+            // Vérifie si le dossier config existe, sinon le crée
+            if (!Directory.Exists(ConfigDirectory))
+            {
+                Directory.CreateDirectory(ConfigDirectory);
+            }
         }
 
         private void MainWindows_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -108,7 +116,7 @@ namespace EcoflocConfigurator
                 }
                 return true;
             }
-             return true;
+            return true;
         }
 
         private bool CheckForEmptyField()

@@ -38,9 +38,9 @@ namespace EcoflocConfigurator
 
             try
             {
-                if (System.IO.File.Exists("nic.json"))
+                if (System.IO.File.Exists("./config/nic.json"))
                 {
-                    string textInfo = System.IO.File.ReadAllText("nic.json");
+                    string textInfo = System.IO.File.ReadAllText("./config/nic.json");
                     if (!string.IsNullOrEmpty(textInfo))
                     {
                         info = System.Text.Json.JsonSerializer.Deserialize<NICInfo>(textInfo);
@@ -129,7 +129,7 @@ namespace EcoflocConfigurator
 
             // Save the information as JSON
             string json = System.Text.Json.JsonSerializer.Serialize(info);
-            System.IO.File.WriteAllText("nic.json", json);
+            System.IO.File.WriteAllText("./config/nic.json", json);
         }
 
         private bool IsTextBoxEmpty(TextBox textBox)
