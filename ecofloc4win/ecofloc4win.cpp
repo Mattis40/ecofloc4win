@@ -30,6 +30,7 @@
 
 #include "process.h"         // Custom header for process handling
 #include "gpu.h"             // Custom header for GPU monitoring
+#include "CPU.h"
 #include "MonitoringData.h"  // Custom header for monitoring data
 
 #include "ftxui/component/screen_interactive.hpp"
@@ -549,6 +550,68 @@ int main()
         }
         });
 
+    std::thread cpu_thread([&screen] {
+        while (true) {
+            double totalEnergy = 0.0;
+            double startTotalPower = 0.0;
+            double endTotalPower = 0.0;
+            double avgPowerInterval = 0.0;
+            std::vector<MonitoringData> localMonitoringData;
+
+            {
+                std::unique_lock<std::mutex> lock(data_mutex);
+                new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
+                localMonitoringData = monitoringData;
+            }
+
+            for (auto& data : localMonitoringData) {
+				uint64_t startCPUTime = CPU::getCPUTime();
+                uint64_t startPidTime = CPU::getPidTime(data.getPids()[0]);
+
+                CPU::getCurrentPower(startTotalPower);
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+
+                CPU::getCurrentPower(endTotalPower);
+
+                avgPowerInterval = (startTotalPower + endTotalPower) / 2;
+
+                uint64_t endCPUTime = CPU::getCPUTime();
+                uint64_t endPidTime = CPU::getPidTime(data.getPids()[0]);
+
+                double pidTimeDiff = static_cast<double>(endPidTime) - static_cast<double>(startPidTime);
+                double cpuTimeDiff = static_cast<double>(endCPUTime) - static_cast<double>(startCPUTime);
+
+                if (pidTimeDiff > cpuTimeDiff) {
+                    std::cerr << "Error: Process time is greater than CPU time." << std::endl;
+                    return 1;
+                }
+
+                double cpuUsage = (pidTimeDiff / cpuTimeDiff);
+
+                double intervalEnergy = avgPowerInterval * cpuUsage * interval / 1000;
+
+                totalEnergy += intervalEnergy;
+
+                startCPUTime = endCPUTime;
+                startPidTime = endPidTime;
+                startTotalPower = 0.0;
+                endTotalPower = 0.0;
+
+				{
+					std::lock_guard<std::mutex> lock(data_mutex);
+					auto it = std::find_if(monitoringData.begin(), monitoringData.end(), [&](const auto& d) {
+						return d.getPids()[0] == data.getPids()[0];
+						});
+					if (it != monitoringData.end()) {
+						it->updateCPUEnergy(totalEnergy);
+					}
+				}
+            }
+
+            screen.Post(Event::Custom);
+        }
+        });
 
 
 	// Run the application
@@ -557,6 +620,7 @@ int main()
 	gpu_thread.join();
 	sd_thread.join();
 	nic_thread.join();
+	cpu_thread.join();
 	return 0;
 }
 
