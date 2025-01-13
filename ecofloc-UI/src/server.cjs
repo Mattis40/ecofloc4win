@@ -60,7 +60,7 @@ app.post('/execute', (req, res) => {
 
 // API pour lancer le configurator
 app.post('/configurator', (req, res) => {
-    const exePath = `"${__dirname}\\EcoflocConfigurator.exe"`; // Chemin absolu vers le configurator
+    const exePath = `"${__dirname}\\..\\..\\EcoflocConfigurator.exe"`; // Chemin absolu vers le configurator
 
     if (configuratorRunning) {
         return res.status(400).json({ success: false, message: 'Configurator already running' });
