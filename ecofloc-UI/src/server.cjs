@@ -1,6 +1,6 @@
 const express = require('express');
 const { exec } = require('child_process');
-const cors = require('cors'); // Pour permettre les requ�tes depuis votre front-end
+const cors = require('cors'); // To enable queries from your front-end
 const fs = require('fs');
 const path = require('path');
 
@@ -8,25 +8,25 @@ const app = express();
 const port = 3030;
 const appProcessPath = './process.json';
 
-let processRunning = false; // Indique si le processus est en cours d'ex�cution
-let configuratorRunning = false; // Indique si le configurator est en cours d'ex�cution
+let processRunning = false; // Indicates whether the process is running
+let configuratorRunning = false; // Indicates whether the configurator is running
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Changer le dir par le correcte
+// Changing dir by correct
 const absolutePath = path.resolve('./ecofloc-UI/src');
 if (fs.existsSync(absolutePath)) {
-  process.chdir(absolutePath); // Change le répertoire de travail
-  console.log(`Répertoire de travail changé à : ${absolutePath}`);
+  process.chdir(absolutePath); // Change working directory
+  console.log(`Work directory changed to : ${absolutePath}`);
 } else {
-  console.error(`Le répertoire ${absolutePath} n'existe pas.`);
+  console.error(`The ${absolutePath} directory does not exist.`);
 }
 
-// API pour lancer l'ex�cutable
+// API to launch the executable
 app.post('/execute', (req, res) => {
-    const exePath = `"${__dirname}\\Generator.exe"`; // Chemin absolu vers l'ex�cutable
+    const exePath = `"${__dirname}\\Generator.exe"`; // Absolute path to executable
 
     if (processRunning) {
         return res.status(400).json({ success: false, message: 'Process already running' });
@@ -35,32 +35,32 @@ app.post('/execute', (req, res) => {
     try {
         // Lancer l'ex�cutable
         const process = exec(exePath, (error, stdout, stderr) => {
-            processRunning = false; // R�initialiser apr�s ex�cution
+            processRunning = false; 
             if (error) {
-                console.error(`Erreur d'ex�cution : ${error.message}`);
-                return; // Pas de `res.json` ici car la r�ponse a d�j� �t� envoy�e
+                console.error(`Execution error : ${error.message}`);
+                return;
             }
 
             if (stderr) {
                 console.warn(`Stderr : ${stderr}`);
-                return; // Idem, g�rer sans r�ponse suppl�mentaire
+                return;
             }
 
             console.log(`Stdout : ${stdout}`);
         });
 
-        processRunning = true; // Indique que le processus a d�marr�
+        processRunning = true;
         console.log('Process launched');
     } catch (error) {
-        console.error(`Erreur inattendue : ${error.message}`);
-        processRunning = false; // Assurer que l'�tat est r�initialis�
-        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du processus.' });
+        console.error(`Unexpected error : ${error.message}`);
+        processRunning = false;
+        return res.status(500).json({ success: false, message: 'Process startup error.' });
     }
 });
 
 // API pour lancer le configurator
 app.post('/configurator', (req, res) => {
-    const exePath = `"${__dirname}\\EcoflocConfigurator.exe"`; // Chemin absolu vers le configurator
+    const exePath = `"${__dirname}\\EcoflocConfigurator.exe"`; // Absolute path to configurator
 
     if (configuratorRunning) {
         return res.status(400).json({ success: false, message: 'Configurator already running' });
@@ -68,9 +68,9 @@ app.post('/configurator', (req, res) => {
 
     try {
         const process = exec(exePath, (error, stdout, stderr) => {
-            configuratorRunning = false; // R�initialiser apr�s ex�cution
+            configuratorRunning = false; 
             if (error) {
-                console.error(`Erreur d'ex�cution : ${error.message}`);
+                console.error(`Execution error : ${error.message}`);
                 return;
             }
             if (stderr) {
@@ -83,50 +83,46 @@ app.post('/configurator', (req, res) => {
         configuratorRunning = true;
         console.log('Configurator started');
     } catch (error) {
-        console.error(`Erreur inattendue : ${error.message}`);
+        console.error(`Unexpected error : ${error.message}`);
         configuratorRunning = false;
-        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du configurator.' });
+        return res.status(500).json({ success: false, message: 'Error when launching configurator.' });
     }
 });
 
 
 // API pour arr�ter l'ex�cutable
 app.post('/stop', (req, res) => {
-    const exeName = 'Generator.exe'; // Nom du processus � tuer
+    const exeName = 'Generator.exe'; // Name of process to kill
 
     if (!processRunning) {
         return res.status(400).json({ success: false, message: 'No process running' });
     }
 
     try {
-        // Utilisation de taskkill pour arr�ter le processus par nom
+        // Using taskkill to stop a process by name
         exec(`taskkill /IM ${exeName} /F`, (error, stdout, stderr) => {
             if (error) {
-                console.error(`Erreur lors de l'arr�t : ${error.message}`);
+                console.error(`Stop error : ${error.message}`);
                 return res.status(500).json({ success: false, message: `Error : ${error.message}` });
             }
 
             if (stderr) {
                 console.warn(`Stderr : ${stderr}`);
-                // Optionnel : envoyer un avertissement
             }
 
             console.log(`Process stopped : ${stdout}`);
             processRunning = false;
         });
     } catch (error) {
-        console.error(`Erreur inattendue : ${error.message}`);
+        console.error(`Unexpected error : ${error.message}`);
         processRunning = false;
         return res.status(500).json({ success: false, message: 'Error while attempting to stop the process.' });
     }
 });
 
 app.post('/changeListePidState', (req, res) => {
-    const { liste, etat } = req.body; // Récupère les données envoyées
-    console.log('taille liste reçue :', liste.length);
-    console.log('etat :', etat);
+    const { liste, etat } = req.body;  // Retrieves sent data
     const data = JSON.parse(fs.readFileSync(appProcessPath, 'utf-8'));
-    // Réponse au client
     data.forEach(process => {
         if (liste.includes(process.name)) {
             process.pid.forEach(pidInfo => {
@@ -134,25 +130,16 @@ app.post('/changeListePidState', (req, res) => {
             });
         }
     });
-    // Sauvegarder les modifications dans le fichier JSON
+    // Save changes to JSON file
     fs.writeFileSync(appProcessPath, JSON.stringify(data, null, 4), 'utf-8');
     
-    console.log('Valeur modifiée avec succès.');
     res.json({ message: 'Liste reçue avec succès', receivedListe: liste });
 });
 
 app.post('/changePidState', (req, res) => {
-    console.log('Répertoire courant :', process.cwd());
     const { nomProc, pidProc, etat } = req.body; // Extract nomProc and pidProc from the request body
-    console.log('Received changePidState request');
-    console.log('nomProc:', nomProc);
-    console.log('pidProc:', pidProc);
-    console.log('Etat:', etat)
 
-    // Récupérer
     const data = JSON.parse(fs.readFileSync(appProcessPath, 'utf-8'));
-
-    // Parcourir les processus pour modifier la valeur
     data.forEach(process => {
         if (process.name == nomProc) {
             process.pid.forEach(pidInfo => {
@@ -162,12 +149,9 @@ app.post('/changePidState', (req, res) => {
             });
         }
     });
-    // Sauvegarder les modifications dans le fichier JSON
+    // Save changes to JSON file
     fs.writeFileSync(appProcessPath, JSON.stringify(data, null, 4), 'utf-8');
     
-    console.log('Valeur modifiée avec succès.');
-
-    // Example response:
     res.json({
         success: true,
         message: 'Process state changed successfully!',
@@ -177,60 +161,59 @@ app.post('/changePidState', (req, res) => {
     });
 });
 
-// Route SSE
+// SSE road
 app.get('/events', (req, res) => {
-    // Configuration des headers pour SSE
+    // Header configuration for SSE
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    console.log('Client SSE connecté');
+    console.log('SSE customer connected');
 
-    // Envoi d'un message initial
-    res.write(`data: ${JSON.stringify({ message: 'Connexion établie' })}\n\n`);
+    //  Sending an initial message
+    res.write(`data: ${JSON.stringify({ message: 'Connection established' })}\n\n`);
 
     const filePath = './process.json';
 
-    // Surveiller le fichier JSON
+    // Monitoring the JSON file
     const watcher = fs.watch(filePath, (eventType) => {
         if (eventType === 'change') {
-            console.log(`Fichier modifié: ${filePath}`);
 
-            // Lire le contenu du fichier
+            // Read file contents
             fs.readFile(filePath, 'utf8', (err, data) => {
                 if (err) {
-                    console.error('Erreur de lecture du fichier:', err);
+                    console.error('File read error :', err);
                     return;
                 }
 
-                // Vérifier si le contenu est un JSON valide
+                // Check if the content is a valid JSON
                 try {
-                    const jsonData = JSON.parse(data); // Valider le JSON
-                    res.write(`data: ${JSON.stringify(jsonData)}\n\n`); // Envoyer au client
+                    const jsonData = JSON.parse(data); 
+                    res.write(`data: ${JSON.stringify(jsonData)}\n\n`);
                 } catch (parseErr) {
-                    console.error('Erreur de parsing JSON:', parseErr);
+                    console.error('JSON parsing error :', parseErr);
                     res.write(`data: ${JSON.stringify({ error: 'Invalid JSON format' })}\n\n`);
                 }
             });
         }
     });
 
-    // Nettoyer le watcher lorsque le client se déconnecte
+    // Clean watcher when customer disconnects
     req.on('close', () => {
-        console.log('Client SSE déconnecté');
+        console.log('SSE customer disconnected');
         watcher.close();
     });
 });
 
 // API pour lancer le configurator
 app.post('/update', (req, res) => {
-    const exePath = `"${__dirname}\\PIDRecup.exe"`; // Chemin absolu vers le configurator
+    const exePath = `"${__dirname}\\PIDRecup.exe"`; // Absolute path to configurator
 
      try {
         const process = exec(exePath, (error, stdout, stderr) => {
-            configuratorRunning = false; // R�initialiser apr�s ex�cution
+            configuratorRunning = false; // Reset after execution
             if (error) {
-                console.error(`Erreur d'ex�cution : ${error.message}`);
+                console.error(`Execution error : ${error.message}`);
                 return;
             }
             if (stderr) {
@@ -242,14 +225,14 @@ app.post('/update', (req, res) => {
 
         
     } catch (error) {
-        console.error(`Erreur inattendue : ${error.message}`);
+        console.error(`Unexpected error : ${error.message}`);
         configuratorRunning = false;
-        return res.status(500).json({ success: false, message: 'Erreur lors du lancement du configurator.' });
+        return res.status(500).json({ success: false, message: 'Error when launching configurator.' });
     }
 });
 
 
 // D�marrer le serveur
 app.listen(port, () => {
-    console.log(`Serveur en cours d'ex�cution sur http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });

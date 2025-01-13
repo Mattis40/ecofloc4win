@@ -1,9 +1,9 @@
 class Application {
-    constructor(name, listePid, categorie, couleur){
+    constructor(name, listPid, category, color){
         this.name = name;
-        this.listePid = listePid;
-        this.categorie = categorie;
-        this.couleur = couleur;
+        this.listePid = listPid;
+        this.category = category;
+        this.color = color;
     }
 
     getName(){
@@ -12,10 +12,10 @@ class Application {
     getListePid(){
         return this.listePid;
     }
-    getCategorie(){
-        return this.categorie;
+    getCategory(){
+        return this.category;
     }
-    getCouleur(){
-        return this.couleur;
+    getColor(){
+        return this.color;
     }
 }
