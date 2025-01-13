@@ -14,7 +14,7 @@
 
 The original **EcoFloc** is a comprehensive and versatile tool developed by the R&D laboratory of Technopôle Domolandes[^1], supported by Université de Pau et des Pays de l'Adour and Université de Toulouse.
 
-**EcoFloc4Win** is a port of this tool made to work for Windows operating systems is developped by a team of developpers at the IUT de Bayonne et du Pays-Basque[^2]. It was made to be as simple to install and use as possible while keeping the spirit of the original **EcoFloc**.
+**EcoFloc4Win** is a port of this tool made to work for Windows operating systems, developed by a team of developers at the IUT de Bayonne et du Pays-Basque[^2]. It was made to be as simple to install and use as possible while keeping the spirit of the original **EcoFloc**.
 
 **EcoFloc4Win** measures the energy consumption of applications in Windows environments across several hardware components. In this beta release, it enables energy measurement for the **CPU**, **GPU**, **storage devices (SD)**, and **network interface controllers (NIC)**. The tool measures energy at predefined intervals, allowing users to create detailed energy profiles based on hardware components and behavioral patterns over time.
 
@@ -32,7 +32,7 @@ Because of hardware constraints, we haven't had the opportunity to test AMD GPUs
 
 ## Technical Specifications
 
-In this beta version of **EcoFloc4Win**, each hardware component CPU, SD and NIC is managed by a json file that specifies what are the specifications of your components. You can find and modify the json files named after each components or alternatively you can use EcoFlocConfigurator.exe to modify these configurations for you.
+In this beta version of EcoFloc4Win, the CPU, SD, and NIC hardware components are managed by individual JSON files that specify their specifications. These configuration files can be manually edited or modified using the EcoFlocConfigurator.exe tool.
 
 To use our software you **MUST** have administrator rights.
 
