@@ -3,6 +3,7 @@ let totalW = 0;
 let mainIdGraph = "";
 const listTab = document.getElementById("list-tab");
 const flexGraphique = document.getElementById("flex-graphique");
+let numSec = 0;
 
 const componentDictionary = {
     "CPU": "CPU",
@@ -70,6 +71,7 @@ const readFile = () => {
             if (data && data.time !== precedentTimeStamp) {
                 precedentTimeStamp = data.time;
                 updatePlots(data);
+                numSec++;
             }
         })
         .catch(error => console.error("Error reading file:", error));
@@ -77,40 +79,25 @@ const readFile = () => {
 
 // Update individual plots based on the JSON data
 const updatePlots = (data) => {
+    
+    totalW = 0;
     //console.log(data);
     data.apps.forEach(app => {
-        graphCPU.updatePlot(app["pid"], app["power_w_CPU"])
-        //console.log(app);
+
+        graphCPU.updatePlot(app["pid"], app["power_w_CPU"], numSec, app["color"]);
+        totalW +=  app["power_w_CPU"];
+
+        graphGPU.updatePlot(app["pid"], app["power_w_GPU"], numSec, app["color"]);
+        totalW +=  app["power_w_GPU"];
+
+        graphSD.updatePlot(app["pid"], app["power_w_SD"], numSec, app["color"]);
+        totalW +=  app["power_w_SD"];
+
+        graphNIC.updatePlot(app["pid"], app["power_w_NIC"], numSec, app["color"]);
+        totalW +=  app["power_w_NIC"];
+
     });
-    /*const components = data.apps[0].components;
-    totalW = 0;
-
-    components.forEach(component => {
-        const power = component.power_w || 0;
-
-        /*switch (component.type) {
-            case 'CPU':
-                graphCPU.updatePlot(power);
-                totalW += power;
-                break;
-            case 'NIC':
-                graphNIC.updatePlot(power);
-                totalW += power;
-                break;
-            case 'GPU':
-                graphGPU.updatePlot(power);
-                totalW += power;
-                break;
-            case 'SD':
-              graphSD.updatePlot(power);
-              totalW += power;
-              break;
-            default:
-                console.warn(`Unknown component type: ${component.type}`);
-        }
-    });
-
-    graphTOTAL.updatePlot(totalW);*/
+    graphTOTAL.updatePlot("TOTAL",totalW, numSec)
 };
 
 // Initialize graphs and set periodic updates

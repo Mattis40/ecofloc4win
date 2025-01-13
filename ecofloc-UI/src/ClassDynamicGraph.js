@@ -53,12 +53,13 @@
     }
 }*/
 class DynamicGraph {
-    constructor(nomGraphique, defaultColor) {
+    constructor(nomGraphique) {
         // Configuration du layout pour le graphique
         this.layout = {
             xaxis: {
                 gridcolor: 'rgba(255,255,255,0.2)',
-                tickfont: { color: 'white' }
+                tickfont: { color: 'white' },
+                range: [-30, 0]
             },
             yaxis: {
                 gridcolor: 'rgba(255,255,255,0.2)',
@@ -71,26 +72,36 @@ class DynamicGraph {
             showlegend: false
         };
 
+        //this.key = 0;
         this.data = {}; // Stockage des séries par PID
         this.traceIndices = {}; // Lien entre PID et index des traces
         this.nomGraphique = nomGraphique;
-        this.defaultColor = defaultColor;
 
         // Initialisation du graphique
         Plotly.newPlot(this.nomGraphique, [], this.layout, { responsive: true, displayModeBar: false });
     }
 
-    updatePlot(PID, value) {
+    updatePlot(PID, value, time, color) {
+        
         // Vérifie si le PID existe déjà
         if (!this.data[PID]) {
             console.log(`Initialisation de la série pour PID: ${PID}`);
-            const color = this.getRandomColor();
-            this.data[PID] = {
-                y: [],
-                line: { color:color },
-                fill: 'none',
-                name: `PID ${PID}`
-            };
+            if (PID !== "TOTAL") {
+                this.data[PID] = {
+                    y: [],
+                    line: { color:color },
+                    fill: 'none',
+                    name: `PID ${PID}`,
+                };
+            }
+            else{
+                this.data["TOTAL"] = {
+                    y: [],
+                    line: { color: "#10b981" },
+                    fill: 'tozeroy',
+                };
+            }
+            
 
             // Ajoute une nouvelle trace pour ce PID
             Plotly.addTraces(this.nomGraphique, this.data[PID]);
@@ -109,7 +120,8 @@ class DynamicGraph {
 
         // Met à jour la trace correspondante
         console.log(`Mise à jour de la trace pour PID ${PID} à l'index ${index}`);
-        Plotly.update(this.nomGraphique, { y: [this.data[PID].y] }, {}, [index]);
+        Plotly.update(this.nomGraphique, { y: [this.data[PID].y] }, {xaxis: {gridcolor: 'rgba(255,255,255,0.2)', tickfont: { color: 'white' }, range: [time-30, time]}}, [index]);
+        this.key++;
     }
 
     refreshGraph() {
