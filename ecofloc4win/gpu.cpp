@@ -5,7 +5,7 @@
 #include <nvml.h>
 
 namespace GPU {
-    int gpu_usage(int pid) {
+    int getOneGpuUsage(int pid) {
         nvmlReturn_t result;
         unsigned int deviceCount;
         nvmlDevice_t device;
@@ -68,57 +68,55 @@ namespace GPU {
     }
 
     // Function to retrieve GPU usage for a list of PIDs
-    std::vector<int> getGPUUsage(std::vector<int> pids) {
+    std::vector<int> getGpuUsages(std::vector<int> pids) {
         std::vector<int> results;
         for (int pid : pids) {
-            results.push_back(gpu_usage(pid));
+            results.push_back(getOneGpuUsage(pid));
         }
         return results;
     }
 
 	// Function to retrieve GPU power usage
-    int getGPUPower() {
+    int getGpuPower() {
         nvmlReturn_t result;
         nvmlDevice_t device;
 
-        // Initialisation de NVML
+        // Initializing NVML
         result = nvmlInit();
         if (NVML_SUCCESS != result) {
-            std::cout << "Erreur lors de l'initialisation de NVML : " << nvmlErrorString(result) << std::endl;
+            std::cout << "Error initializing NVML: " << nvmlErrorString(result) << std::endl;
             return 1;
         }
 
-        // Obtenir le handle du GPU 0 (ou un autre GPU selon l'index)
+        // Get the handle of GPU 0 (or another GPU depending on the index)
         result = nvmlDeviceGetHandleByIndex(0, &device);
         if (NVML_SUCCESS != result) {
-            std::cout << "Erreur lors de la récupération du handle du GPU : " << nvmlErrorString(result) << std::endl;
+            std::cout << "Error retrieving GPU handle: " << nvmlErrorString(result) << std::endl;
             nvmlShutdown();
             return 1;
         }
 
-        // Lire la puissance utilisée (en milliwatts)
+        // Read the power used (in milliwatts)
         unsigned int power;
         result = nvmlDeviceGetPowerUsage(device, &power);
         if (NVML_SUCCESS != result) {
-            std::cout << "Erreur lors de la lecture de la puissance : " << nvmlErrorString(result) << std::endl;
+            std::cout << "Error reading power: " << nvmlErrorString(result) << std::endl;
             nvmlShutdown();
             return 1;
         }
-        // La puissance est donnée en milliwatts, donc on la convertit en watts
-        //std::cout << "Puissance utilisée par le GPU : " << power / 1000.0 << " W" << std::endl;
+        // Power is given in milliwatts, so we convert it to watts
 
-
-        // Nettoyage et arrêt de NVML
+        // Cleaning and stopping NVML
         nvmlShutdown();
         return power / 1000.0;
     }
 
-	int getGPUJoules(std::vector<int> pids, int ms) {
+	int getGpuJoules(std::vector<int> pids, int ms) {
         double interval_s = (double)ms / 1000.0;
 	    int results = 0;
 		for (int pid : pids) {
-			int usage = gpu_usage(pid);
-			int power = getGPUPower();
+			int usage = getOneGpuUsage(pid);
+			int power = getGpuPower();
             double power_used = ((usage / 100.0) * power);
             results += power_used * interval_s;
 		}

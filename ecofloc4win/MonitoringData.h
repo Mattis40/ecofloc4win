@@ -34,25 +34,25 @@ public:
 	std::string getName() const;
 	std::vector<int> getPids() const;
 
-	void setCPUEnabled(bool enabled);
-	void setGPUEnabled(bool enabled);
-	void setSDEnabled(bool enabled);
-	void setNICEnabled(bool enabled);
+	void setCpuEnabled(bool enabled);
+	void setGpuEnabled(bool enabled);
+	void setSdEnabled(bool enabled);
+	void setNicEnabled(bool enabled);
 
-	bool isCPUEnabled() const;
-	bool isGPUEnabled() const;
-	bool isSDEnabled() const;
-	bool isNICEnabled() const;
+	bool isCpuEnabled() const;
+	bool isGpuEnabled() const;
+	bool isSdEnabled() const;
+	bool isNicEnabled() const;
 
-	void setCPUEnergy(double energy);
-	void setGPUEnergy(double energy);
-	void setSDEnergy(double energy);
-	void setNICEnergy(double energy);
+	void setCpuEnergy(double energy);
+	void setGpuEnergy(double energy);
+	void setSdEnergy(double energy);
+	void setNicEnergy(double energy);
 
-	void updateCPUEnergy(double energy);
-	void updateGPUEnergy(double energy);
-	void updateSDEnergy(double energy);
-	void updateNICEnergy(double energy);
+	void updateCpuEnergy(double energy);
+	void updateGpuEnergy(double energy);
+	void updateSdEnergy(double energy);
+	void updateNicEnergy(double energy);
 
 	void addIrp(ULONGLONG irpAddress, const IoEventInfo& info);
 	void updateIrp(ULONGLONG irpAddress, ULONG bytesTransferred);

@@ -4,7 +4,7 @@
 
 namespace GPU
 {
-	std::vector<int> getGPUUsage(std::vector<int> pids);
-	int getGPUPower();
-	int getGPUJoules(std::vector<int> pids, int ms);
+	std::vector<int> getGpuUsages(std::vector<int> pids);
+	int getGpuPower();
+	int getGpuJoules(std::vector<int> pids, int ms);
 };

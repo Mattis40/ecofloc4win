@@ -47,7 +47,7 @@ std::condition_variable new_data_cv;
 std::mutex data_mutex;
 
 // Function to get terminal size
-int GetTerminalHeight() {
+int getTerminalHeight() {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
 		// Calculate the height of the terminal window.
@@ -57,7 +57,7 @@ int GetTerminalHeight() {
 	return 24;
 }
 
-string wstring_to_string(const wstring& wide_string)
+string convertWstringToString(const wstring& wide_string)
 {
     string str;
     size_t size;
@@ -89,7 +89,7 @@ unordered_map<string, int> actions =
     {"quit", 6},
 };
 
-wstring GetProcessNameByPID(DWORD processID) {
+wstring getProcessNameByPID(DWORD processID) {
     TCHAR processName[MAX_PATH] = TEXT("<unknown>");
 
     // Get a handle to the process
@@ -179,7 +179,7 @@ DWORD getCounterIndex(const std::string& counterName) {
 /*
 * This function gets the instance name for a given process ID.
 */
-std::wstring GetInstanceForPID(int targetPID) {
+std::wstring getInstanceForPID(int targetPID) {
     PDH_HQUERY query = nullptr;
     PDH_HCOUNTER pidCounter = nullptr;
 
@@ -261,7 +261,7 @@ std::wstring getLocalizedCounterPath(const std::wstring& processName, const std:
     return L"\\"+ localizedProcessNameW + L"(" + processName + L")\\" + localizedNameW;
 }
 
-auto CreateTableRows() -> std::vector<std::vector<std::string>> {
+auto createTableRows() -> std::vector<std::vector<std::string>> {
 	std::vector<std::vector<std::string>> rows;
 	std::lock_guard<std::mutex> lock(data_mutex);
 
@@ -279,9 +279,9 @@ auto CreateTableRows() -> std::vector<std::vector<std::string>> {
 	return rows;
 }
 
-auto RenderTable(int scroll_position) -> Element {
-	auto table_data = CreateTableRows();
-	int terminal_height = GetTerminalHeight();
+auto renderTable(int scroll_position) -> Element {
+	auto table_data = createTableRows();
+	int terminal_height = getTerminalHeight();
 	int visible_rows = terminal_height - 8; // Adjust for input box and borders
 
 	// Prepare rows for the visible portion
@@ -335,7 +335,7 @@ int main()
 	// Component to handle input and update the scroll position
 	auto component = Renderer(input_box, [&] {
 		return vbox({
-			RenderTable(scroll_position),
+			renderTable(scroll_position),
 			separator(),
 			hbox({
 				text("Command: "), input_box->Render()
@@ -344,7 +344,7 @@ int main()
 		});
 
 	component = CatchEvent(component, [&](Event event) {
-		int terminal_height = GetTerminalHeight();
+		int terminal_height = getTerminalHeight();
 		int visible_rows = terminal_height - 8;
 
 		if ((int)monitoringData.size() <= visible_rows) {
@@ -383,7 +383,7 @@ int main()
                 new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
 			    for (auto& data : monitoringData)
 			    {
-				    int gpu_joules = GPU::getGPUJoules(data.getPids(), 500);
+				    int gpu_joules = GPU::getGpuJoules(data.getPids(), 500);
 				    data.updateGPUEnergy(gpu_joules);
 			    }
             }
@@ -408,7 +408,7 @@ int main()
                 new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
 
                 for (auto& data : monitoringData) {
-                    std::wstring instanceName = GetInstanceForPID(data.getPids()[0]);
+                    std::wstring instanceName = getInstanceForPID(data.getPids()[0]);
 
                     if (process_counters.find(instanceName) == process_counters.end()) {
                         PDH_HCOUNTER counterDiskRead, counterDiskWrite;
@@ -447,7 +447,7 @@ int main()
                 double averagePower = readPower + writePower;
 
                 auto it = std::find_if(monitoringData.begin(), monitoringData.end(), [&](const auto& d) {
-                    return GetInstanceForPID(d.getPids()[0]) == instanceName;
+                    return getInstanceForPID(d.getPids()[0]) == instanceName;
                     });
                 if (it != monitoringData.end()) {
                     it->updateSDEnergy(averagePower * 5);
@@ -565,7 +565,7 @@ int main()
             }
 
             for (auto& data : localMonitoringData) {
-				uint64_t startCPUTime = CPU::getCPUTime();
+				uint64_t startCPUTime = CPU::getCpuTime();
                 uint64_t startPidTime = CPU::getPidTime(data.getPids()[0]);
 
                 CPU::getCurrentPower(startTotalPower);
@@ -576,7 +576,7 @@ int main()
 
                 avgPowerInterval = (startTotalPower + endTotalPower) / 2;
 
-                uint64_t endCPUTime = CPU::getCPUTime();
+                uint64_t endCPUTime = CPU::getCpuTime();
                 uint64_t endPidTime = CPU::getPidTime(data.getPids()[0]);
 
                 double pidTimeDiff = static_cast<double>(endPidTime) - static_cast<double>(startPidTime);
@@ -634,9 +634,9 @@ void readCommand(string commandHandle)
         chain.push_back(commandHandle);
     }
 
-    switch (actions[chain[0]])  //see line 70
+    switch (actions[chain[0]])
     {
-        case 1: //to do
+        case 1: 
             if (chain.size() == 2)
             {
                 enable(chain[1]);
@@ -647,7 +647,7 @@ void readCommand(string commandHandle)
             }
             break;
 
-        case 2://to do
+        case 2:
             if (chain.size() == 2)
             {
                 disable(chain[1]);
@@ -710,7 +710,7 @@ void readCommand(string commandHandle)
                     {
                         if (chain[3] == "CPU" || chain[3] == "GPU" || chain[3] == "SD" || chain[3] == "NIC")
                         {
-                            removeProcPid(chain[2], chain[3]); //to do: check if component
+                            removeProcPid(chain[2], chain[3]);
                         }
                         else
                         {
@@ -726,7 +726,7 @@ void readCommand(string commandHandle)
                 {
                     if (chain[3] == "CPU" || chain[3] == "GPU" || chain[3] == "SD" || chain[3] == "NIC")
                     {
-                        removeProcName(chain[2], chain[3]); //to do: check if component
+                        removeProcName(chain[2], chain[3]);
                     }
                     else
                     {
@@ -764,7 +764,6 @@ void readCommand(string commandHandle)
             break;
 
         case 6:
-            // to do
             break;
 
         default:
@@ -775,11 +774,11 @@ void readCommand(string commandHandle)
 
 void addProcPid(string pid, string component)
 {
-    wstring processName = GetProcessNameByPID(stoi(pid));
+    wstring processName = getProcessNameByPID(stoi(pid));
 
     {
         std::unique_lock<std::mutex> lock(data_mutex);
-        MonitoringData data(wstring_to_string(processName), { stoi(pid) });
+        MonitoringData data(convertWstringToString(processName), { stoi(pid) });
         monitoringData.push_back(data);
 		new_data_cv.notify_all();
     }
@@ -842,7 +841,6 @@ void removeProcName(string name, string component)
             ++it;
         }
     }
-    //to do remove via name
 }
 
 void enable(string component)
@@ -856,7 +854,6 @@ void enable(string component)
     {
         cout << component << " was already enable" << endl;
     }
-    //to do enable component
 }
 
 void disable(string component)
@@ -870,5 +867,4 @@ void disable(string component)
     {
         cout << component << " was already disable" << endl;
     }
-    //to do disable component
 }

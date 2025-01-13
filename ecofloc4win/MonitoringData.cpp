@@ -10,82 +10,82 @@ std::vector<int> MonitoringData::getPids() const
 	return pids;
 }
 
-void MonitoringData::setCPUEnabled(bool enabled)
+void MonitoringData::setCpuEnabled(bool enabled)
 {
 	cpuEnabled = enabled;
 }
 
-void MonitoringData::setGPUEnabled(bool enabled)
+void MonitoringData::setGpuEnabled(bool enabled)
 {
 	gpuEnabled = enabled;
 }
 
-void MonitoringData::setSDEnabled(bool enabled)
+void MonitoringData::setSdEnabled(bool enabled)
 {
 	sdEnabled = enabled;
 }
 
-void MonitoringData::setNICEnabled(bool enabled)
+void MonitoringData::setNicEnabled(bool enabled)
 {
 	nicEnabled = enabled;
 }
 
-bool MonitoringData::isCPUEnabled() const
+bool MonitoringData::isCpuEnabled() const
 {
 	return cpuEnabled;
 }
 
-bool MonitoringData::isGPUEnabled() const
+bool MonitoringData::isGpuEnabled() const
 {
 	return gpuEnabled;
 }
 
-bool MonitoringData::isSDEnabled() const
+bool MonitoringData::isSdEnabled() const
 {
 	return sdEnabled;
 }
 
-bool MonitoringData::isNICEnabled() const
+bool MonitoringData::isNicEnabled() const
 {
 	return nicEnabled;
 }
 
-void MonitoringData::setCPUEnergy(double energy)
+void MonitoringData::setCpuEnergy(double energy)
 {
 	cpuEnergy = energy;
 }
 
-void MonitoringData::setGPUEnergy(double energy)
+void MonitoringData::setGpuEnergy(double energy)
 {
 	gpuEnergy = energy;
 }
 
-void MonitoringData::setSDEnergy(double energy)
+void MonitoringData::setSdEnergy(double energy)
 {
 	sdEnergy = energy;
 }
 
-void MonitoringData::setNICEnergy(double energy)
+void MonitoringData::setNicEnergy(double energy)
 {
 	nicEnergy = energy;
 }
 
-void MonitoringData::updateCPUEnergy(double energy)
+void MonitoringData::updateCpuEnergy(double energy)
 {
 	cpuEnergy += energy;
 }
 
-void MonitoringData::updateGPUEnergy(double energy)
+void MonitoringData::updateGpuEnergy(double energy)
 {
 	gpuEnergy += energy;
 }
 
-void MonitoringData::updateSDEnergy(double energy)
+void MonitoringData::updateSdEnergy(double energy)
 {
 	sdEnergy += energy;
 }
 
-void MonitoringData::updateNICEnergy(double energy)
+void MonitoringData::updateNicEnergy(double energy)
 {
 	nicEnergy += energy;
 }

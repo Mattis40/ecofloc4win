@@ -18,9 +18,5 @@ public:
     string getName();
     void setPid(string);
     void setName(string);
-    /*void addProcPid();
-    void addProcName();
-    void removeProcPid();
-    void removeProcName();*/
 };
 
