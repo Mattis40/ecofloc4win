@@ -131,10 +131,6 @@
             },
             {
                 "checked": false,
-                "numeroPid": 1284
-            },
-            {
-                "checked": false,
                 "numeroPid": 1312
             },
             {
@@ -435,19 +431,15 @@
             },
             {
                 "checked": false,
-                "numeroPid": 7672
+                "numeroPid": 9856
             },
             {
                 "checked": false,
-                "numeroPid": 404
+                "numeroPid": 12772
             },
             {
                 "checked": false,
-                "numeroPid": 1952
-            },
-            {
-                "checked": false,
-                "numeroPid": 8824
+                "numeroPid": 13640
             }
         ]
     },
@@ -573,7 +565,7 @@
             },
             {
                 "checked": false,
-                "numeroPid": 5324
+                "numeroPid": 13608
             }
         ]
     },
@@ -615,11 +607,11 @@
             },
             {
                 "checked": false,
-                "numeroPid": 1408
+                "numeroPid": 9120
             },
             {
                 "checked": false,
-                "numeroPid": 6148
+                "numeroPid": 5676
             }
         ]
     },
@@ -857,7 +849,7 @@
             },
             {
                 "checked": false,
-                "numeroPid": 10016
+                "numeroPid": 9036
             }
         ]
     },
@@ -968,6 +960,10 @@
             {
                 "checked": false,
                 "numeroPid": 7276
+            },
+            {
+                "checked": false,
+                "numeroPid": 11064
             }
         ]
     },
@@ -1058,40 +1054,6 @@
             {
                 "checked": false,
                 "numeroPid": 12180
-            }
-        ]
-    },
-    {
-        "categorie": "Browser",
-        "name": "msedge.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 11396
-            },
-            {
-                "checked": false,
-                "numeroPid": 10592
-            },
-            {
-                "checked": false,
-                "numeroPid": 11120
-            },
-            {
-                "checked": false,
-                "numeroPid": 11552
-            },
-            {
-                "checked": false,
-                "numeroPid": 11696
-            },
-            {
-                "checked": false,
-                "numeroPid": 11428
-            },
-            {
-                "checked": false,
-                "numeroPid": 12636
             }
         ]
     },
@@ -1191,27 +1153,27 @@
             },
             {
                 "checked": false,
-                "numeroPid": 4972
-            },
-            {
-                "checked": false,
                 "numeroPid": 12480
             },
             {
                 "checked": false,
-                "numeroPid": 4652
+                "numeroPid": 7348
             },
             {
                 "checked": false,
-                "numeroPid": 5924
+                "numeroPid": 1628
             },
             {
                 "checked": false,
-                "numeroPid": 9136
+                "numeroPid": 7456
             },
             {
                 "checked": false,
-                "numeroPid": 2744
+                "numeroPid": 11148
+            },
+            {
+                "checked": false,
+                "numeroPid": 13112
             }
         ]
     },
@@ -1272,6 +1234,10 @@
             {
                 "checked": false,
                 "numeroPid": 1692
+            },
+            {
+                "checked": false,
+                "numeroPid": 2420
             }
         ]
     },
@@ -1282,6 +1248,10 @@
             {
                 "checked": false,
                 "numeroPid": 8252
+            },
+            {
+                "checked": false,
+                "numeroPid": 11696
             }
         ]
     },
@@ -1328,116 +1298,46 @@
             {
                 "checked": false,
                 "numeroPid": 10000
+            },
+            {
+                "checked": false,
+                "numeroPid": 14232
+            },
+            {
+                "checked": false,
+                "numeroPid": 3088
+            },
+            {
+                "checked": false,
+                "numeroPid": 14004
+            },
+            {
+                "checked": false,
+                "numeroPid": 6368
+            },
+            {
+                "checked": false,
+                "numeroPid": 9792
             }
         ]
     },
     {
         "categorie": "",
-        "name": "devenv.exe",
+        "name": "LockApp.exe",
         "pid": [
             {
                 "checked": false,
-                "numeroPid": 10024
+                "numeroPid": 7032
             }
         ]
     },
     {
         "categorie": "",
-        "name": "PerfWatson2.exe",
+        "name": "rundll32.exe",
         "pid": [
             {
                 "checked": false,
-                "numeroPid": 11452
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "Microsoft.ServiceHub.Controller.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 12528
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "ServiceHub.VSDetouredHost.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 12604
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "ServiceHub.ThreadedWaitDialog.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 7204
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "ServiceHub.IndexingService.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 2876
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "ServiceHub.IdentityHost.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 12728
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "ServiceHub.IntellicodeModelService.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 12696
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "MSBuild.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 9936
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "vctip.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 7008
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "smartscreen.exe",
-        "pid": [
-            {
-                "checked": false,
-                "numeroPid": 4204
+                "numeroPid": 7316
             }
         ]
     },
@@ -1447,11 +1347,11 @@
         "pid": [
             {
                 "checked": false,
-                "numeroPid": 2784
+                "numeroPid": 7408
             },
             {
                 "checked": false,
-                "numeroPid": 2008
+                "numeroPid": 14064
             }
         ]
     },
@@ -1461,19 +1361,19 @@
         "pid": [
             {
                 "checked": false,
-                "numeroPid": 7328
+                "numeroPid": 11216
             },
             {
                 "checked": false,
-                "numeroPid": 1648
+                "numeroPid": 13688
             },
             {
                 "checked": false,
-                "numeroPid": 9184
+                "numeroPid": 11920
             },
             {
                 "checked": false,
-                "numeroPid": 3728
+                "numeroPid": 6132
             }
         ]
     },
@@ -1483,7 +1383,7 @@
         "pid": [
             {
                 "checked": false,
-                "numeroPid": 7300
+                "numeroPid": 7404
             },
             {
                 "checked": false,
@@ -1497,7 +1397,61 @@
         "pid": [
             {
                 "checked": false,
-                "numeroPid": 11740
+                "numeroPid": 11016
+            }
+        ]
+    },
+    {
+        "categorie": "Browser",
+        "name": "msedge.exe",
+        "pid": [
+            {
+                "checked": false,
+                "numeroPid": 7904
+            },
+            {
+                "checked": false,
+                "numeroPid": 3844
+            },
+            {
+                "checked": false,
+                "numeroPid": 12060
+            },
+            {
+                "checked": false,
+                "numeroPid": 10568
+            },
+            {
+                "checked": false,
+                "numeroPid": 1708
+            },
+            {
+                "checked": false,
+                "numeroPid": 8784
+            },
+            {
+                "checked": false,
+                "numeroPid": 948
+            }
+        ]
+    },
+    {
+        "categorie": "",
+        "name": "Taskmgr.exe",
+        "pid": [
+            {
+                "checked": false,
+                "numeroPid": 7928
+            }
+        ]
+    },
+    {
+        "categorie": "",
+        "name": "smartscreen.exe",
+        "pid": [
+            {
+                "checked": false,
+                "numeroPid": 252
             }
         ]
     },
@@ -1507,7 +1461,7 @@
         "pid": [
             {
                 "checked": false,
-                "numeroPid": 9620
+                "numeroPid": 4192
             }
         ]
     }
