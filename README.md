@@ -14,7 +14,7 @@
 
 The original **EcoFloc** is a comprehensive and versatile tool developed by the R&D laboratory of Technopôle Domolandes[^1], supported by Université de Pau et des Pays de l'Adour and Université de Toulouse.
 
-**EcoFloc4Win** is a port of this tool made to work for Windows operating systems, developed by a team of developers at the IUT de Bayonne et du Pays-Basque[^2]. It was made to be as simple to install and use as possible while keeping the spirit of the original **EcoFloc**.
+**EcoFloc4Win** is a port of this tool made to work for Windows operating systems developed by a team of developers at the IUT de Bayonne et du Pays-Basque[^2]. It was made to be as simple to install and use as possible while keeping the spirit of the original **EcoFloc**.
 
 **EcoFloc4Win** measures the energy consumption of applications in Windows environments across several hardware components. In this beta release, it enables energy measurement for the **CPU**, **GPU**, **storage devices (SD)**, and **network interface controllers (NIC)**. The tool measures energy at predefined intervals, allowing users to create detailed energy profiles based on hardware components and behavioral patterns over time.
 
