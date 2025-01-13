@@ -89,7 +89,7 @@ Once installed, follow these steps to use **EcoFloc4Win**:
 1. **Start the application**:
    - Open a command prompt as administrator, navigate to the installation directory, and run `.\EcoFloc4Win.exe`.
 2. **Measure energy consumption**:
-   <br>List of command that you can use in the application :
+   <br>List of commands you can use in the application :
    - add [ -p | -n ] [ pid ] [ CPU | GPU | NIC | SD ]:
    ```
    add -p 0 NIC
