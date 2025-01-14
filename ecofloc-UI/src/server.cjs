@@ -7,6 +7,7 @@ const path = require('path');
 const app = express();
 const port = 3030;
 const appProcessPath = './Json/process.json';
+const systemMonitoringPath = './Json/system_monitoring.json'
 
 let processRunning = false; // Indique si le processus est en cours d'ex�cution
 let configuratorRunning = false; // Indique si le configurator est en cours d'ex�cution
@@ -34,7 +35,8 @@ app.post('/execute', (req, res) => {
 
     try {
         // Lancer l'ex�cutable
-        const process = exec(exePath, (error, stdout, stderr) => {
+        const command = `${exePath} ${systemMonitoringPath}`;
+        const process = exec(command, (error, stdout, stderr) => {
             processRunning = false; // R�initialiser apr�s ex�cution
             if (error) {
                 console.error(`Erreur d'ex�cution : ${error.message}`);
@@ -227,7 +229,8 @@ app.post('/update', (req, res) => {
     const exePath = `"${__dirname}\\PIDRecup.exe"`; // Chemin absolu vers le configurator
 
      try {
-        const process = exec(exePath, (error, stdout, stderr) => {
+        const command = `${exePath} ${appProcessPath}`;
+        const process = exec(command, (error, stdout, stderr) => {
             configuratorRunning = false; // R�initialiser apr�s ex�cution
             if (error) {
                 console.error(`Erreur d'ex�cution : ${error.message}`);

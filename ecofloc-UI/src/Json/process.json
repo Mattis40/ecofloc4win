@@ -1384,19 +1384,19 @@
                 "numeroPid": 13788
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 14300
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 13260
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 13188
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 14332
             }
         ]
@@ -1444,7 +1444,7 @@
                 "numeroPid": 14024
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 12160
             }
         ]
@@ -1490,11 +1490,11 @@
         "name": "pacjsworker.exe",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 11588
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 10724
             }
         ]
@@ -1504,7 +1504,7 @@
         "name": "PIDRecup.exe",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 4452
             }
         ]
