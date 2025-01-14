@@ -79,7 +79,7 @@ function parseDataToMesProcessus(data){
         setCategorie.add("All");
         setCategorie.add("Other");
         data.forEach(process => {
-            let uneApplication = new Application(process.name,process.pid, process.categorie, process.color);
+            let uneApplication = new Application(process.name,process.pids, process.categorie, process.color);
             mesProcessus.push(uneApplication);
             if(uneApplication.categorie != "") {
                 setCategorie.add(uneApplication.categorie);
