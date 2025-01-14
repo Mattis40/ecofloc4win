@@ -4,7 +4,7 @@
         "name": "[System Process]",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 0
             }
         ]
@@ -14,7 +14,7 @@
         "name": "System",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 4
             }
         ]
@@ -24,7 +24,7 @@
         "name": "Registry",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 108
             }
         ]
@@ -34,7 +34,7 @@
         "name": "smss.exe",
         "pid": [
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 1220
             }
         ]
@@ -114,11 +114,11 @@
                 "numeroPid": 2156
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 2192
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 2200
             },
             {
@@ -372,10 +372,6 @@
             {
                 "checked": true,
                 "numeroPid": 9728
-            },
-            {
-                "checked": false,
-                "numeroPid": 14188
             }
         ]
     },
@@ -535,7 +531,7 @@
             },
             {
                 "checked": true,
-                "numeroPid": 11408
+                "numeroPid": 3308
             }
         ]
     },
@@ -1138,6 +1134,10 @@
             {
                 "checked": true,
                 "numeroPid": 8696
+            },
+            {
+                "checked": true,
+                "numeroPid": 11184
             }
         ]
     },
@@ -1222,7 +1222,7 @@
                 "numeroPid": 7492
             },
             {
-                "checked": false,
+                "checked": true,
                 "numeroPid": 10792
             }
         ]
@@ -1254,44 +1254,6 @@
             {
                 "checked": true,
                 "numeroPid": 1980
-            }
-        ]
-    },
-    {
-        "categorie": "Browser",
-        "name": "msedge.exe",
-        "pid": [
-            {
-                "checked": true,
-                "numeroPid": 12872
-            },
-            {
-                "checked": true,
-                "numeroPid": 12956
-            },
-            {
-                "checked": true,
-                "numeroPid": 13160
-            },
-            {
-                "checked": true,
-                "numeroPid": 13176
-            },
-            {
-                "checked": true,
-                "numeroPid": 13268
-            },
-            {
-                "checked": true,
-                "numeroPid": 4960
-            },
-            {
-                "checked": true,
-                "numeroPid": 3824
-            },
-            {
-                "checked": true,
-                "numeroPid": 2404
             }
         ]
     },
@@ -1340,14 +1302,6 @@
             {
                 "checked": true,
                 "numeroPid": 10984
-            },
-            {
-                "checked": false,
-                "numeroPid": 13908
-            },
-            {
-                "checked": false,
-                "numeroPid": 12156
             }
         ]
     },
@@ -1381,41 +1335,27 @@
             },
             {
                 "checked": true,
-                "numeroPid": 11344
+                "numeroPid": 14224
             },
             {
                 "checked": true,
-                "numeroPid": 8028
+                "numeroPid": 11292
             },
             {
                 "checked": true,
-                "numeroPid": 3948
-            },
-            {
-                "checked": false,
-                "numeroPid": 13168
-            },
-            {
-                "checked": false,
-                "numeroPid": 5420
-            },
-            {
-                "checked": false,
-                "numeroPid": 2672
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "vite-server.exe",
-        "pid": [
-            {
-                "checked": true,
-                "numeroPid": 7044
+                "numeroPid": 15344
             },
             {
                 "checked": true,
-                "numeroPid": 13988
+                "numeroPid": 7952
+            },
+            {
+                "checked": true,
+                "numeroPid": 15060
+            },
+            {
+                "checked": true,
+                "numeroPid": 10332
             }
         ]
     },
@@ -1425,33 +1365,23 @@
         "pid": [
             {
                 "checked": true,
-                "numeroPid": 8448
+                "numeroPid": 14028
             },
             {
                 "checked": true,
-                "numeroPid": 12880
+                "numeroPid": 13324
             },
-            {
-                "checked": false,
-                "numeroPid": 14316
-            },
-            {
-                "checked": false,
-                "numeroPid": 7692
-            },
-            {
-                "checked": false,
-                "numeroPid": 1100
-            }
-        ]
-    },
-    {
-        "categorie": "",
-        "name": "esbuild.exe",
-        "pid": [
             {
                 "checked": true,
-                "numeroPid": 7804
+                "numeroPid": 13552
+            },
+            {
+                "checked": true,
+                "numeroPid": 3268
+            },
+            {
+                "checked": true,
+                "numeroPid": 13052
             }
         ]
     },
@@ -1461,11 +1391,85 @@
         "pid": [
             {
                 "checked": true,
-                "numeroPid": 9828
+                "numeroPid": 14024
             },
             {
                 "checked": true,
-                "numeroPid": 11188
+                "numeroPid": 14376
+            }
+        ]
+    },
+    {
+        "categorie": "Browser",
+        "name": "msedge.exe",
+        "pid": [
+            {
+                "checked": true,
+                "numeroPid": 8568
+            },
+            {
+                "checked": true,
+                "numeroPid": 15800
+            },
+            {
+                "checked": true,
+                "numeroPid": 7248
+            },
+            {
+                "checked": true,
+                "numeroPid": 13048
+            },
+            {
+                "checked": true,
+                "numeroPid": 10448
+            },
+            {
+                "checked": true,
+                "numeroPid": 2308
+            },
+            {
+                "checked": true,
+                "numeroPid": 4268
+            },
+            {
+                "checked": true,
+                "numeroPid": 13460
+            },
+            {
+                "checked": true,
+                "numeroPid": 9724
+            },
+            {
+                "checked": true,
+                "numeroPid": 16008
+            },
+            {
+                "checked": true,
+                "numeroPid": 3940
+            }
+        ]
+    },
+    {
+        "categorie": "",
+        "name": "vite-server.exe",
+        "pid": [
+            {
+                "checked": true,
+                "numeroPid": 600
+            },
+            {
+                "checked": true,
+                "numeroPid": 10096
+            }
+        ]
+    },
+    {
+        "categorie": "",
+        "name": "esbuild.exe",
+        "pid": [
+            {
+                "checked": true,
+                "numeroPid": 14968
             }
         ]
     },
@@ -1474,8 +1478,8 @@
         "name": "audiodg.exe",
         "pid": [
             {
-                "checked": false,
-                "numeroPid": 14264
+                "checked": true,
+                "numeroPid": 13484
             }
         ]
     },
@@ -1484,8 +1488,8 @@
         "name": "PIDRecup.exe",
         "pid": [
             {
-                "checked": false,
-                "numeroPid": 14064
+                "checked": true,
+                "numeroPid": 13168
             }
         ]
     }

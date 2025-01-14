@@ -6,7 +6,7 @@ const path = require('path');
 
 const app = express();
 const port = 3030;
-const appProcessPath = './process.json';
+const appProcessPath = './Json/process.json';
 
 let processRunning = false; // Indique si le processus est en cours d'ex�cution
 let configuratorRunning = false; // Indique si le configurator est en cours d'ex�cution
@@ -189,7 +189,7 @@ app.get('/events', (req, res) => {
     // Envoi d'un message initial
     res.write(`data: ${JSON.stringify({ message: 'Connexion établie' })}\n\n`);
 
-    const filePath = './process.json';
+    const filePath = './Json/process.json';
 
     // Surveiller le fichier JSON
     const watcher = fs.watch(filePath, (eventType) => {
