@@ -64,7 +64,7 @@ const renderInitialView = () => {
 
 // Read the JSON file and update plots
 const readFile = () => {
-    fetch('./system_monitoring.json')
+    fetch('../Json/system_monitoring.json')
         .then(response => response.ok ? response.json() : null)
         .then(data => {
             if (data && data.time !== precedentTimeStamp) {

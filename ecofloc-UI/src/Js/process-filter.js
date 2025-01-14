@@ -92,7 +92,7 @@ function parseDataToMesProcessus(data){
     }
 }
 
-fetch('process.json')
+fetch('../Json/process.json')
 .then(response => {
     // Vérifier si la réponse est correcte
     if (!response.ok) {
@@ -201,8 +201,6 @@ function afficherListeProcessus() {
             }
         }
     }
-    console.log(atLeastOneChecked);
-    console.log(allChecked);
     checkBoxSelectAllProcElement.checked = atLeastOneChecked;
     checkBoxSelectAllProcElement.indeterminate = (!allChecked && atLeastOneChecked); 
 }
@@ -257,6 +255,9 @@ const eventSource = new EventSource('http://localhost:3030/events');
 eventSource.onmessage = (event) => {
     try {
         const data = JSON.parse(event.data);
+        if(!data){
+            console.error("Erreur data vide");
+        }
         if(!data["message"]){
             parseDataToMesProcessus(data);
         }

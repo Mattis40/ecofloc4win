@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="output.css">
+    <link rel="stylesheet" href="../Css/output.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:wght@300;400;700&family=Roboto:wght@100;300;400;500;700&display=swap" rel="stylesheet">
@@ -16,15 +16,14 @@
 <body class="flex flex-col divide-y-4 divide-emerald-400 inria-sans-regular overflow-hidden">
     <!-- Header -->
     <header class="flex flex-row justify-center align-center bg-zinc-800 text-white text-xl">
-        <img class="w-16 h-auto absolute left-4" src="image/EcoflocIcon.webp" alt="EcoflocIcon">
         <div class="w-full px-[26%] flex flex-row justify-center content-center">
-            <a href="./">
-                <h2 class="titleHeader rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+            <a href="../">
+                <h2 class="rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
                     Home
                 </h2>
             </a>
             <a href="#">
-                <h2 class="text-emerald-600 titleHeader rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:cursor-pointer text-center text-2xl font-semibold p-4">
+                <h2 class="text-emerald-600 rounded-t transition duration-400 ease-in-out bg-zinc-800 hover:bg-zinc-600 hover:cursor-pointer text-center text-2xl font-semibold p-4">
                     Monitoring
                 </h2>
             </a>
@@ -51,10 +50,10 @@
                     <!-- Play/Stop buttons -->
                     <div id="list-buttons" class="sidebar-transition">
                         <button id="start-button" onclick="executeScript(); return false;" class="p-2">
-                            <img src="./assets/play.svg" alt="play" class="size-[50px]">
+                            <img src="../assets/play.svg" alt="play" class="size-[50px]">
                         </button>
                         <button id="stop-button" class="p-2" onclick="stopExecutable()">
-                            <img src="./assets/stop.svg" alt="stop" class="size-[50px]">
+                            <img src="../assets/stop.svg" alt="stop" class="size-[50px]">
                         </button>
                     </div>
                 </aside>
@@ -186,10 +185,10 @@
 
 
     </script>
-    <script src="ClassApplication.js"></script>
-    <script src="process-filter.js"></script>
-    <script src="ClassDynamicGraph.js"></script>
-    <script src="affichage-graphique.js"></script>
+    <script src="../Js/ClassApplication.js"></script>
+    <script src="../Js/process-filter.js"></script>
+    <script src="../Js/ClassDynamicGraph.js"></script>
+    <script src="../Js/affichage-graphique.js"></script>
     
     
 </body>
