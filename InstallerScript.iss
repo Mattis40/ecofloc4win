@@ -133,6 +133,7 @@ var
   TempFilePath: string;
   ExecResult: Integer;
   Proc: String;
+  ResultCode: Integer;
 begin
   Result := False;
   Proc := ProcArchi;
@@ -146,12 +147,11 @@ begin
   //DotNetInstallerPath := ExpandConstant('{tmp}\windowsdesktop-runtime-' + RequiredDotNetVersion + '-win-' + Proc + '.exe');
   DownloadTemporaryFile(DownloadURL, 'desktop-runtime.exe', '', @OnDownloadProgress);
   DotNetInstallerPath := ExpandConstant('{tmp}\desktop-runtime.exe');
-  MsgBox(DotNetInstallerPath, mbError, MB_OK);
-  if not DotNetInstallerPath then
-  begin
+  
+  if not DotNetInstallerPath = '' then
     MsgBox('Failed to download .NET Desktop Runtime (' + Proc + ').', mbError, MB_OK);
-    Exit;
-  end;
+    Exit;  
+  Exec('powershell.exe', '/i' + DotNetInstallerPath + ' /quiet /norestart', '',SW_HIDE, ewWaitUntilTerminated, ResultCode);
 end;
 
 
@@ -227,7 +227,7 @@ begin
   MsgBox('Node and npm are not installed. Installation of both will now start', mbInformation, MB_OK);
   if not Exec('msiexec.exe', '/i https://nodejs.org/dist/v18.17.1/node-v18.17.1-x64.msi /quiet /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
   begin
-    MsgBox('Unable to Node and npm. Try again or install them manually', mbError, MB_OK);
+    MsgBox('Unable to install Node and npm. Try again or install them manually', mbError, MB_OK);
   end;
 end;
 
