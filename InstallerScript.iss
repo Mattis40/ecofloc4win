@@ -1,5 +1,5 @@
 #define MyAppName "Ecofloc"
-#define MyAppVersion "alpha"
+#define MyAppVersion "0.85"
 #define MyAppPublisher "Ecofloc4win team"
 #define Installer "Ecofloc4win team"
 [Setup]
@@ -14,10 +14,10 @@ SetupIconFile=images\ecoflocV1.ico
 DisableWelcomePage=no
 WizardImageFile=images\ecoflocV1.bmp
 
-OutputBaseFilename=ecofloc-installer
+;OutputBaseFilename=ecofloc-installer
 
 LicenseFile=LICENSE
-InfoBeforeFile=readme.md
+InfoBeforeFile=README.md
 
 Compression=lzma
 SolidCompression=yes
@@ -28,10 +28,27 @@ Output=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "ecofloc.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: main
-Source: "config.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: main
-Source: "interface.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: ui
+Source: "ecofloc4win.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: main
+Source: "EcoflocConfigurator.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: main
+Source: "vite-server.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: ui
 Source: "ecofloc-UI\*"; DestDir: "{app}\ecofloc-UI\"; Flags: ignoreversion recursesubdirs createallsubdirs ; Components: ui
+
+; Additional individual files
+Source: "EcoflocConfigurator.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Ijwhost.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "LibreHardwareMonitorLib.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "System.Collections.Immutable.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "System.Reflection.Metadata.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "System.Text.Encoding.CodePages.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "System.Text.Encodings.Web.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "System.Threading.Channels.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Wrapper.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Wrapper.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Wrapper.exp"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Wrapper.lib"; DestDir: "{app}"; Flags: ignoreversion
+Source: "Wrapper.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "ecofloc4win.sys"; DestDir: "{app}"; Flags: ignoreversion
+
 
 [Components]
 Name: "main"; Description: "Ecofloc"; Types: full compact custom; Flags: fixed
@@ -56,9 +73,9 @@ const
   EnvironmentKey = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
   RequiredDotNetVersion = '8.0.10';
   DotNetInstallerURL64 = 'https://download.visualstudio.microsoft.com/download/pr/f398d462-9d4e-4b9c-abd3-86c54262869a/4a8e3a10ca0a9903a989578140ef0499/windowsdesktop-runtime-8.0.10-win-x64.exe'; // Replace with the actual URL
-  DotNetInstallerURL86 = 'http  s://download.visualstudio.microsoft.com/download/pr/9836a475-66af-47eb-a726-8046c47ce6d5/ccb7d60db407a6d022a856852ef9e763/windowsdesktop-runtime-8.0.10-win-x86.exe';
+  DotNetInstallerURL86 = 'https://download.visualstudio.microsoft.com/download/pr/9836a475-66af-47eb-a726-8046c47ce6d5/ccb7d60db407a6d022a856852ef9e763/windowsdesktop-runtime-8.0.10-win-x86.exe';
   DotNetInstallerURLArm64 = 'https://download.visualstudio.microsoft.com/download/pr/c1387fab-1960-4cdc-8653-1e0333f6385a/3bd819d5f2aecff94803006a9e2c945a/windowsdesktop-runtime-8.0.10-win-arm64.exe';
-  
+
 // Function to check if a specific version of the .NET runtime is installed
 function IsDotNetRuntimeInstalled(Version: string): Boolean;
 var
@@ -99,14 +116,26 @@ end;
 
 // Download and install .NET runtime if not found
 // Download and install .NET runtime if not found
+
+function OnDownloadProgress(const Url, Filename: String; const Progress, ProgressMax: Int64): Boolean;
+begin
+  if ProgressMax <> 0 then
+    Log(Format('  %d of %d bytes done.', [Progress, ProgressMax]))
+  else
+    Log(Format('  %d bytes done.', [Progress]));
+  Result := True;
+end;
+
 function DownloadAndInstallDotNet: Boolean;
 var
-  DotNetInstallerPath, DownloadURL: string;
+  DownloadURL: string;
+  DotNetInstallerPath: string;
+  TempFilePath: string;
   ExecResult: Integer;
   Proc: String;
 begin
   Result := False;
-  Proc := ProcArchi
+  Proc := ProcArchi;
   case ProcessorArchitecture of
     paX86: DownloadURL := DotNetInstallerURL86;
     paX64: DownloadURL := DotNetInstallerURL64;
@@ -114,15 +143,19 @@ begin
   else
     Result := False;
   end;
-  DotNetInstallerPath := ExpandConstant('{tmp}\windowsdesktop-runtime-' + RequiredDotNetVersion + '-win-' + Proc + '.exe');
-
-  if not DownloadFile(DownloadURL, DotNetInstallerPath) then
+  //DotNetInstallerPath := ExpandConstant('{tmp}\windowsdesktop-runtime-' + RequiredDotNetVersion + '-win-' + Proc + '.exe');
+  DownloadTemporaryFile(DownloadURL, 'desktop-runtime.exe', '', @OnDownloadProgress);
+  DotNetInstallerPath := ExpandConstant('{tmp}\desktop-runtime.exe');
+  MsgBox(DotNetInstallerPath, mbError, MB_OK);
+  if not DotNetInstallerPath then
   begin
-    MsgBox('Failed to download .NET Desktop Runtime (' + Proc + '). Please check your internet connection.', mbError, MB_OK);
+    MsgBox('Failed to download .NET Desktop Runtime (' + Proc + ').', mbError, MB_OK);
     Exit;
   end;
 end;
-  
+
+
+
 procedure RemovePath(Path: string);
 var
   Paths: string;
@@ -202,14 +235,8 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
-    if IsDotNetRuntimeInstalled(RequiredDotNetVersion) then
-    begin
-      DownloadAndInstallDotNet
-    end
-    else
-    begin
-      MsgBox('The correct version of .NET Desktop Runtime is already installed', mbInformation, MB_OK);
-    end;
+    //OnDownloadProgress();
+    DownloadAndInstallDotNet();
     if IsComponentSelected('ui') then
     begin
       if not IsNodeInstalled() or not IsNpmInstalled() then
