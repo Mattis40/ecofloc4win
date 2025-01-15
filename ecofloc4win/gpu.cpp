@@ -7,11 +7,13 @@
 // Define NVML types and constants
 typedef int nvmlReturn_t;
 typedef void* nvmlDevice_t;
-typedef struct nvmlUtilization_st {
+typedef struct nvmlUtilization_st 
+{
     unsigned int gpu;
     unsigned int memory;
 } nvmlUtilization_t;
-typedef struct nvmlProcessInfo_st {
+typedef struct nvmlProcessInfo_st 
+{
     unsigned int pid;
     unsigned long long usedGpuMemory;
 } nvmlProcessInfo_t;
@@ -28,17 +30,22 @@ typedef nvmlReturn_t(*NvmlDeviceGetComputeRunningProcesses_t)(nvmlDevice_t, unsi
 typedef nvmlReturn_t(*NvmlDeviceGetPowerUsage_t)(nvmlDevice_t, unsigned int*);
 typedef const char* (*NvmlErrorString_t)(nvmlReturn_t);
 
-class NVMLManager {
+class NVMLManager 
+{
 public:
-    static NVMLManager& getInstance() {
+    static NVMLManager& getInstance() 
+    {
         static NVMLManager instance;
         return instance;
     }
 
-    bool initialize() {
-        if (!nvmlLib) {
+    bool initialize() 
+    {
+        if (!nvmlLib) 
+        {
             nvmlLib = LoadLibrary(L"nvml.dll");
-            if (!nvmlLib) {
+            if (!nvmlLib) 
+            {
                 std::cerr << "NVML library not found. Ensure NVIDIA drivers are installed.\n";
                 return false;
             }
@@ -52,7 +59,8 @@ public:
             nvmlDeviceGetPowerUsage = reinterpret_cast<NvmlDeviceGetPowerUsage_t>(GetProcAddress(nvmlLib, "nvmlDeviceGetPowerUsage"));
             nvmlErrorString = reinterpret_cast<NvmlErrorString_t>(GetProcAddress(nvmlLib, "nvmlErrorString"));
 
-            if (!nvmlInit || !nvmlShutdown || !nvmlDeviceGetCount || !nvmlDeviceGetHandleByIndex || !nvmlDeviceGetUtilizationRates || !nvmlDeviceGetComputeRunningProcesses || !nvmlDeviceGetPowerUsage || !nvmlErrorString) {
+            if (!nvmlInit || !nvmlShutdown || !nvmlDeviceGetCount || !nvmlDeviceGetHandleByIndex || !nvmlDeviceGetUtilizationRates || !nvmlDeviceGetComputeRunningProcesses || !nvmlDeviceGetPowerUsage || !nvmlErrorString) 
+            {
                 std::cerr << "Failed to locate NVML functions in the library.\n";
                 FreeLibrary(nvmlLib);
                 nvmlLib = nullptr;
@@ -62,8 +70,10 @@ public:
         return true;
     }
 
-    void shutdown() {
-        if (nvmlLib) {
+    void shutdown() 
+    {
+        if (nvmlLib) 
+        {
             FreeLibrary(nvmlLib);
             nvmlLib = nullptr;
         }
@@ -80,39 +90,49 @@ public:
 
 private:
     NVMLManager() = default;
-    ~NVMLManager() {
+    ~NVMLManager() 
+    {
         shutdown();
     }
 
     HMODULE nvmlLib = nullptr;
 };
 
-namespace GPU {
-    int initNVML() {
+namespace GPU 
+{
+    int initNVML() 
+    {
         NVMLManager& nvml = NVMLManager::getInstance();
-        if (!nvml.initialize()) {
+        if (!nvml.initialize()) 
+        {
             return 1;
         }
 
-        if (nvml.nvmlInit() == NVML_SUCCESS) {
+        if (nvml.nvmlInit() == NVML_SUCCESS) 
+        {
             std::cout << "NVML initialized successfully.\n";
-            if (nvml.nvmlShutdown() == NVML_SUCCESS) {
+            if (nvml.nvmlShutdown() == NVML_SUCCESS) 
+            {
                 std::cout << "NVML shutdown successfully.\n";
             }
-            else {
+            else 
+            {
                 std::cerr << "Failed to shut down NVML.\n";
             }
         }
-        else {
+        else 
+        {
             std::cerr << "Failed to initialize NVML.\n";
         }
 
         return 0;
     }
 
-    int gpu_usage(int pid) {
+    int gpu_usage(int pid) 
+    {
         NVMLManager& nvml = NVMLManager::getInstance();
-        if (!nvml.initialize()) {
+        if (!nvml.initialize()) 
+        {
             return -1;
         }
 
@@ -126,44 +146,52 @@ namespace GPU {
 
         // Initialize NVML
         result = nvml.nvmlInit();
-        if (result != NVML_SUCCESS) {
+        if (result != NVML_SUCCESS) 
+        {
             std::cerr << "Failed to initialize NVML: " << nvml.nvmlErrorString(result) << std::endl;
             return -1;
         }
 
         // Get the number of devices
         result = nvml.nvmlDeviceGetCount(&deviceCount);
-        if (result != NVML_SUCCESS) {
+        if (result != NVML_SUCCESS) 
+        {
             std::cerr << "Failed to get device count: " << nvml.nvmlErrorString(result) << std::endl;
             nvml.nvmlShutdown();
             return -1;
         }
 
         // Iterate over each device
-        for (unsigned int i = 0; i < deviceCount; ++i) {
+        for (unsigned int i = 0; i < deviceCount; ++i) 
+        {
             result = nvml.nvmlDeviceGetHandleByIndex(i, &device);
-            if (result != NVML_SUCCESS) {
+            if (result != NVML_SUCCESS) 
+            {
                 std::cerr << "Failed to get handle for device " << i << ": " << nvml.nvmlErrorString(result) << std::endl;
                 continue;
             }
 
             // Get GPU utilization rates
             result = nvml.nvmlDeviceGetUtilizationRates(device, &utilization);
-            if (result != NVML_SUCCESS) {
+            if (result != NVML_SUCCESS) 
+            {
                 std::cerr << "Failed to get utilization rates for device " << i << ": " << nvml.nvmlErrorString(result) << std::endl;
                 continue;
             }
 
             // Get running processes on the device
             result = nvml.nvmlDeviceGetComputeRunningProcesses(device, &infoCount, processInfo);
-            if (result != NVML_SUCCESS) {
+            if (result != NVML_SUCCESS) 
+            {
                 std::cerr << "Failed to get running processes for device " << i << ": " << nvml.nvmlErrorString(result) << std::endl;
                 continue;
             }
 
             // Search for the process by PID
-            for (unsigned int j = 0; j < infoCount; ++j) {
-                if (processInfo[j].pid == pid) {
+            for (unsigned int j = 0; j < infoCount; ++j) 
+            {
+                if (processInfo[j].pid == pid) 
+                {
                     // Approximation: Report total GPU utilization
                     usage = utilization.gpu; // Aggregate GPU utilization
                     goto cleanup; // Exit after finding the PID
@@ -178,18 +206,22 @@ namespace GPU {
     }
 
     // Function to retrieve GPU usage for a list of PIDs
-    std::vector<int> getGPUUsage(std::vector<int> pids) {
+    std::vector<int> getGPUUsage(std::vector<int> pids) 
+    {
         std::vector<int> results;
-        for (int pid : pids) {
+        for (int pid : pids) 
+        {
             results.push_back(gpu_usage(pid));
         }
         return results;
     }
 
     // Function to retrieve GPU power usage
-    int getGPUPower() {
+    int getGPUPower() 
+    {
         NVMLManager& nvml = NVMLManager::getInstance();
-        if (!nvml.initialize()) {
+        if (!nvml.initialize()) 
+        {
             return -1;
         }
 
@@ -198,14 +230,16 @@ namespace GPU {
 
         // Initialize NVML
         result = nvml.nvmlInit();
-        if (result != NVML_SUCCESS) {
+        if (result != NVML_SUCCESS) 
+        {
             std::cerr << "Failed to initialize NVML: " << nvml.nvmlErrorString(result) << std::endl;
             return -1;
         }
 
         // Get handle for GPU 0 (or another GPU by index)
         result = nvml.nvmlDeviceGetHandleByIndex(0, &device);
-        if (result != NVML_SUCCESS) {
+        if (result != NVML_SUCCESS) 
+        {
             std::cerr << "Failed to get handle for GPU: " << nvml.nvmlErrorString(result) << std::endl;
             nvml.nvmlShutdown();
             return -1;
@@ -214,7 +248,8 @@ namespace GPU {
         // Read power usage (in milliwatts)
         unsigned int power;
         result = nvml.nvmlDeviceGetPowerUsage(device, &power);
-        if (result != NVML_SUCCESS) {
+        if (result != NVML_SUCCESS) 
+        {
             std::cerr << "Failed to read power usage: " << nvml.nvmlErrorString(result) << std::endl;
             nvml.nvmlShutdown();
             return -1;
@@ -227,10 +262,12 @@ namespace GPU {
         return power / 1000.0;
     }
 
-    int getGPUJoules(std::vector<int> pids, int ms) {
+    int getGPUJoules(std::vector<int> pids, int ms) 
+    {
         double interval_s = (double)ms / 1000.0;
         int results = 0;
-        for (int pid : pids) {
+        for (int pid : pids) 
+        {
             int usage = gpu_usage(pid);
             int power = getGPUPower();
             double power_used = ((usage / 100.0) * power);
