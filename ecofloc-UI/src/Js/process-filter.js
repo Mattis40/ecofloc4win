@@ -71,7 +71,7 @@ function makeGroupApplication(){
     }
 }
 
-function parseDataToMesProcessus(data){
+function parseDataToMyProcesses(data){
     if(data){
         mesProcessus = [];
         const oldCategorie = setCategorie;
@@ -79,7 +79,7 @@ function parseDataToMesProcessus(data){
         setCategorie.add("All");
         setCategorie.add("Other");
         data.forEach(process => {
-            let uneApplication = new Application(process.name,process.pids, process.categorie, process.color);
+            let uneApplication = new Application(process.name,process.pids, process.categorie);
             mesProcessus.push(uneApplication);
             if(uneApplication.categorie != "") {
                 setCategorie.add(uneApplication.categorie);
@@ -103,7 +103,7 @@ fetch('../Json/process.json')
 .then(data => {
 
     // Afficher chaque processus dans la liste
-    parseDataToMesProcessus(data);
+    parseDataToMyProcesses(data);
 })
 .catch(error => {
     console.error('Erreur:', error);
@@ -259,7 +259,7 @@ eventSource.onmessage = (event) => {
             console.error("Erreur data vide");
         }
         if(!data["message"]){
-            parseDataToMesProcessus(data);
+            parseDataToMyProcesses(data);
         }
     } catch (err) {
         console.error('Erreur de parsing des données:', err);
