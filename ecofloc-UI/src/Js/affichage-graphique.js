@@ -3,6 +3,7 @@ let totalW = 0;
 let mainIdGraph = "";
 const listTab = document.getElementById("list-tab");
 const flexGraphique = document.getElementById("flex-graphique");
+let numSec = 0;
 
 const componentDictionary = {
     "CPU": "CPU",
@@ -70,6 +71,7 @@ const readFile = () => {
             if (data && data.time !== precedentTimeStamp) {
                 precedentTimeStamp = data.time;
                 updatePlots(data);
+                numSec++;
             }
         })
         .catch(error => console.error("Error reading file:", error));
@@ -81,20 +83,21 @@ const updatePlots = (data) => {
     totalW = 0;
     //console.log(data);
     data.apps.forEach(app => {
-        graphCPU.updatePlot(app["pid"], app["power_w_CPU"], app["color"]);
+
+        graphCPU.updatePlot(app["pid"], app["power_w_CPU"], numSec, app["color"]);
         totalW +=  app["power_w_CPU"];
-        graphGPU.updatePlot(app["pid"], app["power_w_GPU"], app["color"]);
+
+        graphGPU.updatePlot(app["pid"], app["power_w_GPU"], numSec, app["color"]);
         totalW +=  app["power_w_GPU"];
-        graphSD.updatePlot(app["pid"], app["power_w_SD"], app["color"]);
+
+        graphSD.updatePlot(app["pid"], app["power_w_SD"], numSec, app["color"]);
         totalW +=  app["power_w_SD"];
-        graphNIC.updatePlot(app["pid"], app["power_w_NIC"], app["color"]);
+
+        graphNIC.updatePlot(app["pid"], app["power_w_NIC"], numSec, app["color"]);
         totalW +=  app["power_w_NIC"];
 
-
-        //console.log(app);
     });
-    graphTOTAL.updatePlot("TOTAL",totalW)
-    
+    graphTOTAL.updatePlot("TOTAL",totalW, numSec)
 };
 
 // Initialize graphs and set periodic updates
