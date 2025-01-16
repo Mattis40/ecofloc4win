@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "compileCss": "npx tailwindcss -i ./src/Css/input.css -o ./src/Css/output.css --watch",
+    "buildApplication": "pkg start.js --targets node18-win-x64 --output ../vite-server.exe",
+    "downloadPKG": "npm install -g pkg",
+    "execApp": "cd .. && ./vite-server.exe fix"
   },
   "devDependencies": {
     "cors": "^2.8.5",

@@ -31,7 +31,6 @@ class DynamicGraph {
         
         // Vérifie si le PID existe déjà
         if (!this.data[PID]) {
-            console.log(`Initialisation de la série pour PID: ${PID}`);
             if (PID !== "TOTAL") {
                 this.data[PID] = {
                     y: [],
