@@ -29,7 +29,6 @@ class DynamicGraph {
         
         // Vérifie si le PID existe déjà
         if (!this.data[PID]) {
-            console.log(`Initialisation de la série pour PID: ${PID}`);
             if (PID !== "TOTAL") {
                 this.data[PID] = {
                     y: [],
@@ -63,7 +62,6 @@ class DynamicGraph {
         }
 
         // Met à jour la trace correspondante
-        console.log(`Mise à jour de la trace pour PID ${PID} à l'index ${index}`);
         Plotly.update(this.nomGraphique, { y: [this.data[PID].y] }, {}, [index]);
     }
 
