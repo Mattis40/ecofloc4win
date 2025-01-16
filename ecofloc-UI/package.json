@@ -26,5 +26,8 @@
     "scripts": [
       "node_modules/open/xdg-open"
     ]
+  },
+  "dependencies": {
+    "punycode": "^2.3.1"
   }
 }
