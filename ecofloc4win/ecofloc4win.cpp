@@ -27,6 +27,7 @@
 #include <cstring>
 #include <iostream>
 #include <tcpmib.h>
+#include <atomic>
 
 #include "process.h"         // Custom header for process handling
 #include "gpu.h"             // Custom header for GPU monitoring
@@ -92,7 +93,7 @@ wstring GetProcessNameByPID(DWORD processID)
 
 unordered_map<string, pair<vector<process>, bool>> comp = {{"CPU", {{}, false}}, {"GPU", {{}, false} }, {"SD", {{}, false }}, {"NIC", {{}, false }}};
 
-int interval = 500;
+std::atomic<int> interval = 500;
 
 /*
 * This function gets the index of a counter in the registry based on its name.
@@ -400,13 +401,13 @@ int main()
                 new_data_cv.wait(lock, [] { return !monitoringData.empty(); });
 			    for (auto& data : monitoringData)
 			    {
-				    int gpu_joules = GPU::getGPUJoules(data.getPids(), 500);
+				    int gpu_joules = GPU::getGPUJoules(data.getPids(), interval);
 				    data.updateGPUEnergy(gpu_joules);
 			    }
             }
 
 			screen.Post(Event::Custom);
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::this_thread::sleep_for(std::chrono::milliseconds(interval));
 		}
 	});
 
@@ -492,7 +493,7 @@ int main()
             }
             
             screen.Post(Event::Custom);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval));
         }
 
         PdhCloseQuery(query);
@@ -554,7 +555,7 @@ int main()
                                     double bytesIn = static_cast<double>(dataRod->DataBytesIn);
                                     double bytesOut = static_cast<double>(dataRod->DataBytesOut);
 
-                                    double intervalSec = 500.0 / 1000.0; // Interval in seconds (will be changed in the future)
+                                    double intervalSec = interval / 1000.0; // Interval in seconds (will be changed in the future)
 
                                     long downloadRate = bytesIn / intervalSec;
                                     long uploadRate = bytesOut / intervalSec;
@@ -586,7 +587,7 @@ int main()
             }
 
             screen.Post(Event::Custom);
-            std::this_thread::sleep_for(std::chrono::milliseconds(500)); // interval based on user input (will be changed in the future)
+            std::this_thread::sleep_for(std::chrono::milliseconds(interval)); // interval based on user input (will be changed in the future)
         }
         });
 
