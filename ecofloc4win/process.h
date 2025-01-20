@@ -14,7 +14,7 @@ private:
 
 public:
     process(string, string);
-    string getPid();
+    string getPid() const;
     string getName();
     void setPid(string);
     void setName(string);
