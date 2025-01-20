@@ -131,7 +131,7 @@ app.post('/changeListePidState', (req, res) => {
     // Réponse au client
     data.forEach(process => {
         if (liste.includes(process.name)) {
-            process.pid.forEach(pidInfo => {
+            process.pids.forEach(pidInfo => {
                 pidInfo.checked = etat;
             });
         }
@@ -157,7 +157,7 @@ app.post('/changePidState', (req, res) => {
     // Parcourir les processus pour modifier la valeur
     data.forEach(process => {
         if (process.name == nomProc) {
-            process.pid.forEach(pidInfo => {
+            process.pids.forEach(pidInfo => {
                 if (pidInfo.numeroPid == pidProc) {
                     pidInfo.checked = etat;
                 }
